@@ -24,7 +24,11 @@ Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes t
 
 - Players don't fall out of the world naturally, you'll want to handle PlayerMoveEvent as needed to kill them.
 
+## Installation
+### Installing on Windows
+To install on Windows 8 and above, open Powershell and type in 'git clone --recursive https://github.com/IceCruelStuff/Steadfast5.git'. After, run the 'start.cmd' file located in you server folder. It will automatically download PHP. If you are running on Windows 7, download the zip file from Github and extract it, then run 'start.cmd'. After running 'start.cmd', you have to complete setup wizard. When you are finished all these steps, the server should work.
 
-
-
-
+### Installing on Linux/MacOS
+To install on Linux/MacOS, please follow these instructions.
+1) Open command line and type in 'git clone --recursive https://github.com/IceCruelStuff/Steadfast5.git'. Then navigate to 'Steadfast5' directory using command line. You can also download the zip file from Github and extract it.
+2) Run command `./installer.sh`. If successful, this will create a `bin` folder with a special PHP build in it. After, run command './start.sh' and the server should start up.
