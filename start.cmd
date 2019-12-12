@@ -1,5 +1,5 @@
 @echo off
-TITLE PocketMine-MP server software for Minecraft: Bedrock Edition
+TITLE Steadfast5 server software for Minecraft: Bedrock Edition
 cd /d %~dp0
 
 if exist %~dp0PocketMine-MP\ goto PMSTART
@@ -24,7 +24,7 @@ if exist PocketMine-MP.phar (
 		if exist src\pocketmine\PocketMine.php (
 			set POCKETMINE_FILE=src\pocketmine\PocketMine.php
 		) else (
-			echo "Couldn't find a valid PocketMine-MP installation"
+			echo "Couldn't find a valid Steadfast5 installation"
 			pause
 			exit 1
 		)
