@@ -84,6 +84,7 @@ use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\CompressBatchedTask;
+use pocketmine\network\AdvancedSourceInterface;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\BatchPacket;
 use pocketmine\network\protocol\CraftingDataPacket;
@@ -246,6 +247,9 @@ class Server{
 
 	/** @var LevelMetadataStore */
 	private $levelMetadata;
+	
+	/** @var AdvancedSourceInterface */
+	private $mainInterface;
 
 	/** @var Network */
 	private $network;
@@ -1751,6 +1755,9 @@ class Server{
 		$this->start();
 	}
 	
+	/**
+	 * @return AdvancedSourceInterface
+	 */
 	public function getMainInterface() {
 		return $this->mainInterface;
 	}
