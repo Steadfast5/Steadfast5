@@ -35,3 +35,6 @@ To install on Windows, please follow these instructions.
 To install on Linux/MacOS, please follow these instructions.
 1) Open command line and type in `git clone --recursive https://github.com/IceCruelStuff/Steadfast5.git`. Then navigate to `Steadfast5` directory using command line. You can also download the zip file from Github and extract it.
 2) Run command `./installer.sh`. If successful, this will create a `bin` folder with a special PHP build in it. After, run command `./start.sh` and the server should start up.
+
+### Windows Installer
+If you don't know how to do any of the steps above, then download the [`installer.cmd`](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/installer.cmd) from the releases and run it. You can view the script on [GitHub Gist](https://gist.github.com/IceCruelStuff/621339e30c8fb2b0d4d806265f0bbed9).
