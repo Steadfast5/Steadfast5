@@ -1,6 +1,6 @@
   <img src="https://github.com/IceCruelStuff/Steadfast5/blob/master/Steadfast5.png" alt="Steadfast5 logo" title="Aimeos" align="center" />
 
-# Steadfast5 Minecraft PE Server Software
+# Steadfast5 Minecraft: Bedrock Edition Server Software
 
 # Links
 | Jenkins | TravisCI | Discord |
@@ -38,3 +38,4 @@ To install on Linux/MacOS, please follow these instructions.
 
 ### Windows Installer
 If you don't know how to do any of the steps above, then download the [`installer.cmd`](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/installer.cmd) from the releases and run it. You can view the script on [GitHub Gist](https://gist.github.com/IceCruelStuff/621339e30c8fb2b0d4d806265f0bbed9).
+This is the Steadfast5 source installer.
