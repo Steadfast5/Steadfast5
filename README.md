@@ -37,5 +37,5 @@ To install on Linux/MacOS, please follow these instructions.
 2) Run command `./installer.sh`. If successful, this will create a `bin` folder with a special PHP build in it. After, run command `./start.sh` and the server should start up.
 
 ### Windows Installer
-If you don't know how to do any of the steps above, then download the [`installer.cmd`](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/installer.cmd) from the releases and run it. You can view the script on [GitHub Gist](https://gist.github.com/IceCruelStuff/621339e30c8fb2b0d4d806265f0bbed9).
+If you don't know how to do any of the steps above, then download the [`source_installer.cmd`](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/source_installer.cmd) from the releases and run it. You can view the script on [GitHub Gist](https://gist.github.com/IceCruelStuff/621339e30c8fb2b0d4d806265f0bbed9).
 This is the Steadfast5 source installer.
