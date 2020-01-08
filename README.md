@@ -9,6 +9,8 @@
 
 Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes to older PocketMine-MP versions for better stability and performance, while retaining as many features from the new PocketMine-MP versions as possible.
 
+Click [here](https://github.com/IceCruelStuff/Steadfast5) to visit other repository.
+
 ## Todo-List
 
 - [x] Forms
