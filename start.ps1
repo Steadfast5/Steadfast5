@@ -20,7 +20,7 @@ if($file -eq ""){
 	    $file = "Steadfast5.phar"
 	}else{
 	    echo "Steadfast5.phar not found"
-	    echo "Downloads can be found at https://github.com/IceCruelStuff/Steadfast5/releases"
+	    echo "Downloads can be found at https://github.com/Steadfast5/Steadfast5/releases"
 	    pause
 	    exit 1
 	}
