@@ -2,7 +2,7 @@
 TITLE Steadfast5 server software for Minecraft: Bedrock Edition
 cd /d %~dp0
 
-if exist %~dp0PocketMine-MP\ goto PMSTART
+cd /d %~dp0 goto PMSTART
 
 where git >nul 2>nul || (powershell -command "& { iwr https://github.com/git-for-windows/git/releases/download/v2.20.1.windows.1/Git-2.20.1-64-bit.exe -OutFile Git-2.20.1-64-bit.exe }" & start Git-2.20.1-64-bit.exe & pause)
 
