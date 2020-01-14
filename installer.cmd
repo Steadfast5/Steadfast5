@@ -1,4 +1,20 @@
 @echo off
+
+::
+::   ___ _____  ___  __ _ ___  ___  __ _  ___ _____   ____
+::  / __|__ __|/ _ \/ _` |   \|  _|/ _` |/ __|__ __| |  __|
+::  \__ \ | | |  __/ | | | | ||  _| | | |\__ \ | |   |__  \
+::  |___/ |_|  \___|\__,_|___/|_|  \__,_/|___/ |_|   |____/
+::
+:: This program is free software: you can redistribute it and/or modify
+:: it under the terms of the GNU Lesser General Public License as published by
+:: the Free Software Foundation, either version 3 of the License, or
+:: (at your option) any later version.
+::
+:: @author Steadfast5 Team
+:: @link https://steadfast5.tk
+::
+
 TITLE Steadfast5 server software for Minecraft: Bedrock Edition
 cd /d %~dp0
 
@@ -11,13 +27,13 @@ mkdir Steadfast5
 
 cd Steadfast5
 
-curl -s https://api.github.com/repos/jgm/pandoc/releases/latest \
-| grep "https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.2/Steadfast5.phar.*deb" \
+curl -s https://api.github.com/repos/IceCruelStuff/Steadfast5/releases/latest \
+| grep "https://github.com/IceCruelStuff/Steadfast5/releases/latest/download/Steadfast5.phar.*deb" \
 | cut -d : -f 2,3 \
 | tr -d \" \
 | wget -qi -
 
-curl -s https://api.github.com/repos/jgm/pandoc/releases/latest \
+curl -s https://api.github.com/repos/IceCruelStuff/Steadfast5/releases/latest \
 | grep "https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/start.cmd.*deb" \
 | cut -d : -f 2,3 \
 | tr -d \" \
