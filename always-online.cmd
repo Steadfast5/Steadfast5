@@ -1,5 +1,20 @@
 @echo off
 
+::
+::   ___ _____  ___  __ _ ___  ___  __ _  ___ _____   ____
+::  / __|__ __|/ _ \/ _` |   \|  _|/ _` |/ __|__ __| |  __|
+::  \__ \ | | |  __/ | | | | ||  _| | | |\__ \ | |   |__  \
+::  |___/ |_|  \___|\__,_|___/|_|  \__,_/|___/ |_|   |____/
+::
+:: This program is free software: you can redistribute it and/or modify
+:: it under the terms of the GNU Lesser General Public License as published by
+:: the Free Software Foundation, either version 3 of the License, or
+:: (at your option) any later version.
+::
+:: @author Steadfast5 Team
+:: @link https://steadfast5.tk
+::
+
 REM Set TIMEOUT to how many seconds you want in between when the server stops to when the next restart takes place
 
 set TIMEOUT=3
