@@ -27,18 +27,15 @@ mkdir Steadfast5
 
 cd Steadfast5
 
-curl -s https://api.github.com/repos/IceCruelStuff/Steadfast5/releases/latest \
-| grep "https://github.com/IceCruelStuff/Steadfast5/releases/latest/download/Steadfast5.phar.*deb" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi -
+LOCATION=$(curl -s https://api.github.com/repos/Steadfast5/Steadfast5/releases/latest \
+| grep "tag_name" \
+| awk '{print "https://github.com/Steadfast5/Steadfast5/archive/" substr($2, 2, length($2)-3) ".zip"}') \
+; curl -L -o OUTPUT_FILE_NAME $LOCATION
 
-curl -s https://api.github.com/repos/IceCruelStuff/Steadfast5/releases/latest \
-| grep "https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/start.cmd.*deb" \
-| cut -d : -f 2,3 \
-| tr -d \" \
-| wget -qi -
-
+LOCATION=$(curl -s https://api.github.com/repos/Steadfast5/Steadfast5/releases/v1.3 \
+| grep "tag_name" \
+| awk '{print "https://github.com/Steadfast5/Steadfast5/releases/download/v1.1/installer.cmd" substr($2, 2, length($2)-3) ".zip"}') \
+; curl -L -o OUTPUT_FILE_NAME $LOCATION
 
 git clone https://github.com/IceCruelStuff/bin.git --recursive
 
