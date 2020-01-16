@@ -31,7 +31,7 @@ Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes t
 To install on Windows, please follow these instructions. 
 1) Open Powershell and type in `git clone --recursive https://github.com/IceCruelStuff/Steadfast5.git` 
 2) Run the `start.cmd` file located in your server folder. It will automatically download PHP. This will not work if you don't have git installed. Click [here](https://git-scm.com/downloads) to go to download page for git.
-3) After running `start.cmd`, you have to complete setup wizard. When you are finished all these steps, the server should start up. If you are running Windows 8 and below, this will not work.
+3) After running `start.cmd`, you have to complete setup wizard. When you are finished all these steps, the server should start up. If you are running Windows 8 and below, this will not work. Click [here](https://github.com/Steadfast5/Steadfast5/wiki/Windows-8-and-below) for instructions on how to install on Windows 8 and below.
 
 ### Installing on Linux/MacOS
 To install on Linux/MacOS, please follow these instructions.
