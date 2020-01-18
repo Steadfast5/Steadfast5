@@ -26,6 +26,7 @@ use pocketmine\math\Vector3;
 abstract class Particle extends Vector3 {
 
 	const TYPE_BUBBLE = 'TYPE_BUBBLE';
+	const TYPE_BUBBLE_MANUAL = 'TYPE_BUBBLE_MANUAL';
 	const TYPE_CRITICAL = 'TYPE_CRITICAL';
 	const TYPE_SMOKE = 'TYPE_SMOKE';
 	const TYPE_EXPLODE = 'TYPE_EXPLODE';
