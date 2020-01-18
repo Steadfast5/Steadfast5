@@ -2253,6 +2253,9 @@ class Server{
 		$this->crashDump();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function crashDump(){
 		if($this->isRunning === false){
 			return;
