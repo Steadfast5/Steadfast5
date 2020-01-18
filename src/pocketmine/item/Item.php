@@ -778,6 +778,9 @@ class Item implements ItemIds {
         return false;
     }
 
+    /**
+	 * @return $this
+	 */
     public function clearCustomBlockData(){
         if(!$this->hasCompound()){
             return $this;
