@@ -743,6 +743,13 @@ class Item implements ItemIds {
         }
     }
 
+	/**
+	 * Sets the Item's NBT
+	 *
+	 * @param CompoundTag|string|null $tags
+	 *
+	 * @return $this
+	 */
     public function setCompound($tags){
         if($tags instanceof Compound){
             $this->setNamedTag($tags);
@@ -795,6 +802,11 @@ class Item implements ItemIds {
         return $this;
     }
 
+	/**
+	 * @param CompoundTag $compound
+	 *
+	 * @return $this
+	 */
     public function setCustomBlockData(Compound $compound){
         $tags = clone $compound;
         $tags->setName("BlockEntityTag");
