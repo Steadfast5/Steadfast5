@@ -430,7 +430,7 @@ class Server{
 	 * @return string
 	 */
 	public function getServerName(){
-		return $this->getConfigString("motd", "Minecraft: PE Server");
+		return $this->getConfigString("motd", "Minecraft: Bedrock Edition Server");
 	}
 
 	/**
@@ -638,7 +638,7 @@ class Server{
 	 * @return string
 	 */
 	public function getMotd(){
-		return $this->getConfigString("motd", "Minecraft: PE Server");
+		return $this->getConfigString("motd", "Minecraft: Bedrock Edition Server");
 	}
 
 	/**
@@ -1514,7 +1514,7 @@ class Server{
 		$this->console = new CommandReader();
 
 		$version = new VersionString($this->getPocketMineVersion());
-		$this->logger->info("Starting Minecraft: PE server version " . TextFormat::AQUA . $this->getVersion());
+		$this->logger->info("Starting Minecraft: Bedrock Edition server version " . TextFormat::AQUA . $this->getVersion());
 
 		$this->logger->info("Loading pocketmine-soft.yml...");
 		if(!file_exists($this->dataPath . "pocketmine-soft.yml")){
@@ -1625,7 +1625,7 @@ class Server{
 			@\cli_set_process_title($this->getName() . " " . $this->getPocketMineVersion());
 		}
 
-		$this->logger->info("Starting Minecraft PE server on " . ($this->getIp() === "" ? "*" : $this->getIp()) . ":" . $this->getPort());
+		$this->logger->info("Starting Minecraft Bedrock Edition server on " . ($this->getIp() === "" ? "*" : $this->getIp()) . ":" . $this->getPort());
 		define("BOOTUP_RANDOM", @Utils::getRandomBytes(16));
 		$this->serverID = Utils::getMachineUniqueId($this->getIp() . $this->getPort());
 	
