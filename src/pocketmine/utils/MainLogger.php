@@ -40,7 +40,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	 *
 	 * @throws \RuntimeException
 	 */
-	public function __construct($logFile, $logDebug = false){
+	public function __construct($logFile, $logDebug = true){
 		if(static::$logger instanceof MainLogger){
 			throw new \RuntimeException("MainLogger has been already created");
 		}
