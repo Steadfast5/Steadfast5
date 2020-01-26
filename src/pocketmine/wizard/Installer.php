@@ -29,7 +29,7 @@ use pocketmine\utils\Config;
 use pocketmine\utils\Utils;
 
 class Installer{
-	const DEFAULT_NAME = "Minecraft: PE Server";
+	const DEFAULT_NAME = "Minecraft: Bedrock Edition Server";
 	const DEFAULT_PORT = 19132;
 	const DEFAULT_MEMORY = 256;
 	const DEFAULT_PLAYERS = 20;
