@@ -66,9 +66,9 @@ abstract class DataPacket extends BinaryStream
         return $this->channel;
     }
 
-	/**
-	 * @return $this
-	 */
+    /**
+     * @return $this
+     */
     public function clean()
     {
         $this->reset();
