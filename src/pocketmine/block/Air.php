@@ -36,6 +36,9 @@ class Air extends Transparent{
 
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName(){
 		return "Air";
 	}
@@ -44,18 +47,32 @@ class Air extends Transparent{
 		return true;
 	}
 
+	/**
+	 * @param Item $item
+	 *
+	 * @return bool
+	 */
 	public function isBreakable(Item $item){
 		return false;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeFlowedInto(){
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeReplaced(){
 		return true;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBePlaced(){
 		return false;
 	}
@@ -64,14 +81,23 @@ class Air extends Transparent{
 		return false;
 	}
 
+	/**
+	 * @return AxisAlignedBB
+	 */
 	public function getBoundingBox(){
 		return null;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getHardness(){
 		return -1;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getResistance(){
 		return 0;
 	}

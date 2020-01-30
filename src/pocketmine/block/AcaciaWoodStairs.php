@@ -28,28 +28,46 @@ class AcaciaWoodStairs extends Stair{
 
 	protected $id = self::ACACIA_WOOD_STAIRS;
 
+	/**
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName(){
 		return "Acacia Wood Stairs";
 	}
 
+	/**
+	 * @param Item $item
+	 */
 	public function getDrops(Item $item){
 		return [
 			[$this->id, 0, 1],
 		];
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getHardness(){
 		return 2;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getResistance(){
 		return 15;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_AXE;
 	}

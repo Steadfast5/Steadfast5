@@ -28,22 +28,37 @@ class ActivatorRail extends Rail{
 
 	protected $id = self::ACTIVATOR_RAIL;
 
+	/**
+	 * @param int $meta
+	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName(){
 		return "Activator Rail";
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getHardness(){
 		return 2;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}
 
+	/**
+	 * @param Item $item
+	 */
 	public function getDrops(Item $item){
 		return [
 			[Item::ACTIVATOR_RAIL, 0, 1],
