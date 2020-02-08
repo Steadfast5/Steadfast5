@@ -4,10 +4,7 @@
 
 Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other repository.
 
-# Links
-| Jenkins | TravisCI | Discord |
-| :---: | :---: | :---: |
-| [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=plastic)]() | [![Travis branch](https://img.shields.io/badge/Build-Passing-orange?style=plastic)]() |
+[![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5) [![License](https://img.shields.io/badge/license-LGNU%20v3-blue.svg?style=flat-square)](https://github.com/Steadfast5/TeaSpoon/blob/master/LICENSE)
 
 ## Introduction
 
