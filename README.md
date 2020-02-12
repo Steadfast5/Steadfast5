@@ -10,15 +10,6 @@ Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other reposito
 
 Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes to older PocketMine-MP versions for better stability and performance, while retaining as many features from the new PocketMine-MP versions as possible.
 
-## Todo-List
-
-- [x] Forms
-- [x] Rcon
-- [ ] Add items and blocks
-- [x] addTitle function
-- [ ] Api update to the latest
-- [ ] And more
-
 ## Known bugs
 
 - Players don't fall out of the world naturally, you'll want to handle PlayerMoveEvent as needed to kill them.
