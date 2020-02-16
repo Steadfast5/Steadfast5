@@ -58,6 +58,7 @@ abstract class Armor extends Item{
 		parent::setDamage($meta);
 		$this->checkDamage();
 	}
+
 	public function checkDamage() {
 		if ($this->meta == 0) {
 			if ($this->hasCompound()) {
