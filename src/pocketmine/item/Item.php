@@ -73,7 +73,6 @@ class Item implements ItemIds {
     }
 	
 	// all block IDs
-	const AIR = 0;
 	const STONE = 1;
 	const GRASS = 2;
 	const DIRT = 3;
