@@ -568,6 +568,101 @@ class Item implements ItemIds {
         }
     }
 
+	const CREATIVE_GROUP_NONE = 0xffffffff;
+	const CREATIVE_GROUP_PLANKS = 0;
+	const CREATIVE_GROUP_WALLS = 1;
+	const CREATIVE_GROUP_FENCE = 2;
+	const CREATIVE_GROUP_FENCEGATE = 3;
+	const CREATIVE_GROUP_STAIRS = 4;
+	const CREATIVE_GROUP_DOOR = 5;
+	const CREATIVE_GROUP_TRAPDOOR = 6;
+	const CREATIVE_GROUP_GLASS = 7;
+	const CREATIVE_GROUP_GLASSPANE = 8;
+	const CREATIVE_GROUP_SLAB = 9;
+	const CREATIVE_GROUP_STONEBRICK = 10;
+	const CREATIVE_GROUP_SANDSTONE = 11;
+	const CREATIVE_GROUP_WOOL = 12;
+	const CREATIVE_GROUP_WOOLCARPET = 13;
+	const CREATIVE_GROUP_STAINEDCLAY = 14;
+	const CREATIVE_GROUP_ORE = 15;
+	const CREATIVE_GROUP_STONE = 16;
+	const CREATIVE_GROUP_LOGS = 17;
+	const CREATIVE_GROUP_LEAVES = 18;
+	const CREATIVE_GROUP_SAPLING = 19;
+	const CREATIVE_GROUP_SEED = 20;
+	const CREATIVE_GROUP_CROP = 21;
+	const CREATIVE_GROUP_GRASS = 22;
+	const CREATIVE_GROUP_FLOWER = 23;
+	const CREATIVE_GROUP_DYE = 24;
+	const CREATIVE_GROUP_MUSHROOM = 25;
+	const CREATIVE_GROUP_MOBEGG = 26;
+	const CREATIVE_GROUP_HELMET = 27;
+	const CREATIVE_GROUP_CHESTPLATE = 28;
+	const CREATIVE_GROUP_LEGGINGS = 29;
+	const CREATIVE_GROUP_BOOTS = 30;
+	const CREATIVE_GROUP_SWORD = 31;
+	const CREATIVE_GROUP_AXE = 32;
+	const CREATIVE_GROUP_PICKAXE = 33;
+	const CREATIVE_GROUP_SHOVEL = 34;
+	const CREATIVE_GROUP_HOE = 35;
+	const CREATIVE_GROUP_ARROW = 36;
+	const CREATIVE_GROUP_COOKEDFOOD = 37;
+	const CREATIVE_GROUP_MISCFOOD = 38;
+	const CREATIVE_GROUP_BED = 39;
+	const CREATIVE_GROUP_ANVIL = 40;
+	const CREATIVE_GROUP_CHEST = 41;
+	const CREATIVE_GROUP_SIGN = 42;
+	const CREATIVE_GROUP_RAIL = 43;
+	const CREATIVE_GROUP_MINECART = 44;
+
+	private static $creativeGroupData = [
+		self::CREATIVE_GROUP_PLANKS => ['name' => 'itemGroup.name.planks', 'item' => self::PLANK],
+		self::CREATIVE_GROUP_WALLS => ['name' => 'itemGroup.name.walls', 'item' => self::COBBLESTONE_WALL],
+		self::CREATIVE_GROUP_FENCE => ['name' => 'itemGroup.name.fence', 'item' => self::FENCE],
+		self::CREATIVE_GROUP_FENCEGATE => ['name' => 'itemGroup.name.fenceGate', 'item' => self::FENCE_GATE],
+		self::CREATIVE_GROUP_STAIRS => ['name' => 'itemGroup.name.stairs', 'item' => self::COBBLE_STAIRS],
+		self::CREATIVE_GROUP_DOOR => ['name' => 'itemGroup.name.door', 'item' => self::WOODEN_DOOR],
+		self::CREATIVE_GROUP_TRAPDOOR => ['name' => 'itemGroup.name.trapdoor', 'item' => self::TRAPDOOR],
+		self::CREATIVE_GROUP_GLASS => ['name' => 'itemGroup.name.glass', 'item' => self::GLASS],
+		self::CREATIVE_GROUP_GLASSPANE => ['name' => 'itemGroup.name.glassPane', 'item' => self::GLASS_PANE],
+		self::CREATIVE_GROUP_SLAB => ['name' => 'itemGroup.name.slab', 'item' => self::SLAB],
+		self::CREATIVE_GROUP_STONEBRICK => ['name' => 'itemGroup.name.stoneBrick', 'item' => self::STONE_BRICK],
+		self::CREATIVE_GROUP_SANDSTONE => ['name' => 'itemGroup.name.sandstone', 'item' => self::SANDSTONE],
+		self::CREATIVE_GROUP_WOOL => ['name' => 'itemGroup.name.wool', 'item' => self::WOOL],
+		self::CREATIVE_GROUP_WOOLCARPET => ['name' => 'itemGroup.name.woolCarpet', 'item' => self::CARPET],
+		self::CREATIVE_GROUP_STAINEDCLAY => ['name' => 'itemGroup.name.stainedClay', 'item' => self::CLAY_BLOCK],
+		self::CREATIVE_GROUP_ORE => ['name' => 'itemGroup.name.ore', 'item' => self::IRON_ORE],
+		self::CREATIVE_GROUP_STONE => ['name' => 'itemGroup.name.stone', 'item' => self::STONE],
+		self::CREATIVE_GROUP_LOGS => ['name' => 'itemGroup.name.log', 'item' => self::LOG],
+		self::CREATIVE_GROUP_LEAVES => ['name' => 'itemGroup.name.wood', 'item' => self::LEAVES],
+		self::CREATIVE_GROUP_SAPLING => ['name' => 'itemGroup.name.sapling', 'item' => self::SAPLING],
+		self::CREATIVE_GROUP_SEED => ['name' => 'itemGroup.name.seed', 'item' => self::SEEDS],
+		self::CREATIVE_GROUP_CROP => ['name' => 'itemGroup.name.crop', 'item' => self::WHEAT],
+		self::CREATIVE_GROUP_GRASS => ['name' => 'itemGroup.name.grass', 'item' => self::TALL_GRASS],
+		self::CREATIVE_GROUP_FLOWER => ['name' => 'itemGroup.name.flower', 'item' => self::DANDELION],
+		self::CREATIVE_GROUP_DYE => ['name' => 'itemGroup.name.dye', 'item' => self::DYE],
+		self::CREATIVE_GROUP_MUSHROOM => ['name' => 'itemGroup.name.mushroom', 'item' => self::BROWN_MUSHROOM],
+		self::CREATIVE_GROUP_MOBEGG => ['name' => 'itemGroup.name.mobEgg', 'item' => self::SPAWN_EGG],
+		self::CREATIVE_GROUP_HELMET => ['name' => 'itemGroup.name.helmet', 'item' => self::LEATHER_CAP],
+		self::CREATIVE_GROUP_CHESTPLATE => ['name' => 'itemGroup.name.chestplate', 'item' => self::LEATHER_TUNIC],
+		self::CREATIVE_GROUP_LEGGINGS => ['name' => 'itemGroup.name.leggings', 'item' => self::LEATHER_PANTS],
+		self::CREATIVE_GROUP_BOOTS => ['name' => 'itemGroup.name.boots', 'item' => self::LEATHER_BOOTS],
+		self::CREATIVE_GROUP_SWORD => ['name' => 'itemGroup.name.sword', 'item' => self::WOODEN_SWORD],
+		self::CREATIVE_GROUP_AXE => ['name' => 'itemGroup.name.axe', 'item' => self::WOODEN_AXE],
+		self::CREATIVE_GROUP_PICKAXE => ['name' => 'itemGroup.name.pickaxe', 'item' => self::WOODEN_PICKAXE],
+		self::CREATIVE_GROUP_SHOVEL => ['name' => 'itemGroup.name.shovel', 'item' => self::WOODEN_SHOVEL],
+		self::CREATIVE_GROUP_HOE => ['name' => 'itemGroup.name.hoe', 'item' => self::WOODEN_HOE],
+		self::CREATIVE_GROUP_ARROW => ['name' => 'itemGroup.name.arrow', 'item' => self::ARROW],
+		self::CREATIVE_GROUP_COOKEDFOOD => ['name' => 'itemGroup.name.cookedFood', 'item' => self::COOKED_CHICKEN],
+		self::CREATIVE_GROUP_MISCFOOD => ['name' => 'itemGroup.name.miscFood', 'item' => self::BREAD],
+		self::CREATIVE_GROUP_BED => ['name' => 'itemGroup.name.bed', 'item' => self::BED],
+		self::CREATIVE_GROUP_ANVIL => ['name' => 'itemGroup.name.anvil', 'item' => self::ANVIL],
+		self::CREATIVE_GROUP_CHEST => ['name' => 'itemGroup.name.chest', 'item' => self::CHEST],
+		self::CREATIVE_GROUP_SIGN => ['name' => 'itemGroup.name.sign', 'item' => self::SIGN],
+		self::CREATIVE_GROUP_RAIL => ['name' => 'itemGroup.name.rail', 'item' => self::RAIL],
+		self::CREATIVE_GROUP_MINECART => ['name' => 'itemGroup.name.minecart', 'item' => self::MINECART],
+	];
+	
     final public static function jsonDeserialize(array $data) : Item{
         $nbt = "";
 
@@ -640,9 +735,13 @@ class Item implements ItemIds {
         return Item::$creative;
     }
 
-    public static function addCreativeItem(Item $item){
-        Item::$creative[] = Item::get($item->getId(), $item->getDamage());
+    public static function addCreativeItem(Item $item, $creativeGroup = self::CREATIVE_GROUP_NONE){
+        Item::$creative[] = ['item' => Item::get($item->getId(), $item->getDamage()), 'group' => $creativeGroup];
     }
+	
+	public static function getCreativeGroups(){
+		return Item::$creativeGroupData;
+	}
 
     public static function removeCreativeItem(Item $item){
         $index = self::getCreativeItemIndex($item);
@@ -653,7 +752,7 @@ class Item implements ItemIds {
 
     public static function isCreativeItem(Item $item){
         foreach(Item::$creative as $i => $d){
-            if($item->equals($d, !$item->isTool())){
+            if($item->equals($d['item'], !$item->isTool())){
                 return true;
             }
         }
@@ -666,7 +765,7 @@ class Item implements ItemIds {
      * @return Item
      */
     public static function getCreativeItem($index){
-        return isset(Item::$creative[$index]) ? Item::$creative[$index] : null;
+        return isset(Item::$creative[$index]) ? Item::$creative[$index]['item'] : null;
     }
 
     /**
@@ -675,7 +774,7 @@ class Item implements ItemIds {
      */
     public static function getCreativeItemIndex(Item $item){
         foreach(Item::$creative as $i => $d){
-            if($item->equals($d, !$item->isTool())){
+            if($item->equals($d['item'], !$item->isTool())){
                 return $i;
             }
         }
