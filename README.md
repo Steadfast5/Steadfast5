@@ -6,6 +6,9 @@ Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other reposito
 
 [![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5) [![License](https://img.shields.io/badge/license-LGNU%20v3-blue.svg?style=flat-square)](https://github.com/Steadfast5/Steadfast5/blob/master/LICENSE) [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=plastic)]()
 
+# Credits
+Most of the code was written by originally written by [MFDGaming](https://github.com/MFDGaming), [iAldrich23xX](https://github.com/iAldrich23xX), and [LiTEKPE](https://github.com/LiTEKPE).
+
 ## Introduction
 
 Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes to older PocketMine-MP versions for better stability and performance, while retaining as many features from the new PocketMine-MP versions as possible.
