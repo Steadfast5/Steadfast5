@@ -1107,10 +1107,6 @@ class Item implements ItemIds {
         Item::$creative[] = ['item' => Item::get($item->getId(), $item->getDamage()), 'group' => $creativeGroup];
     }
 	
-	public static function getCreativeGroups(){
-		return Item::$creativeGroupData;
-	}
-
     public static function removeCreativeItem(Item $item){
         $index = self::getCreativeItemIndex($item);
         if($index !== -1){
