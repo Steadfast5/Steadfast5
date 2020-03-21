@@ -2118,7 +2118,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 						$this->actionsNum['CRACK_BLOCK'] = 0;
 						if (!$this->isCreative()) {
 							$block = $this->level->getBlock(new Vector3($packet->x, $packet->y, $packet->z));
-							$breakTime = ceil($block->getBreakTime($this->inventory->getItemInHand()) * 20);
+							$breakTime = ceil($this->getBreakTime($block) * 20);
 							$fireBlock = $block->getSide($packet->face);
 							if ($fireBlock->getId() === Block::FIRE) {
 								$fireBlock->onUpdate(Level::BLOCK_UPDATE_TOUCH);
@@ -4582,7 +4582,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$isNeedSendPackets = $this->actionsNum['CRACK_BLOCK'] % 4 == 0;
 		$this->actionsNum['CRACK_BLOCK']++;
 
-		$breakTime = ceil($block->getBreakTime($this->inventory->getItemInHand()) * 20);
+		$breakTime = ceil($this->getBreakTime($block) * 20);
 		if ($this->actionsNum['CRACK_BLOCK'] >= $breakTime) {
 			$this->breakBlock($blockPos);
 		}
@@ -4602,6 +4602,17 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 	}
 
+	public function getBreakTime(Block $block, Item $item = null) {	
+		$item = $item??$this->inventory->getItemInHand();	
+		$breakTime = $block->getBreakTime($item);
+		$blockUnderPlayer = $this->level->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
+
+		if ($blockUnderPlayer->getId() == Block::LADDER || $blockUnderPlayer->getId() == Block::VINE || !$this->onGround) {					
+			$breakTime *= 5;
+		}	
+		return $breakTime;
+	}
+	
 	/**
 	 * @minprotocol 120
 	 * @param SimpleTransactionData[] $transactionsData
