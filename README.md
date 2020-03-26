@@ -4,6 +4,8 @@
 
 Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other repository.
 
+Click [here](https://github.com/Steadfast5/Steadfast5/releases/latest/download/Steadfast5.phar) to download the latest release.
+
 [![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5) [![License](https://img.shields.io/badge/license-LGNU%20v3-blue.svg?style=flat-square)](https://github.com/Steadfast5/Steadfast5/blob/master/LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Steadfast5/Steadfast5) [![GitHub release](https://img.shields.io/github/release/Steadfast5/Steadfast5.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest)
 
 # Credits
