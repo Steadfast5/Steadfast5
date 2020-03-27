@@ -124,6 +124,9 @@ class Enchantment{
 	 * @return $this
 	 */
 	public static function getEnchantment($id){
+		if($id < 0 or $id >= self::$enchantments->getSize()){
+			return null;
+		}
 		if(isset(self::$enchantments[$id])){
 			return clone self::$enchantments[(int) $id];
 		}
