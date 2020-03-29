@@ -3037,6 +3037,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			}
 		}
 
+		$this->level->dropExperience($this, $this->getXpDropAmount());
+		$this->setXpAndProgress(0, 0);
+
 		if($ev->getDeathMessage() != ""){
 			$this->server->broadcast($ev->getDeathMessage(), Server::BROADCAST_CHANNEL_USERS);
 		}
