@@ -38,6 +38,10 @@ class Stonecutter extends Solid{
 		return "Stonecutter";
 	}
 
+	public function getHardness(){
+		return 3.5;
+	}
+	
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}

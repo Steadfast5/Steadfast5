@@ -22,6 +22,7 @@
 namespace pocketmine\block;
 
 use pocketmine\item\Tool;
+use pocketmine\item\Item;
 
 class Ice extends Transparent{
 
@@ -42,5 +43,11 @@ class Ice extends Transparent{
 	public function getToolType(){
 		return Tool::TYPE_PICKAXE;
 	}
-
+	
+	public function onBreak(Item $item, Player $player = null) : bool{
+		if(($player === null or $player->isSurvival()) && !$item->hasEnchantment(Enchantment::SILK_TOUCH)){
+			return $this->getLevel()->setBlock($this, BlockFactory::get(Block::WATER), true);
+		}
+		return parent::onBreak($item, $player);
+	}
 }

@@ -85,7 +85,7 @@ class SplashPotion extends Projectile
             Server::broadcastPacket($this->getViewers(), $pk);
 
             foreach ($this->level->getNearbyEntities($this->boundingBox->grow(4, 4, 4), $this) as $entity) { //todo: someone has to check this https://minecraft.gamepedia.com/Splash_Potion
-                if ($entity->distanceSquared($this) <= 16) {
+                if ($entity->add(0, $entity->getEyeHeight(), 0)->distanceSquared($this) <= 16) {
                     foreach (\pocketmine\item\SplashPotion::getEffectsById($this->getPotionId()) as $effect) {
                         $entity->addEffect($effect);
                     }

@@ -71,6 +71,12 @@ class StartGamePacket extends PEPacket{
 		
 		$this->putSignedVarInt($this->seed);
 		
+		if ($playerProtocol >= Info::PROTOCOL_400) {
+			$this->putByte(0);
+			$this->putByte(0);
+			$this->putString('');
+		}
+		
 		$this->putSignedVarInt($this->dimension);
 		
 		$this->putSignedVarInt($this->generator);
@@ -88,6 +94,10 @@ class StartGamePacket extends PEPacket{
 		
 		$this->putSignedVarInt(0); // DayCycleStopTyme 1x VarInt
 		
+		if ($playerProtocol >= Info::PROTOCOL_400) {
+			$this->putByte(0);
+		}
+		
 		$this->putByte(0); //edu mode
 		
 		if ($playerProtocol >= Info::PROTOCOL_260 && $this->stringClientVersion != '1.2.20.1') {
@@ -99,7 +109,7 @@ class StartGamePacket extends PEPacket{
 		$this->putLFloat(0); //lightning level
 
 		if ($playerProtocol >= Info::PROTOCOL_332) {
-			$this->putByte(0); // ???
+			$this->putByte(0); // has confirmed platform Locked Content
 		}
 		
 		$this->putByte(1); // is multiplayer game
@@ -111,7 +121,7 @@ class StartGamePacket extends PEPacket{
 			$this->putByte(1); // Broadcast to XBL?
 		}
 		
-		if ($playerProtocol >= Info::PROTOCOL_392) {
+		if ($playerProtocol >= Info::PROTOCOL_392 && $playerProtocol < Info::PROTOCOL_400) {
 			$this->putByte(0); // unknown
 		}
 		
@@ -177,6 +187,9 @@ class StartGamePacket extends PEPacket{
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putLInt(16); //unknown
 			$this->putLInt(16); //unknown
+			if ($playerProtocol >= Info::PROTOCOL_400) {
+				$this->putByte(0);
+			}
 		}
 		
 		// level settings end
