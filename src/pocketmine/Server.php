@@ -68,6 +68,7 @@ use pocketmine\level\format\pmanvil\PMAnvil;
 use pocketmine\level\format\LevelProviderManager;
 use pocketmine\level\format\mcregion\McRegion;
 use pocketmine\level\generator\Generator;
+use pocketmine\level\generator\ender\Ender;
 use pocketmine\level\Level;
 use pocketmine\metadata\EntityMetadataStore;
 use pocketmine\metadata\LevelMetadataStore;
@@ -305,6 +306,9 @@ class Server{
 	private $serverPrivateKey = '';
 	private $serverToken = 'hksdYI3has';
 	private $isUseEncrypt = false;
+	public $enderEnabled = true;
+	public $enderName = "ender";
+	public $enderLevel = null;
 	
 	private $modsManager = null;
 
