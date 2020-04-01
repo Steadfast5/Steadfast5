@@ -388,7 +388,7 @@ interface ItemIds {
     const RAW_CHICKEN = 365;
     const COOKED_CHICKEN = 366;
     const ROTTEN_FLESH = 367;
-    const ENDER_PEARL = 368;
+    const ENDER_PERL = 368;
     const BLAZE_ROD = 369;
     const GHAST_TEAR = 370;
     const GOLD_NUGGET = 371;
