@@ -1609,6 +1609,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 		if($this->spawned){
 			$this->processMovement($tickDiff);
+			$this->motionX = $this->motionY = $this->motionZ = 0;
 
 			$this->entityBaseTick($tickDiff);
 
