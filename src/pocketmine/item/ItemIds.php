@@ -178,7 +178,7 @@ interface ItemIds {
     const BIRCH_WOODEN_STAIRS = 135;
     const JUNGLE_WOOD_STAIRS = 136;
     const JUNGLE_WOODEN_STAIRS = 136;
-	const COMMAND_BLOCK = 137;
+    const COMMAND_BLOCK = 137;
     const BEACON = 138;
     const COBBLE_WALL = 139;
     const STONE_WALL = 139;
@@ -244,8 +244,8 @@ interface ItemIds {
     const FENCE_GATE_JUNGLE = 185;
     const FENCE_GATE_DARK_OAK = 186;
     const FENCE_GATE_ACACIA = 187;
-	const REPEATING_COMMAND_BLOCK = 188;
-	const CHAIN_COMMAND_BLOCK = 189;
+    const REPEATING_COMMAND_BLOCK = 188;
+    const CHAIN_COMMAND_BLOCK = 189;
     const SPRUCE_DOOR_BLOCK = 193;
     const BIRCH_DOOR_BLOCK = 194;
     const JUNGLE_DOOR_BLOCK = 195;
