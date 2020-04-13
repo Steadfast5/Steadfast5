@@ -3162,6 +3162,12 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 	}
 
+	public function getOffsetPosition(Vector3 $vector3){
+		$result = parent::getOffsetPosition(Vector3);
+		$result->y += 0.001;
+		return $result;
+	}
+
 	public function sendPosition(Vector3 $pos, $yaw = null, $pitch = null, $mode = MovePlayerPacket::MODE_RESET, array $targets = null) {
 		$yaw = $yaw === null ? $this->yaw : $yaw;
 		$pitch = $pitch === null ? $this->pitch : $pitch;
