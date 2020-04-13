@@ -35,4 +35,4 @@ To install on Linux/MacOS, please follow these instructions.
 This is only for Windows 10. If you don't know how to do any of the steps above, then download the [`source_installer.cmd`](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/source_installer.cmd) from the releases and run it. You can view the script on [GitHub Gist](https://gist.github.com/IceCruelStuff/621339e30c8fb2b0d4d806265f0bbed9).
 This is only the Steadfast5 source installer. Click [here](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/installer.cmd) to download the [`installer.cmd`](https://gist.github.com/IceCruelStuff/f52d1071c1d93b707ead302f96c9f248).
 
-### If you don't have git installed or you are running Windows 8 and below, it will be very hard to use scripts provided in this repository. You can click [here](https://git-scm.com/downloads) to go to download page for git.
+If you don't have git installed or you are running Windows 8 and below, it will be very hard to use scripts provided in this repository. You can click [here](https://git-scm.com/downloads) to go to download page for git.
