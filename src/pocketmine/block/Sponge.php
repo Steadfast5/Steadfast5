@@ -21,13 +21,18 @@
 
 namespace pocketmine\block;
 
+use pocketmine\level\Level;
+use pocketmine\math\Vector3;
+use pocketmine\item\Item;
+use pocketmine\Server;
 
 class Sponge extends Solid{
 
 	protected $id = self::SPONGE;
+	protected $absorbRange = 6;
 
-	public function __construct(){
-
+	public function __construct($meta = 0){
+		$this->meta = $meta;
 	}
 
 	public function getHardness(){
@@ -35,7 +40,17 @@ class Sponge extends Solid{
 	}
 
 	public function getName(){
-		return "Sponge";
+		static $names = [
+			0 => "Sponge",
+			1 => "Wet Sponge"
+		];
+		return $names[$this->meta & 0x0f];
+	}
+
+	public function getDrops(Item $item){
+		return [
+			[$this->id, $this->meta & 0x0f, 1],
+		];
 	}
 
 }
