@@ -1559,7 +1559,8 @@ class Server{
 			"auto-generate" => true,
 			"save-player-data" => true,
 			"time-update" => true,
-			"use-encrypt" => false
+			"use-encrypt" => false,
+			"xbox-auth" => true
 		]);
 
 		ServerScheduler::$WORKERS = 4;

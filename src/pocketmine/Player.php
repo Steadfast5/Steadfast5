@@ -144,6 +144,7 @@ use pocketmine\network\protocol\UpdateBlockPacket;
 use pocketmine\network\protocol\ChunkRadiusUpdatePacket;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\network\protocol\ResourcePackChunkDataPacket;
+use pocketmine\network\protocol\LoginPacket;
 use pocketmine\network\SourceInterface;
 use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
@@ -154,6 +155,7 @@ use pocketmine\tile\Sign;
 use pocketmine\tile\Spawnable;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use pocketmine\utils\Utils;
 use pocketmine\network\protocol\SetPlayerGameTypePacket;
 use pocketmine\block\Liquid;
 use pocketmine\network\protocol\SetCommandsEnabledPacket;
@@ -1623,7 +1625,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 						$this->setFlyingFlag(false);
 						$this->setElytraActivated(false);
 					}
-				}else{
+				} else {
 					if($this->needAntihackCheck() && !$this->isUseElytra() && !$this->allowFlight && !$this->isSleeping() && !$this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NOT_MOVE)){
 						$expectedVelocity = (-$this->gravity) / $this->drag - ((-$this->gravity) / $this->drag) * exp(-$this->drag * ($this->inAirTicks - $this->startAirTicks));
 						$diff = ($this->speed->y - $expectedVelocity) ** 2;
@@ -1698,8 +1700,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->packetQueue = array_merge($this->packetQueue, $packets);
 	}
 
-    public function doFood()
-    {
+    public function doFood() {
         if ($this->getFoodEnabled()) {
             $foodLevel = $this->foodLevel;
 
@@ -3350,6 +3351,30 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		return true;
 	}
 
+	public function onVerifyComplete(LoginPacket $packet, $isValid, $signed) {
+		if($this->closed) {
+			return;
+		}
+		$xuid = $packet->xuid;
+		if(!$signed && $xuid !== "") {
+			$this->server->getLogger()->warning($this->getName() . "has an XUID, but their login keychain is not signed by Mojang");
+			$xuid = "";
+		}
+		if($xuid === "" or !is_string($xuid)) {
+			if($signed) {
+				$this->server->getLogger()->error($this->getName() . "should have an XUID, but none found");
+			}
+			if($this->server->requiresAuthentication() && $this->kick(false)) {
+				return;
+			}
+			$this->server->getLogger()->debug($this->getName() . " is not logged into Xbox Live");
+		} else {
+			$this->server->getLogger->debug($this->getName() . " is logged into Xbox Live");
+			$this->xuid = $xuid;
+		}
+		$this->processLogin();
+	}
+
 	public function processLogin() {
 		if ($this->server->isUseEncrypt() && $this->needEncrypt()) {
 			$privateKey = $this->server->getServerPrivateKey();
@@ -3886,6 +3911,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		} else {
 			$this->sendMessage(TextFormat::RED . "Connection: Bad ({$this->ping}ms)");
 		}
+	}
+
+	public function isAuthenticated() {
+		return $this->xuid !== "";
 	}
 
     public function getXUID() {
