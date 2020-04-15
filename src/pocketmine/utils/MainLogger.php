@@ -130,7 +130,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		];
 		if($errno === 0){
 			$type = LogLevel::CRITICAL;
-		}else{
+		} else {
 			$type = ($errno === E_ERROR or $errno === E_USER_ERROR) ? LogLevel::ERROR : (($errno === E_USER_WARNING or $errno === E_WARNING) ? LogLevel::WARNING : LogLevel::NOTICE);
 		}
 		$errno = isset($errorConversion[$errno]) ? $errorConversion[$errno] : $errno;
@@ -183,9 +183,9 @@ class MainLogger extends \AttachableThreadedLogger{
 		$thread = \Thread::getCurrentThread();
 		if($thread === null){
 			$threadName = "Server thread";
-		}elseif($thread instanceof Thread or $thread instanceof Worker){
+		} elseif($thread instanceof Thread or $thread instanceof Worker){
 			$threadName = $thread->getThreadName() . " thread";
-		}else{
+		} else {
 			$threadName = (new \ReflectionClass($thread))->getShortName() . " thread";
 		}
 
@@ -194,7 +194,7 @@ class MainLogger extends \AttachableThreadedLogger{
 
 		if(!Terminal::hasFormattingCodes()){
 			echo $cleanMessage . PHP_EOL;
-		}else{
+		} else {
 			echo $message . PHP_EOL;
 		}
 

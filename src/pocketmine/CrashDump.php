@@ -118,7 +118,7 @@ class CrashDump{
 			$this->data["server.properties"] = @file_get_contents($this->server->getDataPath() . "server.properties");
 			$this->data["server.properties"] = preg_replace("#^rcon\\.password=(.*)$#m", "rcon.password=******", $this->data["server.properties"]);
 			$this->data["pocketmine.yml"] = @file_get_contents($this->server->getDataPath() . "pocketmine.yml");
-		}else{
+		} else {
 			$this->data["pocketmine.yml"] = "";
 			$this->data["server.properties"] = "";
 			$this->data["parameters"] = [];
@@ -142,7 +142,7 @@ class CrashDump{
 
 		if(isset($lastExceptionError)){
 			$error = $lastExceptionError;
-		}else{
+		} else {
 			$error = (array) error_get_last();
 			$error["trace"] = @getTrace(3);
 			$errorConversion = [
@@ -198,7 +198,7 @@ class CrashDump{
 					break;
 				}
 			}
-		}else{
+		} else {
 			$this->data["plugin"] = false;
 		}
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace pocketmine\tile;
 
 use pocketmine\item\Item;
@@ -83,7 +84,7 @@ class ItemFrame extends Spawnable{
 				new ByteTag("ItemRotation", 0),
 				new FloatTag("ItemDropChance", (float) $this->getItemDropChance())
 			]);
-		}else{
+		} else {
 			return new Compound("", [
 				new StringTag("id", Tile::ITEM_FRAME),
 				new IntTag("x", (int) $this->x),

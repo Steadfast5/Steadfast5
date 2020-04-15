@@ -113,13 +113,13 @@ class Config{
 		if(!file_exists($file)){
 			$this->config = $default;
 			$this->save();
-		}else{
+		} else {
 			if($this->type === Config::DETECT){
 				$extension = explode(".", basename($this->file));
 				$extension = strtolower(trim(array_pop($extension)));
 				if(isset(Config::$formats[$extension])){
 					$this->type = Config::$formats[$extension];
-				}else{
+				} else {
 					$this->correct = false;
 				}
 			}
@@ -154,7 +154,7 @@ class Config{
 				if($this->fillDefaults($default, $this->config) > 0){
 					$this->save();
 				}
-			}else{
+			} else {
 				return false;
 			}
 		}
@@ -196,7 +196,7 @@ class Config{
 			@file_put_contents($this->file, $content, LOCK_EX);
 
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -270,7 +270,7 @@ class Config{
 		$base = array_shift($vars);
 		if(isset($this->config[$base])){
 			$base = $this->config[$base];
-		}else{
+		} else {
 			return $default;
 		}
 
@@ -278,7 +278,7 @@ class Config{
 			$baseKey = array_shift($vars);
 			if(is_array($base) and isset($base[$baseKey])){
 				$base = $base[$baseKey];
-			}else{
+			} else {
 				return $default;
 			}
 		}
@@ -308,7 +308,7 @@ class Config{
 		foreach(explode(".", $path) as $component){
 			if(isset($currPath[$component])){
 				$currPath =& $currPath[$component];
-			}else{
+			} else {
 				$currPath = null;
 			}
 		}
@@ -362,7 +362,7 @@ class Config{
 			$k = strtolower($k); //Convert requested  key to lower
 			$array = array_change_key_case($this->config, CASE_LOWER); //Change all keys in array to lower
 			return isset($array[$k]); //Find $k in modified array
-		}else{
+		} else {
 			return isset($this->config[$k]);
 		}
 	}
@@ -404,7 +404,7 @@ class Config{
 					$data[$k] = [];
 				}
 				$changed += $this->fillDefaults($v, $data[$k]);
-			}elseif(!isset($data[$k])){
+			} elseif(!isset($data[$k])){
 				$data[$k] = $v;
 				++$changed;
 			}
@@ -434,7 +434,7 @@ class Config{
 		foreach($this->config as $k => $v){
 			if(is_bool($v) === true){
 				$v = $v === true ? "on" : "off";
-			}elseif(is_array($v)){
+			} elseif(is_array($v)){
 				$v = implode(";", $v);
 			}
 			$content .= $k . "=" . $v . "\r\n";

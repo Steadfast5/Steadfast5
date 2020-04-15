@@ -41,7 +41,7 @@ class OfflinePlayer implements IPlayer{
 		$this->name = $name;
 		if(file_exists($this->server->getDataPath() . "players/" . strtolower($this->getName()) . ".dat")){
 			$this->namedtag = $this->server->getOfflinePlayerData($this->name);
-		}else{
+		} else {
 			$this->namedtag = null;
 		}
 	}
@@ -69,7 +69,7 @@ class OfflinePlayer implements IPlayer{
 
 		if($value === true){
 			$this->server->addOp(strtolower($this->getName()));
-		}else{
+		} else {
 			$this->server->removeOp(strtolower($this->getName()));
 		}
 	}
@@ -81,7 +81,7 @@ class OfflinePlayer implements IPlayer{
 	public function setBanned($value){
 		if($value === true){
 			$this->server->getNameBans()->addBan($this->getName(), null, null, null);
-		}else{
+		} else {
 			$this->server->getNameBans()->remove($this->getName());
 		}
 	}
@@ -93,7 +93,7 @@ class OfflinePlayer implements IPlayer{
 	public function setWhitelisted($value){
 		if($value === true){
 			$this->server->addWhitelist(strtolower($this->getName()));
-		}else{
+		} else {
 			$this->server->removeWhitelist(strtolower($this->getName()));
 		}
 	}
