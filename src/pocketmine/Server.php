@@ -831,7 +831,7 @@ class Server{
 				rename($path . "$name.dat", $path . "$name.dat.bak");
 				$this->logger->warning("Corrupted data found for \"" . $name . "\", creating new profile");
 			}
-		}else{
+		} else {
 			$this->logger->notice("Player data not found for \"" . $name . "\", creating new profile");
 		}
 		$spawn = $this->getDefaultLevel()->getSafeSpawn();
@@ -890,7 +890,7 @@ class Server{
 			$nbt->setData($nbtTag);
 			if($async){
 				$this->getScheduler()->scheduleAsyncTask(new FileWriteTask($this->getDataPath() . "players/" . strtolower($name) . ".dat", $nbt->writeCompressed()));
-			}else{
+			} else {
 				file_put_contents($this->getDataPath() . "players/" . strtolower($name) . ".dat", $nbt->writeCompressed());
 			}
 		}catch(\Exception $e){
@@ -1088,7 +1088,7 @@ class Server{
 		}
 		if($this->isLevelLoaded($name)){
 			return true;
-		}elseif(!$this->isLevelGenerated($name)){
+		} elseif(!$this->isLevelGenerated($name)){
 			$this->logger->notice("Level \"" . $name . "\" not found");
 
 			return false;
@@ -1215,7 +1215,7 @@ class Server{
 				if($level->import() === false){ //Try importing a world
 					return false;
 				}
-			}else{
+			} else {
 				return false;
 			}*/
 		}
@@ -1249,7 +1249,7 @@ class Server{
 	    $base = array_shift($vars);
 	    if($this->softConfig->exists($base)){
 	        $base = $this->softConfig->get($base);
-	    }else{
+	    } else {
 	        return $defaultValue;
 	    }
 
@@ -1257,7 +1257,7 @@ class Server{
 	        $baseKey = array_shift($vars);
 	        if(is_array($base) and isset($base[$baseKey])){
 	            $base = $base[$baseKey];
-	        }else{
+	        } else {
 	            return $defaultValue;
 	        }
 	    }
@@ -1319,7 +1319,7 @@ class Server{
 		$v = getopt("", ["$variable::"]);
 		if(isset($v[$variable])){
 			$value = $v[$variable];
-		}else{
+		} else {
 			$value = $this->properties->exists($variable) ? $this->properties->get($variable) : $defaultValue;
 		}
 
@@ -1353,7 +1353,7 @@ class Server{
 	public function getPluginCommand($name){
 		if(($command = $this->commandMap->getCommand($name)) instanceof PluginIdentifiableCommand){
 			return $command;
-		}else{
+		} else {
 			return null;
 		}
 	}
@@ -1459,7 +1459,7 @@ class Server{
 				$commands = [];
 				if(is_array($value)){
 					$commands = $value;
-				}else{
+				} else {
 					$commands[] = $value;
 				}
 
@@ -1604,7 +1604,7 @@ class Server{
 				$this->logger->warning($this->getName() . " may not work right with less than 128MB of RAM");
 			}
 			@ini_set("memory_limit", $memory);
-		}else{
+		} else {
 			$this->setConfigString("memory-limit", "256M");
 		}
 		$this->network = new Network($this);
@@ -1674,7 +1674,7 @@ class Server{
 					if(substr($download, 0, 4) === "http"){
 						$this->getLogger()->info("Downloading ". $plugin);
 						file_put_contents($path, Utils::getURL($download));
-					}else{
+					} else {
 						file_put_contents($path, file_get_contents($download));
 					}
 					$loadNew = true;
@@ -1700,7 +1700,7 @@ class Server{
 					$options = [
 						"preset" => implode(":", $options),
 					];
-				}else{
+				} else {
 					$options = [];
 				}
 
@@ -1943,7 +1943,7 @@ class Server{
 
             if(Network::$BATCH_THRESHOLD >= 0 and strlen($pk->payload) >= Network::$BATCH_THRESHOLD){
                 $pk->setCompressionLevel($this->networkCompressionLevel);
-            }else{
+            } else {
                 $pk->setCompressionLevel(0); //Do not compress packets under the threshold
             }
 
@@ -2032,7 +2032,7 @@ class Server{
 			if(is_string($message) and strlen($message) > 0){
 				$sender->sendMessage(TextFormat::RED.$message);
 			}
-		}else{
+		 }else {
 			$sender->sendMessage("Unknown command. Type \"help\" for help.");
 		}
 
@@ -2061,7 +2061,7 @@ class Server{
 				$this->logger->warning($this->getName() . " may not work right with less than 256MB of RAM");
 			}
 			@ini_set("memory_limit", $memory);
-		}else{
+		} else {
 			$this->setConfigString("memory-limit", "256M");
 		}
 
@@ -2284,7 +2284,7 @@ class Server{
 				if($p instanceof Plugin and !($p->getPluginLoader() instanceof PharPluginLoader)){
 					$report = false;
 				}
-			}elseif(\Phar::running(true) == ""){
+			} elseif(\Phar::running(true) == ""){
 				$report = false;
 			}
 			if($dump->getData()["error"]["type"] === "E_PARSE" or $dump->getData()["error"]["type"] === "E_COMPILE_ERROR"){
@@ -2392,9 +2392,9 @@ class Server{
 			foreach($ev->getRecipies() as $recipe){
 				if($recipe instanceof ShapedRecipe){
 					$pk->addShapedRecipe($recipe);
-				}elseif($recipe instanceof ShapelessRecipe){
+				} elseif($recipe instanceof ShapelessRecipe){
 					$pk->addShapelessRecipe($recipe);
-				}elseif($recipe instanceof FurnaceRecipe) {
+				} elseif($recipe instanceof FurnaceRecipe) {
 					$pk->addFurnaceRecipe($recipe);
 				}
 			}
@@ -2437,7 +2437,7 @@ class Server{
 			foreach($this->getOnlinePlayers() as $index => $player){
 				if($player->isOnline()){
 					$player->save();
-				}elseif(!$player->isConnected()){
+				} elseif(!$player->isConnected()){
 					$this->removePlayer($player);
 				}
 			}

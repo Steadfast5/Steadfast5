@@ -174,7 +174,7 @@ class ServerScheduler{
 		if($task instanceof PluginTask){
 			if(!($task->getOwner() instanceof Plugin)){
 				throw new PluginException("Invalid owner of PluginTask " . get_class($task));
-			}elseif(!$task->getOwner()->isEnabled()){
+			} elseif(!$task->getOwner()->isEnabled()){
 				throw new PluginException("Plugin '" . $task->getOwner()->getName() . "' attempted to register a task while disabled");
 			}
 		}
@@ -185,7 +185,7 @@ class ServerScheduler{
 
 		if($period <= -1){
 			$period = -1;
-		}elseif($period < 1){
+		} elseif($period < 1){
 			$period = 1;
 		}
 
@@ -194,13 +194,13 @@ class ServerScheduler{
 			if(is_array($callable)){
 				if(is_object($callable[0])){
 					$taskName = "Callback#" . get_class($callable[0]) . "::" . $callable[1];
-				}else{
+				} else {
 					$taskName = "Callback#" . $callable[0] . "::" . $callable[1];
 				}
-			}else{
+			} else {
 				$taskName = "Callback#" . $callable;
 			}
-		}else{
+		} else {
 			$taskName = get_class($task);
 		}
 
@@ -210,7 +210,7 @@ class ServerScheduler{
 	private function handle(TaskHandler $handler){
 		if($handler->isDelayed()){
 			$nextRun = $this->currentTick + $handler->getDelay();
-		}else{
+		} else {
 			$nextRun = $this->currentTick;
 		}
 
@@ -232,7 +232,7 @@ class ServerScheduler{
 			if($task->isCancelled()){
 				unset($this->tasks[$task->getTaskId()]);
 				continue;
-			}else{
+			} else {
 				//$task->timings->startTiming();
 				try{
 					$task->run($this->currentTick);
@@ -245,7 +245,7 @@ class ServerScheduler{
 			if($task->isRepeating()){
 				$task->setNextRun($this->currentTick + $task->getPeriod());
 				$this->queue->insert($task, $this->currentTick + $task->getPeriod());
-			}else{
+			} else {
 				$task->remove();
 				unset($this->tasks[$task->getTaskId()]);
 			}

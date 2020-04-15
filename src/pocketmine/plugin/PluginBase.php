@@ -111,7 +111,7 @@ abstract class PluginBase implements Plugin{
 			$this->isEnabled = $boolean;
 			if($this->isEnabled === true){
 				$this->onEnable();
-			}else{
+			} else {
 				$this->onDisable();
 			}
 		}
@@ -218,7 +218,7 @@ abstract class PluginBase implements Plugin{
 
 		if($command instanceof PluginIdentifiableCommand and $command->getPlugin() === $this){
 			return $command;
-		}else{
+		} else {
 			return null;
 		}
 	}

@@ -67,7 +67,7 @@ class Random{
 
 		if(PHP_INT_SIZE === 8){
 			return $t << 32 >> 32;
-		}else{
+		} else {
 			return $t;
 		}
 	}

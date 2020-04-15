@@ -113,7 +113,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 		$i = $this->getSlotIndex($index);
 		if($i < 0){
 			return Item::get(Item::AIR, 0, 0);
-		}else{
+		} else {
 			return NBT::getItemHelper($this->namedtag->Items[$i]);
 		}
 	}
@@ -135,14 +135,14 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
 			}
-		}elseif($i < 0){
+		} elseif($i < 0){
 			for($i = 0; $i <= $this->getSize(); ++$i){
 				if(!isset($this->namedtag->Items[$i])){
 					break;
 				}
 			}
 			$this->namedtag->Items[$i] = $d;
-		}else{
+		} else {
 			$this->namedtag->Items[$i] = $d;
 		}
 
@@ -178,12 +178,12 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				} elseif(($pair->x + ($pair->z << 15)) > ($this->x + ($this->z << 15))){ //Order them correctly
 					$this->doubleInventory = new DoubleChestInventory($pair, $this);
 					$pair->doubleInventory = $this->doubleInventory;
-				}else{
+				} else {
 					$this->doubleInventory = new DoubleChestInventory($this, $pair);
 					$pair->doubleInventory = $this->doubleInventory;
 				}
 			}
-		}else{
+		} else {
 			$this->doubleInventory = null;
 			unset($this->namedtag->pairx, $this->namedtag->pairz);
 		}
@@ -280,7 +280,7 @@ class Chest extends Spawnable implements InventoryHolder, Container, Nameable{
 				new IntTag("pairx", (int) $this->namedtag["pairx"]),
 				new IntTag("pairz", (int) $this->namedtag["pairz"])
 			]);
-		}else{
+		} else {
 			$c = new Compound("", [
 				new StringTag("id", Tile::CHEST),
 				new IntTag("x", (int) $this->x),

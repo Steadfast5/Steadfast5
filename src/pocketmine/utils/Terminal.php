@@ -54,7 +54,7 @@ abstract class Terminal{
 			$opts = getopt("", ["enable-ansi", "disable-ansi"]);
 			if(isset($opts["disable-ansi"])){
 				self::$formattingCodes = false;
-			}else{
+			} else {
 			    if (Utils::getOS() !== "win") {
                     self::$formattingCodes = ((Utils::getOS() !== "win" and getenv("TERM") != "" and (!function_exists("posix_ttyname") or !defined("STDOUT") or posix_ttyname(STDOUT) !== false)) or isset($opts["enable-ansi"]));
                 } else self::$formattingCodes = self::detectFormattingCodesSupport();
@@ -131,7 +131,7 @@ abstract class Terminal{
 			self::$COLOR_LIGHT_PURPLE = $colors >= 256 ? `tput setaf 207` : `tput setaf 13`;
 			self::$COLOR_YELLOW = $colors >= 256 ? `tput setaf 227` : `tput setaf 11`;
 			self::$COLOR_WHITE = $colors >= 256 ? `tput setaf 231` : `tput setaf 15`;
-		}else{
+		} else {
 			self::$COLOR_BLACK = self::$COLOR_DARK_GRAY = `tput setaf 0`;
 			self::$COLOR_RED = self::$COLOR_DARK_RED = `tput setaf 1`;
 			self::$COLOR_GREEN = self::$COLOR_DARK_GREEN = `tput setaf 2`;
