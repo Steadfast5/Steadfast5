@@ -233,20 +233,20 @@ abstract class BaseInventory implements Inventory{
 	}
 
 	public function canAddItem(Item $item){
-		$item = clone $item;
+		$count = clone $item->getCount();
 		$checkDamage = $item->getDamage() === null ? false : true;
 		$checkTags = $item->hasCompound();
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$slot = $this->getItem($i);
 			if($item->deepEquals($slot, $checkDamage, $checkTags)){
 				if(($diff = $slot->getMaxStackSize() - $slot->getCount()) > 0){
-					$item->setCount($item->getCount() - $diff);
+					$count -= $diff;
 				}
 			}elseif($slot->getId() === Item::AIR){
-				$item->setCount($item->getCount() - $this->getMaxStackSize());
+				$count -= $this->getMaxStackSize();
 			}
 
-			if($item->getCount() <= 0){
+			if($count <= 0){
 				return true;
 			}
 		}

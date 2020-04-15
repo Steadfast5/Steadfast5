@@ -131,7 +131,7 @@ LICENSE;
 		echo "[?] " . $this->lang->spawn_protection . " (Y/n): ";
 		if(strtolower($this->getInput("y")) == "n"){
 			$config->set("spawn-protection", -1);
-		}else{
+		} else {
 			$config->set("spawn-protection", 16);
 		}
 		$config->save();
@@ -143,7 +143,7 @@ LICENSE;
 		$op = strtolower($this->getInput(""));
 		if($op === ""){
 			echo "[!] " . $this->lang->op_warning . "\n";
-		}else{
+		} else {
 			$ops = new Config(\pocketmine\DATA . "ops.txt", Config::ENUM);
 			$ops->set($op, true);
 			$ops->save();
@@ -154,7 +154,7 @@ LICENSE;
 		if(strtolower($this->getInput("n")) === "y"){
 			echo "[!] " . $this->lang->whitelist_warning . "\n";
 			$config->set("white-list", true);
-		}else{
+		} else {
 			$config->set("white-list", false);
 		}
 		$config->save();
@@ -167,7 +167,7 @@ LICENSE;
 		echo "[?] " . $this->lang->query_disable . " (y/N): ";
 		if(strtolower($this->getInput("n")) === "y"){
 			$config->set("enable-query", false);
-		}else{
+		} else {
 			$config->set("enable-query", true);
 		}
 
@@ -178,7 +178,7 @@ LICENSE;
 			$password = substr(base64_encode(@Utils::getRandomBytes(20, false)), 3, 10);
 			$config->set("rcon.password", $password);
 			echo "[*] " . $this->lang->rcon_password . ": " . $password . "\n";
-		}else{
+		} else {
 			$config->set("enable-rcon", false);
 		}
 
@@ -186,7 +186,7 @@ LICENSE;
 		echo "[?] " . $this->lang->usage_disable . " (y/N): ";
 		if(strtolower($this->getInput("n")) === "y"){
 			$config->set("send-usage", false);
-		}else{
+		} else {
 			$config->set("send-usage", true);
 		}*/
 		$config->save();

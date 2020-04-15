@@ -138,7 +138,7 @@ class Furnace extends Tile implements InventoryHolder, Container, Nameable{
 		$i = $this->getSlotIndex($index);
 		if($i < 0){
 			return Item::get(Item::AIR, 0, 0);
-		}else{
+		} else {
 			return NBT::getItemHelper($this->namedtag->Items[$i]);
 		}
 	}
@@ -160,14 +160,14 @@ class Furnace extends Tile implements InventoryHolder, Container, Nameable{
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
 			}
-		}elseif($i < 0){
+		} elseif($i < 0){
 			for($i = 0; $i <= $this->getSize(); ++$i){
 				if(!isset($this->namedtag->Items[$i])){
 					break;
 				}
 			}
 			$this->namedtag->Items[$i] = $d;
-		}else{
+		} else {
 			$this->namedtag->Items[$i] = $d;
 		}
 
@@ -245,15 +245,15 @@ class Furnace extends Tile implements InventoryHolder, Container, Nameable{
 
 					$this->namedtag->CookTime = new ShortTag("CookTime", $this->namedtag["CookTime"] - 200);
 				}
-			}elseif($this->namedtag["BurnTime"] <= 0){
+			} elseif($this->namedtag["BurnTime"] <= 0){
 				$this->namedtag->BurnTime = new ShortTag("BurnTime", 0);
 				$this->namedtag->CookTime = new ShortTag("CookTime", 0);
 				$this->namedtag->BurnTicks = new ShortTag("BurnTicks", 0);
-			}else{
+			} else {
 				$this->namedtag->CookTime = new ShortTag("CookTime", 0);
 			}
 			$ret = true;
-		}else{
+		} else {
 			;
 			if($this->getBlock()->getId() === Item::BURNING_FURNACE){
 				$this->getLevel()->setBlock($this, Block::get(Item::FURNACE, $this->getBlock()->getDamage()), true);

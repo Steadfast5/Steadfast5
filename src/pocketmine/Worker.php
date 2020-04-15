@@ -76,7 +76,7 @@ abstract class Worker extends \Worker{
 			$this->shutdown();
 			$this->notify();
 			$this->unstack();
-		}elseif(!$this->isJoined()){
+		} elseif(!$this->isJoined()){
 			if(!$this->isTerminated()){
 				$this->join();
 			}

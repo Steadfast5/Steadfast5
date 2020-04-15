@@ -44,7 +44,7 @@ class Utils{
 	public static function getCallableIdentifier(callable $variable){
 		if(is_array($variable)){
 			return sha1(strtolower(spl_object_hash($variable[0])) . "::" . strtolower($variable[1]));
-		}else{
+		} else {
 			return sha1(strtolower($variable));
 		}
 	}
@@ -108,10 +108,10 @@ class Utils{
 				}
 				$machine .= implode(" ", $matches[1]); //Mac Addresses
 			}
-		}elseif($os === "linux"){
+		} elseif($os === "linux"){
 			if(file_exists("/etc/machine-id")){
 				$machine .= file_get_contents("/etc/machine-id");
-			}else{
+			} else {
 				@exec("ifconfig", $mac);
 				$mac = implode("\n", $mac);
 				if(preg_match_all("#HWaddr[ \t]{1,}([0-9a-f:]{17})#", $mac, $matches)){
@@ -123,9 +123,9 @@ class Utils{
 					$machine .= implode(" ", $matches[1]); //Mac Addresses
 				}
 			}
-		}elseif($os === "android"){
+		} elseif($os === "android"){
 			$machine .= @file_get_contents("/system/build.prop");
-		}elseif($os === "mac"){
+		} elseif($os === "mac"){
 			$machine .= `system_profiler SPHardwareDataType | grep UUID`;
 		}
 		$data = $machine . PHP_MAXPATHLEN;
@@ -156,25 +156,25 @@ class Utils{
 	public static function getIP($force = false){
 		if(Utils::$online === false){
 			return false;
-		}elseif(Utils::$ip !== false and $force !== true){
+		} elseif(Utils::$ip !== false and $force !== true){
 			return Utils::$ip;
 		}
 		$ip = trim(strip_tags(Utils::getURL("http://checkip.dyndns.org/")));
 		if(preg_match('#Current IP Address\: ([0-9a-fA-F\:\.]*)#', $ip, $matches) > 0){
 			Utils::$ip = $matches[1];
-		}else{
+		} else {
 			$ip = Utils::getURL("http://www.checkip.org/");
 			if(preg_match('#">([0-9a-fA-F\:\.]*)</span>#', $ip, $matches) > 0){
 				Utils::$ip = $matches[1];
-			}else{
+			} else{
 				$ip = Utils::getURL("http://checkmyip.org/");
 				if(preg_match('#Your IP address is ([0-9a-fA-F\:\.]*)#', $ip, $matches) > 0){
 					Utils::$ip = $matches[1];
-				}else{
+				} else {
 					$ip = trim(Utils::getURL("http://ifconfig.me/ip"));
 					if($ip != ""){
 						Utils::$ip = $ip;
-					}else{
+					} else {
 						return false;
 					}
 				}
@@ -203,20 +203,20 @@ class Utils{
 			if(stripos($uname, "Darwin") !== false){
 				if(strpos(php_uname("m"), "iP") === 0){
 					self::$os = "ios";
-				}else{
+				} else {
 					self::$os = "mac";
 				}
-			}elseif(stripos($uname, "Win") !== false or $uname === "Msys"){
+			} elseif(stripos($uname, "Win") !== false or $uname === "Msys"){
 				self::$os = "win";
-			}elseif(stripos($uname, "Linux") !== false){
+			} elseif(stripos($uname, "Linux") !== false){
 				if(@file_exists("/system/build.prop")){
 					self::$os = "android";
-				}else{
+				} else {
 					self::$os = "linux";
 				}
-			}elseif(stripos($uname, "BSD") !== false or $uname === "DragonFly"){
+			} elseif(stripos($uname, "BSD") !== false or $uname === "DragonFly"){
 				self::$os = "bsd";
-			}else{
+			} else {
 				self::$os = "other";
 			}
 		}
@@ -235,7 +235,7 @@ class Utils{
 				if(preg_match("#([a-z0-9]+)\\-([a-z0-9]+) [rwxp\\-]{4} [a-z0-9]+ [^\\[]*\\[([a-zA-z0-9]+)\\]#", trim($line), $matches) > 0){
 					if(strpos($matches[3], "heap") === 0){
 						$heap += hexdec($matches[2]) - hexdec($matches[1]);
-					}elseif(strpos($matches[3], "stack") === 0){
+					} elseif(strpos($matches[3], "stack") === 0){
 						$stack += hexdec($matches[2]) - hexdec($matches[1]);
 					}
 				}
@@ -293,7 +293,7 @@ class Utils{
 
 		if($processors > 0 and !$recalculate){
 			return $processors;
-		}else{
+		} else {
 			$processors = 0;
 		}
 
@@ -306,7 +306,7 @@ class Utils{
 							++$processors;
 						}
 					}
-				}else{
+				} else {
 					if(preg_match("/^([0-9]+)\\-([0-9]+)$/", trim(@file_get_contents("/sys/devices/system/cpu/present")), $matches) > 0){
 						$processors = (int) ($matches[2] - $matches[1]);
 					}
@@ -428,7 +428,7 @@ class Utils{
 					$fp = fopen("/dev/urandom", "rb");
 					$systemRandom = fread($fp, 64);
 					fclose($fp);
-				}else{
+				} else {
 					$systemRandom = str_repeat("\x00", 64);
 				}
 
@@ -456,11 +456,11 @@ class Utils{
 								$value .= chr($secureValue);
 								$secureValue = 0;
 								$bitcnt = 0;
-							}else{
+							} else {
 								++$bitcnt;
 							}
 							++$drop;
-						}else{
+						} else {
 							$drop += 2;
 						}
 					}

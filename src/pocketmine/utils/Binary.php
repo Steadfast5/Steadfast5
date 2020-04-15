@@ -270,7 +270,7 @@ class Binary{
 //			}
 //			if($types === true){
 //				$m[$bottom] = [$r, $type];
-//			}else{
+//			} else {
 //				$m[$bottom] = $r;
 //			}
 //			$b = ord($value{$offset});
@@ -538,7 +538,7 @@ class Binary{
         if(PHP_INT_SIZE === 8){
             $int = @unpack("N*", $x);
             return ($int[1] << 32) | $int[2];
-        }else{
+        } else {
             $value = "0";
             for($i = 0; $i < 8; $i += 2){
                 $value = bcmul($value, "65536", 0);
@@ -559,7 +559,7 @@ class Binary{
         }
         if(PHP_INT_SIZE === 8){
             return pack("NN", $value >> 32, $value & 0xFFFFFFFF);
-        }else{
+        } else {
             $x = "";
 
             if(bccomp($value, "0") == -1){
@@ -633,7 +633,7 @@ class Binary{
         for($i = 0; $i < 10; ++$i){
             if(($value >> 7) !== 0){
                 $buf .= chr($value | 0x80); //Let chr() take the last byte of this, it's faster than adding another & 0x7f.
-            }else{
+            } else {
                 $buf .= chr($value & 0x7f);
                 return $buf;
             }

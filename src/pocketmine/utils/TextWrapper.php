@@ -70,7 +70,7 @@ abstract class TextWrapper{
 			if($char === "\n"){
 				$lineLength = 0;
 				$lineWidth = 0;
-			}elseif(isset(self::$allowedCharsArray[$char])){
+			} elseif(isset(self::$allowedCharsArray[$char])){
 				$width = self::$allowedCharsArray[$char];
 
 				if($lineLength + 1 > self::CHAT_STRING_LENGTH or $lineWidth + $width > self::CHAT_WINDOW_WIDTH){
@@ -81,7 +81,7 @@ abstract class TextWrapper{
 
 				++$lineLength;
 				$lineWidth += $width;
-			}else{
+			} else {
 				return $text;
 			}
 
