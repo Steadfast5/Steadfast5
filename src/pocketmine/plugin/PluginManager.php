@@ -122,7 +122,7 @@ class PluginManager{
 	public function registerInterface($loaderName){
 		if(is_subclass_of($loaderName, PluginLoader::class)){
 			$loader = new $loaderName($this->server);
-		}else{
+		} else {
 			return false;
 		}
 
@@ -187,7 +187,7 @@ class PluginManager{
 						$loaders[$key] = $this->fileAssociations[$key];
 					}
 				}
-			}else{
+			} else {
 				$loaders = $this->fileAssociations;
 			}
 			foreach($loaders as $loader){
@@ -203,7 +203,7 @@ class PluginManager{
 							if(stripos($name, "pocketmine") !== false or stripos($name, "minecraft") !== false or stripos($name, "mojang") !== false){
 								$this->server->getLogger()->error("Could not load plugin '" . $name . "': restricted name");
 								continue;
-							}elseif(strpos($name, " ") !== false){
+							} elseif(strpos($name, " ") !== false){
 								$this->server->getLogger()->warning("Plugin '" . $name . "' uses spaces in its name, this is discouraged");
 							}
 
@@ -244,7 +244,7 @@ class PluginManager{
 							foreach($description->getLoadBefore() as $before){
 								if(isset($softDependencies[$before])){
 									$softDependencies[$before][] = $name;
-								}else{
+								} else {
 									$softDependencies[$before] = [$name];
 								}
 							}
@@ -267,7 +267,7 @@ class PluginManager{
 						foreach($dependencies[$name] as $key => $dependency){
 							if(isset($loadedPlugins[$dependency]) or $this->getPlugin($dependency) instanceof Plugin){
 								unset($dependencies[$name][$key]);
-							}elseif(!isset($plugins[$dependency])){
+							} elseif(!isset($plugins[$dependency])){
 								$this->server->getLogger()->critical("Could not load plugin '" . $name . "': Unknown dependency");
 								break;
 							}
@@ -295,7 +295,7 @@ class PluginManager{
 						$missingDependency = false;
 						if($plugin = $this->loadPlugin($file, $loaders) and $plugin instanceof Plugin){
 							$loadedPlugins[$name] = $plugin;
-						}else{
+						} else {
 							$this->server->getLogger()->critical("Could not load plugin '" . $name . "'");
 						}
 					}
@@ -309,7 +309,7 @@ class PluginManager{
 							$missingDependency = false;
 							if($plugin = $this->loadPlugin($file, $loaders) and $plugin instanceof Plugin){
 								$loadedPlugins[$name] = $plugin;
-							}else{
+							} else {
 								$this->server->getLogger()->critical("Could not load plugin '" . $name . "'");
 							}
 						}
@@ -328,7 +328,7 @@ class PluginManager{
 			TimingsCommand::$timingStart = microtime(true);
 
 			return $loadedPlugins;
-		}else{
+		} else {
 			TimingsCommand::$timingStart = microtime(true);
 
 			return [];
@@ -370,7 +370,7 @@ class PluginManager{
 	public function removePermission($permission){
 		if($permission instanceof Permission){
 			unset($this->permissions[$permission->getName()]);
-		}else{
+		} else {
 			unset($this->permissions[$permission]);
 		}
 	}
@@ -383,7 +383,7 @@ class PluginManager{
 	public function getDefaultPermissions($op){
 		if($op === true){
 			return $this->defaultPermsOp;
-		}else{
+		} else {
 			return $this->defaultPerms;
 		}
 	}
@@ -464,7 +464,7 @@ class PluginManager{
 				if($perm->acquire()){
 					$subs[] = $perm->get();
 					$perm->release();
-				}else{
+				} else {
 					unset($this->permSubs[$permission][$k]);
 				}
 			}
@@ -482,7 +482,7 @@ class PluginManager{
 	public function subscribeToDefaultPerms($op, Permissible $permissible){
 		if($op === true){
 			$this->defSubsOp[spl_object_hash($permissible)] = $permissible;
-		}else{
+		} else {
 			$this->defSubs[spl_object_hash($permissible)] = $permissible;
 		}
 	}
@@ -494,7 +494,7 @@ class PluginManager{
 	public function unsubscribeFromDefaultPerms($op, Permissible $permissible){
 		if($op === true){
 			unset($this->defSubsOp[spl_object_hash($permissible)]);
-		}else{
+		} else {
 			unset($this->defSubs[spl_object_hash($permissible)]);
 		}
 	}
@@ -514,18 +514,18 @@ class PluginManager{
 				if($perm->acquire()){
 					$subs[] = $perm->get();
 					$perm->release();
-				}else{
+				} else {
 					unset($this->defSubsOp[$k]);
 				}
 			}
-		}else{
+		} else {
 			return $this->defSubs;
 			foreach($this->defSubs as $k => $perm){
 				/** @var \WeakRef $perm */
 				if($perm->acquire()){
 					$subs[] = $perm->get();
 					$perm->release();
-				}else{
+				} else {
 					unset($this->defSubs[$k]);
 				}
 			}
@@ -549,7 +549,7 @@ class PluginManager{
 	public function isPluginEnabled(Plugin $plugin){
 		if($plugin instanceof Plugin and isset($this->plugins[$plugin->getDescription()->getName()])){
 			return $plugin->isEnabled();
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -732,7 +732,7 @@ class PluginManager{
 					$matches[1] = strtolower($matches[1]);
 					if($matches[1] === "false"){
 						$ignoreCancelled = false;
-					}elseif($matches[1] === "true"){
+					} elseif($matches[1] === "true"){
 						$ignoreCancelled = true;
 					}
 				}

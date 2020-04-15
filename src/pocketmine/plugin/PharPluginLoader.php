@@ -66,7 +66,7 @@ class PharPluginLoader implements PluginLoader{
 				$this->initPlugin($plugin, $description, $dataFolder, $file);
 
 				return $plugin;
-			}else{
+			} else {
 				throw new PluginException("Couldn't load plugin " . $description->getName() . ": main class not found");
 			}
 		}

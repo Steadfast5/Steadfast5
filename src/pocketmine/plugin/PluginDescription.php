@@ -96,7 +96,7 @@ class PluginDescription{
 			$order = strtoupper($plugin["load"]);
 			if(!defined(PluginLoadOrder::class . "::" . $order)){
 				throw new PluginException("Invalid PluginDescription load");
-			}else{
+			} else {
 				$this->order = constant(PluginLoadOrder::class . "::" . $order);
 			}
 		}
