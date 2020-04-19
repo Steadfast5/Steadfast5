@@ -10,6 +10,8 @@ use pocketmine\network\protocol\BatchPacket;
 use pocketmine\network\protocol\MoveEntityPacket;
 use pocketmine\network\protocol\SetEntityMotionPacket;
 use pocketmine\network\protocol\MovePlayerPacket;
+use pocketmine\network\proxylib\ProxyServer;
+use pocketmine\network\ProxyInterface;
 
 class PacketMaker extends Thread {
 
@@ -17,12 +19,14 @@ class PacketMaker extends Thread {
 	protected $shutdown;
 	protected $internalQueue;
 	protected $raklib;
+	protected $proxy;
 
-	public function __construct(\ClassLoader $loader, $raklib) {
+	public function __construct(\ClassLoader $loader, $raklib, $proxy) {
 		$this->internalQueue = new \Threaded;
 		$this->shutdown = false;
 		$this->classLoader = $loader;
 		$this->raklib = $raklib;
+		$this->proxy = $proxy;
 		$this->start(PTHREADS_INHERIT_CONSTANTS);
 	}
 
@@ -106,17 +110,24 @@ class PacketMaker extends Thread {
 			}
 			if (!empty($moveStr)) {
 				$buffer = zlib_encode($moveStr, ZLIB_ENCODING_DEFLATE, 7);
-				$this->sendData($identifier, $buffer);
+				$this->sendData($identifier, $buffer, $playerData);
 			}
 		}
 	}
 
 	protected function sendData($identifier, $buffer) {
-		$pk = new EncapsulatedPacket();
-		$pk->buffer = $buffer;
-		$pk->reliability = 3;
-		$enBuffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($identifier)) . $identifier . chr(RakLib::PRIORITY_NORMAL) . $pk->toBinary(true);
-		$this->raklib->pushMainToThreadPacket($enBuffer);
+		protected function sendData($identifier, $buffer, $data) {
+		if (!is_null($this->proxy) && !empty($data['proxySessionId']) && !empty($data['proxyId'])) {
+			$infoData = pack('N', $data['proxySessionId']) . chr(ProxyInterface::STANDART_PACKET_ID) . $buffer;
+			$info = chr(strlen($data['proxyId'])) . $data['proxyId'] . $infoData;
+			$this->proxy->writeToProxyServer($info);
+		} elseif(!is_null($this->raklib)) {
+			$pk = new EncapsulatedPacket();
+			$pk->buffer = $buffer;
+			$pk->reliability = 3;
+			$enBuffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($identifier)) . $identifier . chr(RakLib::PRIORITY_NORMAL) . $pk->toBinary(true);
+			$this->raklib->pushMainToThreadPacket($enBuffer);
+		}
 	}
 
 }

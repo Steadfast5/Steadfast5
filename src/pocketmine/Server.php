@@ -92,6 +92,7 @@ use pocketmine\network\protocol\DataPacket;
 use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\network\query\QueryHandler;
 use pocketmine\network\RakLibInterface;
+use pocketmine\network\ProxyInterface;
 use pocketmine\network\rcon\RCON;
 use pocketmine\network\SourceInterface;
 use pocketmine\network\upnp\UPnP;
@@ -308,6 +309,9 @@ class Server{
 	
 	private $modsManager = null;
 
+	private $raklibServer = null;
+	private $proxyServer = null;
+
 	public function addSpawnedEntity($entity) {
 		if ($entity instanceof Player) {
 			return;
@@ -318,7 +322,7 @@ class Server{
 	public function removeSpawnedEntity($entity) {
 		unset($this->spawnedEntity[$entity->getId()]);
 	}
-
+	
 	public function isUseAnimal() {
 		return $this->useAnimal;
 	}
@@ -411,7 +415,14 @@ class Server{
 	public function getPort(){
 		return $this->getConfigInt("server-port", 19132);
 	}
-	
+
+	/**
+	 * @return int
+	 */
+	public function getProxyPort(){
+		return $this->getConfigInt("proxy-port", 10305);
+	}
+
 	/**
 	 * @return int
 	 */
@@ -1534,6 +1545,7 @@ class Server{
 		$this->properties = new Config($this->dataPath . "server.properties", Config::PROPERTIES, [
 			"motd" => "A Steadfast5 Minecraft: Bedrock Edition server",
 			"server-port" => 19132,
+			"proxy-port" => 10305,
 			"memory-limit" => "256M",
 			"white-list" => false,
 			"spawn-protection" => 16,
@@ -1558,6 +1570,8 @@ class Server{
 			"auto-save" => true,
 			"auto-generate" => true,
 			"save-player-data" => true,
+			"use-proxy" => false,
+			"use-raklib" => true,
 			"time-update" => true,
 			"use-encrypt" => false
 		]);
@@ -1628,8 +1642,22 @@ class Server{
 		$this->logger->info("Starting Minecraft Bedrock Edition server on " . ($this->getIp() === "" ? "*" : $this->getIp()) . ":" . $this->getPort());
 		define("BOOTUP_RANDOM", @Utils::getRandomBytes(16));
 		$this->serverID = Utils::getMachineUniqueId($this->getIp() . $this->getPort());
-	
-		$this->addInterface($this->mainInterface = new RakLibInterface($this));
+
+
+
+		$useRaklib = $this->getConfigBoolean("use-raklib", true);
+		$useProxy = $this->getConfigBoolean("use-proxy", false);
+		if ($useRaklib) {
+			$this->addInterface($this->mainInterface = new RakLibInterface($this));
+			$this->raklibServer = $this->mainInterface->getRaklib();
+		}
+		if ($useProxy) {
+			$this->addInterface($proxyInterface = new ProxyInterface($this));
+			$this->proxyServer = $proxyInterface->getRaklib();
+			if (!$useRaklib) {
+				$this->mainInterface = $proxyInterface;
+			}
+		}
 
 		$this->logger->info("This server is running " . $this->getName() . " version " . ($version->isDev() ?  : "") . $version->get(true) . " \"" . $this->getCodename() . "\" API: " . $this->getApiVersion() . "");
 		$this->logger->info($this->getName() . " is distributed under the LGPL License");
@@ -2185,7 +2213,7 @@ class Server{
 
 		$this->logger->info("Done (" . round(microtime(true) - \pocketmine\START_TIME, 3) . 's)! For help, type "help" or "?"');
 
-		$this->packetMaker = new PacketMaker($this->getLoader(), $this->mainInterface->getRakLib());
+		$this->packetMaker = new PacketMaker($this->getLoader(), $this->getRaklibServer(), $this->getProxyServer());
 		
 		$this->tickAverage = array();
 		$this->useAverage = array();
@@ -2655,27 +2683,35 @@ class Server{
 
 		$this->players = $random;
 	}
-	
+
 	public function getJsonCommands() {
 		return $this->jsonCommands;
 	}
-	
+
 	public function isUseEncrypt() {
 		return $this->isUseEncrypt;
 	}
-		
+
 	public function getServerPublicKey() {
 		return $this->serverPublicKey;
 	}
-	
+
 	public function getServerPrivateKey() {
 		return $this->serverPrivateKey;
 	}
-	
+
 	public function getServerToken() {	
 		return $this->serverToken;
 	}
-	
+
+	public function getRaklibServer() {
+		return $this->raklibServer;
+	}
+
+	public function getProxyServer() {
+		return $this->proxyServer;
+	}
+
 	public function addLevel($level) {
 		$this->levels[$level->getId()] = $level;
 	}

@@ -179,7 +179,7 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_PLAYER_FLAG_SLEEP = 1;
 	const DATA_PLAYER_FLAG_DEAD = 2;
 	
-	public static $entityCount = 2;
+	public static $entityCount = 10000000;
 	/** @var Entity[] */
 	private static $knownEntities = [];
 	private static $shortNames = [];
@@ -297,7 +297,7 @@ abstract class Entity extends Location implements Metadatable{
 		if($this->eyeHeight === null){
 			$this->eyeHeight = $this->height / 2 + 0.1;
 		}
-		$this->id = Entity::$entityCount++;		
+		$this->generateId();		
 		$this->justCreated = true;	
 		$this->namedtag = $nbt;
 		
@@ -358,6 +358,10 @@ abstract class Entity extends Location implements Metadatable{
 		$this->server->getPluginManager()->callEvent(new EntitySpawnEvent($this));
 		$this->scheduleUpdate();
 
+	}
+
+	protected function generateId() {
+		$this->id = Entity::$entityCount++;	
 	}
 
 	/**

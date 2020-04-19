@@ -168,6 +168,12 @@ use pocketmine\network\protocol\SetTitlePacket;
 use pocketmine\network\protocol\ResourcePackClientResponsePacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
 
+use pocketmine\network\proxy\Info as ProtocolProxyInfo;
+use pocketmine\network\proxy\DisconnectPacket as ProxyDisconnectPacket;
+use pocketmine\network\ProxyInterface;
+use pocketmine\network\proxy\RedirectPacket;
+use pocketmine\network\proxy\ProxyPacket;
+
 use pocketmine\network\protocol\v120\InventoryTransactionPacket;
 use pocketmine\network\protocol\v120\Protocol120;
 use pocketmine\network\multiversion\MultiversionEnums;
@@ -182,6 +188,7 @@ use pocketmine\network\protocol\v120\SubClientLoginPacket;
 use pocketmine\utils\Binary;
 use pocketmine\network\protocol\v310\NetworkChunkPublisherUpdatePacket;
 use pocketmine\network\multiversion\Entity as MultiversionEntity;
+use pocketmine\network\proxy\DisconnectCompletePacket;
 use pocketmine\entity\Vehicle;
 use pocketmine\network\protocol\GameRulesChangedPacket;
 use pocketmine\player\PlayerSettingsTrait;
@@ -329,6 +336,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 	protected $identifier;
 
+	public $proxyId = '';
+	public $proxySessionId = '';
+
+	protected $closeFromProxy = false;
+
 	protected static $availableCommands = [];
 
 	protected $movementSpeed = self::DEFAULT_SPEED;
@@ -451,10 +463,13 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $commandsData = [];
 	protected $joinCompleted = false;
 	protected $platformChatId = "";
+	protected $forcedPlayerId = false;
+	protected $incomingTransferData = "";
 	protected $doDaylightCycle = true;
 	private $lastQuickCraftTransactionGroup = [];
 	protected $additionalSkinData = [];
 	protected $playerListIsSent = false;
+
 
 	public function getLeaveMessage(){
 		return "";
@@ -1010,12 +1025,16 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->dataPacket($pk);
 			$this->setDaylightCycle(!$this->level->stopTime);
 
-			$pk = new PlayStatusPacket();
-			$pk->status = PlayStatusPacket::PLAYER_SPAWN;
-			$this->dataPacket($pk);
-
 			$this->noDamageTicks = 60;
 			$this->spawned = true;
+			if ($this->isFirstConnect) {
+				$pk = new PlayStatusPacket();
+				$pk->status = PlayStatusPacket::PLAYER_SPAWN;
+				$this->dataPacket($pk);
+			} else {
+				$this->setHealth($this->getHealth());
+				Player::setFood($this->getFood());
+			}
 			$chunkX = $chunkZ = null;
 			foreach ($this->usedChunks as $index => $c) {
 				Level::getXZ($index, $chunkX, $chunkZ);
@@ -1101,6 +1120,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 * @return int|bool
 	 */
 	public function dataPacket(DataPacket $packet){
+		if (!($this->interface instanceof ProxyInterface) && ($packet instanceof ProxyPacket)) {
+			return;
+		}
 		if($this->connected === false){
 			return false;
 		}
@@ -1108,6 +1130,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		if ($this->subClientId > 0 && $this->parent != null) {
 			$packet->senderSubClientID = $this->subClientId;
 			return $this->parent->dataPacket($packet);
+		}
+		if ($packet instanceof ProxyPacket) {
+			$packet->encode();
+			$this->interface->putPacket($this, $packet->getBuffer(), true);
+			return;
 		}
 		
 		switch($packet->pname()){
@@ -1249,6 +1276,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			return $this->parent->dataPacket($packet);
 		}
 
+		if ($packet instanceof ProxyPacket) {
+			$packet->encode();
+			$this->interface->putPacket($this, $packet->getBuffer(), true);
+			return;
+		}
 		$packet->encode($this->protocol);
 		$packet->senderSubClientID = 0;
 		$buffer = $packet->getBuffer();
@@ -1364,16 +1396,16 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 *
 	 * @return bool
 	 */
-	public function setGamemode($gm) {
-		if ($gm < 0 || $gm > 3 || $this->gamemode === $gm) {
+
+	public function setGamemode($gm, $isForce = false){
+		if ($gm < 0 || $gm > 3 || ($this->gamemode === $gm && !$isForce)) {
+
 			return false;
 		}
-
 		$this->server->getPluginManager()->callEvent($ev = new PlayerGameModeChangeEvent($this, (int) $gm));
 		if ($ev->isCancelled()) {
 			return false;
 		}
-
 		$this->gamemode = $gm;
 		$this->allowFlight = $this->isCreative();
 
@@ -2784,6 +2816,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 * @param string $reason  Reason showed in console
 	 */
 	public function close($message = "", $reason = "generic reason"){
+		if ($this->closed) {
+			return;
+		}
 		if ($this->isTransfered) {
 			$reason = 'transfered';
 		}
@@ -2798,11 +2833,20 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$task->cancel();
 		}
 		$this->tasks = [];
-		if($this->connected and !$this->closed){
-			$pk = new DisconnectPacket;
-			$pk->message = $reason;
-			$this->directDataPacket($pk);
-			$this->connected = false;
+		if($this->connected){
+			if (!$this->closeFromProxy) {
+				if ($this->interface instanceof ProxyInterface) {
+					$pk = new ProxyDisconnectPacket();
+					$pk->reason = $reason;
+					$this->dataPacket($pk);
+					$this->connected = false;
+				} else {
+					$pk = new DisconnectPacket;
+					$pk->message = $reason;
+					$this->directDataPacket($pk);
+					$this->connected = false;
+				}
+			}
 			if($this->username != ""){
 				$this->server->getPluginManager()->callEvent($ev = new PlayerQuitEvent($this, $message, $reason));
 				if($this->server->getSavePlayerData() and $this->loggedIn === true){
@@ -2823,28 +2867,26 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				$this->removeWindow($this->currentWindow);
 			}
 
-			$this->interface->close($this, $reason);
-
-			$chunkX = $chunkZ = null;
-			foreach($this->usedChunks as $index => $d){
-				Level::getXZ($index, $chunkX, $chunkZ);
-				$this->level->freeChunk($chunkX, $chunkZ, $this);
-				unset($this->usedChunks[$index]);
-				foreach($this->level->getChunkEntities($chunkX, $chunkZ) as $entity){
-					$entity->removeClosedViewer($this);
-				}
-			}
-
+			$this->freeChunks();
 			parent::close();
-
 			$this->server->removeOnlinePlayer($this);
-
+			if ($this->closeFromProxy) {
+				$this->removeAllEffects();
+				$this->clearFullPlayerList();
+				foreach ($this->entitiesPacketsQueue as $packets) {
+					$this->sendEntityPackets($packets);
+				}
+				$this->sendPacketQueue();
+				$pk = new DisconnectCompletePacket();
+				$this->dataPacket($pk);
+			}
+			$this->interface->close($this, $reason);
 			$this->loggedIn = false;
 
 //			if(isset($ev) and $this->username != "" and $this->spawned !== false and $ev->getQuitMessage() != ""){
 //				$this->server->broadcastMessage($ev->getQuitMessage());
 //			}
-
+			
 			$this->server->getPluginManager()->unsubscribeFromPermission(Server::BROADCAST_CHANNEL_USERS, $this);
 			$this->spawned = false;
 			$this->server->getLogger()->info(TextFormat::AQUA . $this->username . TextFormat::WHITE . "/" . $this->ip . " logged out due to " . str_replace(["\n", "\r"], [" ", ""], $reason));
@@ -2862,6 +2904,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			if (!is_null($this->scoreboard)) {
 				$this->scoreboard->removePlayer($this);
 			}
+			$this->connected = false;
 		}
 		$this->perm->clearPermissions();
 		$this->server->removePlayer($this);
@@ -3334,8 +3377,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		return $this->lastMessageReceivedFrom;
 	}
 
-	public function setIdentifier($identifier){
+	public function setIdentifier($identifier, $id = '', $sessionId = ''){
 		$this->identifier = $identifier;
+		$this->proxyId = $id;
+		$this->proxySessionId = $sessionId;
 	}
 
 	public function getIdentifier(){
@@ -3351,7 +3396,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	}
 
 	public function processLogin() {
-		if ($this->server->isUseEncrypt() && $this->needEncrypt()) {
+		if (!($this->interface instanceof ProxyInterface) && $this->server->isUseEncrypt() && $this->needEncrypt()) {
 			$privateKey = $this->server->getServerPrivateKey();
 			$token = $this->server->getServerToken();
 			$pk = new ServerToClientHandshakePacket();
@@ -3367,9 +3412,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	}
 
 	public function continueLoginProcess() {
-		$pk = new PlayStatusPacket();
-		$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
-		$this->dataPacket($pk);
+		if (!($this->interface instanceof ProxyInterface)) {
+			$pk = new PlayStatusPacket();
+			$pk->status = PlayStatusPacket::LOGIN_SUCCESS;
+			$this->dataPacket($pk);
+		}
 
 		$modsManager = $this->server->getModsManager();
 		$pk = new ResourcePacksInfoPacket();
@@ -3514,24 +3561,29 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->server->getPluginManager()->callEvent($ev = new PlayerRespawnEvent($this, $spawnPosition));
 		$this->setPosition($ev->getRespawnPosition());
 
-		$pk = new StartGamePacket();
-		$pk->seed = -1;
-		$pk->dimension = 0;
-		$pk->x = $this->x;
-		$pk->y = $this->y + $this->getEyeHeight();
-		$pk->z = $this->z;
-		$pk->spawnX = (int) $spawnPosition->x;
-		$pk->spawnY = (int) ($spawnPosition->y + $this->getEyeHeight());
-		$pk->spawnZ = (int) $spawnPosition->z;
-		$pk->generator = 1; //0 old, 1 infinite, 2 flat
-		$pk->gamemode = $this->gamemode == 3 ? 1 : $this->gamemode;
-		$pk->eid = $this->id;
-		$pk->stringClientVersion = $this->clientVersion;
-		$pk->multiplayerCorrelationId = $this->uuid->toString();
-		$this->directDataPacket($pk);	
-		if ($this->protocol >= ProtocolInfo::PROTOCOL_331) {
-			$this->directDataPacket(new AvailableEntityIdentifiersPacket());
-			$this->directDataPacket(new BiomeDefinitionListPacket());
+		if ($this->isFirstConnect) {
+			$pk = new StartGamePacket();
+			$pk->seed = -1;
+			$pk->dimension = 0;
+			$pk->x = $this->x;
+			$pk->y = $this->y + $this->getEyeHeight();
+			$pk->z = $this->z;
+			$pk->spawnX = (int) $spawnPosition->x;
+			$pk->spawnY = (int) ($spawnPosition->y + $this->getEyeHeight());
+			$pk->spawnZ = (int) $spawnPosition->z;
+			$pk->generator = 1; //0 old, 1 infinite, 2 flat
+			$pk->gamemode = $this->gamemode & 0x01;
+			$pk->eid = $this->id;
+			$pk->stringClientVersion = $this->clientVersion;
+			$pk->multiplayerCorrelationId = $this->uuid->toString();
+			$this->directDataPacket($pk);
+			if ($this->protocol >= ProtocolInfo::PROTOCOL_331) {
+				$this->directDataPacket(new AvailableEntityIdentifiersPacket());
+				$this->directDataPacket(new BiomeDefinitionListPacket());
+			}
+		} else {
+			$this->sendPosition($this);
+			$this->setGamemode($this->gamemode, true);
 		}
 
 		$pk = new SetTimePacket();
@@ -3578,12 +3630,92 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 //		$this->getInventory()->addItem(Item::get(Item::ENCHANTMENT_TABLE), Item::get(Item::DYE, 4, 64), Item::get(Item::IRON_AXE), Item::get(Item::IRON_SWORD));
 	}
 
+	public function handleProxyDataPacket($packet) {
+		if ($packet->pid() === ProtocolProxyInfo::CONNECT_PACKET) {
+			if ($this->loggedIn === true) {
+				return;
+			}
+			$this->protocol = $packet->protocol;
+			if ($packet->isValidProtocol === false) {
+				$this->close("", TextFormat::RED . "Please switch to Minecraft: PE " . TextFormat::GREEN . $this->getServer()->getVersion() . TextFormat::RED . " to join.");
+				return;
+			}
+
+			$this->username = TextFormat::clean($packet->username);
+			$this->xblName = $this->username;
+			$this->displayName = $this->username;
+			$this->setNameTag($this->username);
+			$this->iusername = strtolower($this->username);
+
+			$this->randomClientId = $packet->clientId;
+			$this->loginData = ["clientId" => $packet->clientId, "loginData" => null];
+			$this->uuid = $packet->clientUUID;
+			$this->rawUUID = $this->uuid->toBinary();
+			$this->clientSecret = $packet->clientSecret;
+			$this->setSkin($packet->skin, $packet->skinName, $packet->skinGeometryName, $packet->skinGeometryData, $packet->capeData, $packet->premiunSkin);
+			if ($packet->viewRadius > 12) {
+				$packet->viewRadius = 12;
+			} elseif ($packet->viewRadius < 3) {
+				$packet->viewRadius = 3;
+			}
+			$this->setViewRadius($packet->viewRadius);
+			$this->ip = $packet->ip;
+			$this->port = $packet->port;
+			$this->isFirstConnect = $packet->isFirst;
+			$this->deviceType = $packet->deviceOSType;
+			$this->inventoryType = $packet->inventoryType;
+			$this->xuid = $packet->XUID;
+			$this->originalProtocol = $packet->originalProtocol;
+			$this->languageCode = $packet->languageCode;
+			$this->serverAddress = $packet->serverAddress;
+			$this->clientVersion = $packet->clientVersion;
+			$this->identityPublicKey = $packet->identityPublicKey;
+			$this->platformChatId = $packet->platformChatId;
+			$this->forcedPlayerId = $packet->playerId;
+			$this->incomingTransferData = $packet->transferData;
+			$this->additionalSkinData = $packet->additionalSkinData;		
+			if ($this->isFirstConnect) {
+				$this->processLogin();
+			} else {
+				$this->completeLogin();
+				$this->loggedIn = true;
+				$this->scheduleUpdate();
+				$this->justCreated = false;	
+			}
+		} elseif ($packet->pid() === ProtocolProxyInfo::DISCONNECT_PACKET) {
+			$this->closeFromProxy = true;
+			$this->close('', $packet->reason);
+		} elseif ($packet->pid() === ProtocolProxyInfo::PING_PACKET) {
+			$this->setPing($packet->ping);
+		}
+	}
+
+	protected function generateId() {
+		if ($this->forcedPlayerId !== false) {
+			$this->id = $this->forcedPlayerId;
+		} else {
+			parent::generateId();
+		}
+	}
 
 	public function getInterface() {
 		return $this->interface;
 	}
 
-	public function transfer($address, $port = false) {
+	public function transfer($address, $port = false, $transferData = '') {
+		if ($this->interface instanceof ProxyInterface) {
+			$pk = new RedirectPacket();
+			$pk->ip = $address;
+			$pk->port = ($port === false ? 10305 : $port);
+			$pk->data = $transferData;
+			$this->dataPacket($pk);
+			$this->isTransfered = true;
+		} else {
+			$this->hardTransfer($address, $port);
+		}
+	}
+
+	public function hardTransfer($address, $port = false) {
 		$pk = new TransferPacket();
 		$pk->ip = $address;
 		$pk->port = ($port === false ? 19132 : $port);
@@ -5381,7 +5513,17 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->clearFishingHook();
 		}
 	}
-	
+
+	public function clearFullPlayerList() {
+		$players = $this->server->getOnlinePlayers();
+		$pk = new PlayerListPacket();
+		$pk->type = PlayerListPacket::TYPE_REMOVE;
+		foreach ($players as $player) {
+			$pk->entries[] = [$player->getUniqueId()];
+		}
+		$this->dataPacket($pk);
+	}
+
 	public function setInteractButtonText($text, $force = false) {
 		if ($force || $this->interactButtonText != $text) {
 			$this->interactButtonText = $text;
