@@ -227,6 +227,8 @@ class Server{
 	/** @var int */
 	private $maxPlayers;
 
+	private $onlineMode = true
+
 	/** @var bool */
 	private $autoSave;
 
@@ -403,6 +405,14 @@ class Server{
 	 */
 	public function getMaxPlayers(){
 		return $this->maxPlayers;
+	}
+
+	public function getOnlineMode(){
+		return $this->onlineMode;
+	}
+
+	public function requiresAuthentication(){
+		return $this->getOnlineMode();
 	}
 
 	/**
@@ -1560,7 +1570,7 @@ class Server{
 			"save-player-data" => true,
 			"time-update" => true,
 			"use-encrypt" => false,
-			"xbox-auth" => true
+			"online-mode" => true
 		]);
 
 		ServerScheduler::$WORKERS = 4;
@@ -1597,6 +1607,7 @@ class Server{
 		$this->useMonster = $this->getConfigBoolean("spawn-mobs", true);
 		$this->monsterLimit = $this->getConfigInt("mobs-limit", 0);
 		$this->isUseEncrypt = $this->getConfigBoolean("use-encrypt", false);
+		$this->onlineMode = $this->getConfigBoolean("online-mode", true);
 
 		if(($memory = str_replace("B", "", strtoupper($this->getConfigString("memory-limit", "256M")))) !== false){
 			$value = ["M" => 1, "G" => 1024];

@@ -3364,7 +3364,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			if($signed) {
 				$this->server->getLogger()->error($this->getName() . "should have an XUID, but none found");
 			}
-			if($this->server->requiresAuthentication() && $this->kick(false)) {
+			if($this->server->requiresAuthentication() && $this->kick("disconnectedScreen.notAuthenticated", false)) {
 				return;
 			}
 			$this->server->getLogger()->debug($this->getName() . " is not logged into Xbox Live");
