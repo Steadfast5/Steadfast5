@@ -27,9 +27,9 @@ use pocketmine\item\Tool;
 class Cauldron extends Solid {
 
 	protected $id = self::CAULDRON;
-	
-	public function __construct() {
-		
+
+	public function __construct($meta = 0) {
+		$this->meta = $meta
 	}
 
 	public function getHardness(){
