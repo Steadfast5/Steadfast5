@@ -269,6 +269,7 @@ interface ItemIds {
     const STONECUTTER = 245;
     const GLOWING_OBSIDIAN = 246;
     const NETHER_REACTOR = 247;
+    const OBSERVER = 251;
     //Normal Item IDs
     const IRON_SHOVEL = 256; //
     const IRON_PICKAXE = 257; //
