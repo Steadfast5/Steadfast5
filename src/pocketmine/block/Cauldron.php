@@ -59,7 +59,7 @@ class Cauldron extends Solid {
 		return true;
 	}
 
-	public function place(Item $item, Block $block, Block $target, int $face, Vector3 $facePos, Player $player = null) {
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz Player $player = null) {
 		$nbt = Tile::createNBT($this);
 		if ($item->hasCustomBlockData()) {
 			foreach ($item->getCustomBlockData() as $key => $v) {
