@@ -1143,7 +1143,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			case 'SET_ENTITY_DATA_PACKET':
 			case 'MOB_EQUIPMENT_PACKET':
 			case 'MOB_ARMOR_EQUIPMENT_PACKET':
+			case 'BLOCK_EVENT_PACKET':
 			case 'ENTITY_EVENT_PACKET':
+			case 'SIMPLE_EVENT_PACKET':
 			case 'MOB_EFFECT_PACKET':
 			case 'BOSS_EVENT_PACKET':
 				if (isset($this->lastEntityRemove[$packet->eid])) {
