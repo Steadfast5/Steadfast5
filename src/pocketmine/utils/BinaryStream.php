@@ -5,6 +5,7 @@ namespace pocketmine\utils;
 use pocketmine\item\Item;
 use pocketmine\nbt\NBT;
 use pocketmine\network\protocol\Info;
+use pocketmine\Player;
 use function chr;
 use function ord;
 use function strlen;
@@ -14,6 +15,8 @@ class BinaryStream {
 
     private $offset = 0;
     public $buffer = "";
+
+	protected $deviceId = Player::OS_UNKNOWN;
 
 	private function writeErrorLog($depth = 3) {
 		$depth = max($depth, 3);
@@ -383,10 +386,10 @@ class BinaryStream {
 		$this->putVarInt(strlen($v));
 		$this->put($v);
 	}
-	
+
+
 	public function putSerializedSkin($playerProtocol, $skinId, $skinData, $skinGeomtryName, $skinGeomtryData, $capeData, $additionalSkinData) {
-		//disable persona skins for all
-		if (true || !isset($additionalSkinData['PersonaSkin']) || !$additionalSkinData['PersonaSkin']) {
+		if ($this->deviceId == Player::OS_NX || !isset($additionalSkinData['PersonaSkin']) || !$additionalSkinData['PersonaSkin']) {
 			$additionalSkinData = [];
 		}
 		if (isset($additionalSkinData['skinData'])) {
@@ -615,5 +618,13 @@ class BinaryStream {
 		}
 		return $skinGeometryData;
 	}
-	
+
+	public function setDeviceId($deviceId) {
+		$this->deviceId = $deviceId;
+	}
+
+	public function getDeviceId($deviceId) {
+		return $this->deviceId;
+	}
+
 }
