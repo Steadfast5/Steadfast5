@@ -2604,6 +2604,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 				break;
 			/** @minProtocol 120 */
+			case 'COMMAND_OUTPUT_PACKET':
+			/** @minProtocol 120 */
 			case 'COMMAND_REQUEST_PACKET':
 				if ($packet->command[0] != '/') {
 					$this->sendMessage('Invalid command data.');
