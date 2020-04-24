@@ -1911,6 +1911,7 @@ class Server{
 		foreach ($packets as $pk) {
 			if ($playersCount < 2) {
 				foreach ($players as $p) {
+					$pk->setDeviceId($p->getDeviceOS());
 					$p->dataPacket($pk);
 				}
 			} else {
@@ -2355,6 +2356,7 @@ class Server{
 		foreach ($players as $p){
 			$protocol = $p->getPlayerProtocol();
 			if (!isset($readyPackets[$protocol])) {
+				$pk->setDeviceId($p->getDeviceOS());
 				$pk->encode($protocol, $p->getSubClientId());
 				$batch = new BatchPacket();
 				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, 7);
@@ -2629,11 +2631,12 @@ class Server{
 		Tile::registerTile(EnchantTable::class);
 		Tile::registerTile(Skull::class);
 		Tile::registerTile(FlowerPot::class);
-        Tile::registerTile(EnderChest::class);
+		Tile::registerTile(EnderChest::class);
 		Tile::registerTile(Bed::class);
 		Tile::registerTile(Cauldron::class);
 		Tile::registerTile(Dispenser::class);
 		Tile::registerTile(PistonArm::class);
+		Tile::registerTile(ShulkerBox::class);
 		Tile::registerTile(ItemFrame::class);
 		Tile::registerTile(Dropper::class);
 		Tile::registerTile(Hopper::class);
