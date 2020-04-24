@@ -254,7 +254,7 @@ class Block extends Position implements Metadatable {
 	const COCOA = 127;
 	const SANDSTONE_STAIRS = 128;
 	const EMERALD_ORE = 129;
-    const ENDER_CHEST = 130;
+	const ENDER_CHEST = 130;
 	const TRIPWIRE_HOOK = 131;
 	const TRIPWIRE = 132;
 	const EMERALD_BLOCK = 133;
@@ -342,14 +342,14 @@ class Block extends Position implements Metadatable {
 	const GRASS_PATH = 198;
 	const ITEM_FRAME = 199;
 	const ITEM_FRAME_BLOCK = 199;
-    const CHORUS_FLOWER = 200;
+	const CHORUS_FLOWER = 200;
 	const PURPUR_BLOCK = 201;
 	// 202, 204 doesn't exist in client (at least in 1.2.13)
 	const PURPUR_STAIRS = 203;
 	const UNDYED_SHULKER_BOX = 205;
 	const END_BRICKS = 206;
 	const FROSTED_ICE = 207;
-    const END_ROD = 208;
+	const END_ROD = 208;
 	const END_GATEWAY = 209;
 	// 210 - 212 doesn't exist in client (at least in 1.2.13)
 	const MAGMA = 213;
@@ -376,10 +376,10 @@ class Block extends Position implements Metadatable {
 	const GREEN_GLAZED_TERRACOTTA = 233;
 	const RED_GLAZED_TERRACOTTA = 234;
 	const BLACK_GLAZED_TERRACOTTA = 235;
-    const CONCRETE = 236;
+	const CONCRETE = 236;
 	const CONCRETE_POWDER = 237;
 	// 238 - 239 doesn't exist in client (at least in 1.2.13)
-    const CHORUS_PLANT = 240;
+	const CHORUS_PLANT = 240;
 	const STAINED_GLASS = 241;
 	// 242 doesn't exist in client (at least in 1.2.13)
 	const PODZOL = 243;
