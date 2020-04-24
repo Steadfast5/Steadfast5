@@ -9,12 +9,20 @@ class Prismarine extends Solid {
 
 	protected $id = self::PRISMARINE;
 
+	const NORMAL = 0;
+	const DARK = 1;
+	const BRICKS = 2;
+
 	public function __construct($meta = 0) {
 		$this->meta = $meta;
 	}
 
 	public function getName() {
-		static $names = [ "Prismarine", "Dark Prismarine", "Prismarine Bricks" ];
+		static $names = [
+			self::NORMAL => "Prismarine",
+			self::DARK => "Dark Prismarine",
+			self::BRICKS => "Prismarine Bricks"
+		];
 		return isset($names[$this->meta]) ? $names[$this->meta] : $names[0];
 	}
 

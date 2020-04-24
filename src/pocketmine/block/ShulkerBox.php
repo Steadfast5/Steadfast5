@@ -21,15 +21,20 @@
 
 namespace pocketmine\block;
 
+use pocketmine\block\Block;
+use pocketmine\block\Transparent;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\tile\Container;
+use pocketmine\tile\ShulkerBox as ShulkeTile
+use pocketmine\tile\Tile;
 
 class ShulkerBox extends Solid{
 
 	protected $id = self::SHULKER_BOX;
 
-	public function __construct(){
-
+	public function __construct($meta = 0){
+		$this->meta = $meta;
 	}
 
 	public function getName(){
@@ -42,6 +47,43 @@ class ShulkerBox extends Solid{
 
 	public function getHardness(){
 		return 5;
+	}
+
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
+		$this->getLevel()->setBlock($block, $this, true, true);
+		$nbt = ShulkeTile::createNBT($this, $face, $item, $player);
+		$items = $item->getNamedTag()->getTag(Container::TAG_ITEMS);
+		if ($items !== null) {
+			$nbt->setTag($items);
+		}
+		Tile::createTile(Tile::SHULKER_BOX, $this->getLevel(), $nbt);
+		($inv = $player->getInventory())->clear($inv->getHeldItemIndex());
+		return true;
+	}
+
+	public function onBreak(Item $item, Player $player = null) {
+		$t = $this->getLevel()->getTile($this);
+		if ($t instanceof ShulkeTile) {
+			$item = ItemFactory::get($this->id, $this->id != self::UNDYED_SHULKER_BOX ? $this->meta : 0, 1);
+			$itemNBT = clone $item->getNamedTag();
+			$itemNBT->setTag($t->getCleanedNBT()->getTag(Container::TAG_ITEMS));
+			$item->setNamedTag($itemNBT);
+			$this->getLevel()->dropItem($this->add(0.5,0.5,0.5), $item);
+			$t->getInventory()->clearAll();
+		}
+		$this->getLevel()->setBlock($this, Block::get(Block::AIR), true, true);
+		return true;
+	}
+
+	public function onActivate(Item $item, Player $player = null) {
+		if ($player instanceof Player) {
+			$t = $this->getLevel()->getTile($this);
+			if (!($t instanceof ShulkeTile)) {
+				$t = Tile::createTile(Tile::SHULKER_BOX, $this->getLevel(), ShulkeTile::createNBT($this));
+			}
+			$player->addWindow($t->getInventory());
+		}
+		return true;
 	}
 
 	public function getDrops(Item $item){

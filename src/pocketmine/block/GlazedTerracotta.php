@@ -10,6 +10,10 @@ abstract class GlazedTerracotta extends Solid {
 		$this->meta = $meta;
 	}
 
+	public function getResistance() {
+		return 1.4;
+	}
+
 	public function getHardness() {
 		return 1.4;
 	}
