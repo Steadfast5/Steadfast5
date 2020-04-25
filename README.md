@@ -41,3 +41,10 @@ This is only for Windows 10. If you don't know how to do any of the steps above,
 This is only the Steadfast5 source installer. Click [here](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/installer.cmd) to download the [`installer.cmd`](https://gist.github.com/IceCruelStuff/f52d1071c1d93b707ead302f96c9f248).
 
 If you don't have git installed or you are running Windows 8 and below, it will be very hard to use scripts provided in this repository. You can click [here](https://git-scm.com/downloads) to go to download page for Git.
+
+```
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+```
