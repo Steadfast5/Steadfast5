@@ -64,6 +64,9 @@ class LoginPacket extends PEPacket {
 	public $platformChatId = "";
 	public $additionalSkinData = [];
 
+	private $valid = true;
+	private $authenticated = false;
+
 	private function getFromString(&$body, $len) {
 		$res = substr($body, 0, $len);
 		$body = substr($body, $len);
@@ -238,6 +241,67 @@ class LoginPacket extends PEPacket {
 		}
 		$this->additionalSkinData = $additionalSkinData;
 		$this->checkSkinData($this->skin, $this->skinGeometryName, $this->skinGeometryData, $this->additionalSkinData);
+	}
+
+	public function onRun() {
+		$packet = $this->packet;
+		$currentKey = null;
+		foreach ($packet->chainData["chain"] as $jwt) {
+			if (!$this->validateToken($jwt, $currentKey)) {
+				$this->valid = false;
+				return;
+			}
+		}
+		if (!$this->validateToken($packet->clientDataJwt, $currentKey)) {
+			$this->valid = false;
+		}
+	}
+
+	private function validateToken(string $jwt, ?string &$currentPublicKey) {
+		[$headB64, payloadB64, sigB64] = explode('.', $jwt);
+		$headers = json_decode(base64_decode(strtr($headB64, '-_', '+/'), true), true);
+		if ($currentPublicKey === null) {
+			$currentPublicKey = $headers["x5u"];
+		}
+		$plainSignature = base64_decode(strtr($sigB64, '-_', '+/'), true);
+		assert(strlen($plainSignature) === 96);
+		[$rString, $sString] = str_split($plainSignature, 48);
+		$rString = ltrim($rString, "\x00");
+		if (ord($rString{0}) >= 128) {
+			$rString = "\x00" . $rString;
+		}
+		$sString = ltrim($sString, "\x00");
+		if (ord($sString{0}) >= 128) {
+			$sString = "\x00" . $sString;
+		}
+		$sequence = "\x02" . chr(strlen($rString)) . $rString . "\x02" . chr(strlen($sString)) . $sString;
+		$derSignature = "\x30" . chr(strlen($sequence)) . $sequence;
+		$v = openssl_verify("$headB64.$payloadB64", $derSignature, "-----BEGIN PUBLIC KEY-----\n" . wordwrap($currentPublicKey, 64, "\n", true) . "\n-----END PUBLIC KEY-----\n", OPENSSL_ALGO_SHA384);
+		if ($v !== 1) {
+			return false;
+		}
+		if ($currentPublicKey === self::MOJANG_ROOT_KEY) {
+			$this->authenticated = true;
+		}
+		$claims = json_decode(base64_decode(strtr($payloadB64, '-_', '+/'), true), true);
+		$time = time();
+		if (isset($claims["nbf"]) && $claims["nbf"] > $time) {
+			return false;
+		}
+		if (isset($claims["exp"]) && $claims["exp"] < $time) {
+			return false;
+		}
+		$currentPublicKey = $claims["identityPublicKey"];
+		return true;
+	}
+
+	public function onCompletion(Server $server) {
+		$player = $this->fetchLocal($server);
+		if ($player->isClosed()) {
+			$server->getLogger()->error("Player " . $player->getName() . " was disconnected before their login could be verified");
+		} else {
+			$player->onVerifyComplete($this->packet, $this->valid, $this->authenticated);
+		}
 	}
 
 	public static function load($jwsTokenString) {
