@@ -12,11 +12,11 @@ class SimpleEventPacket extends PEPacket {
 
 	public $eventType;
 
-	protected function encode($playerProtocol) {
+	public function encode($playerProtocol) {
 		$this->putLShort($this->eventType);
 	}
 
-	protected function decode($playerProtocol) {
+	public function decode($playerProtocol) {
 		$this->eventType = $this->getLShort();
 	}
 
