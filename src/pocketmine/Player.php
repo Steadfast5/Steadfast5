@@ -2340,7 +2340,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 				$this->craftingType = self::CRAFTING_DEFAULT;
 				$this->currentTransaction = null;
-				// @todo добавить обычный инвентарь и броню
+				// TODO: add regular inventory and armor
 				if ($packet->windowid === $this->currentWindowId && $this->currentWindow != null) {
 					$this->server->getPluginManager()->callEvent(new InventoryCloseEvent($this->currentWindow, $this));
 					$this->removeWindow($this->currentWindow);
