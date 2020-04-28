@@ -40,7 +40,7 @@ class Cauldron extends Solid {
 	protected $id = self::CAULDRON;
 
 	public function __construct($meta = 0) {
-		$this->meta = $meta
+		$this->meta = $meta;
 	}
 
 	public function getHardness(){
@@ -59,7 +59,7 @@ class Cauldron extends Solid {
 		return true;
 	}
 
-	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz Player $player = null) {
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$nbt = Tile::createNBT($this);
 		if ($item->hasCustomBlockData()) {
 			foreach ($item->getCustomBlockData() as $key => $v) {

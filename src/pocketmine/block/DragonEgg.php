@@ -2,6 +2,8 @@
 
 namespace pocketmine\block;
 
+use pocketmine\item\Item;
+
 class DragonEgg extends Solid {
 
 	protected $id = self::DRAGON_EGG;

@@ -48,7 +48,7 @@ abstract class Tile extends Position{
 	const BED = "Bed";
 	const CAULDRON = "Cauldron";
 	const PISTON_ARM = "PistonArm";
-	const SHULKER_BOX = "ShulkerBox"
+	const SHULKER_BOX = "ShulkerBox";
 	const DISPENSER = "Dispenser";
 	const ITEM_FRAME = "ItemFrame";
 	const DROPPER = "Dropper";

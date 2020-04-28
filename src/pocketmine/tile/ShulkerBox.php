@@ -2,25 +2,44 @@
 
 namespace pocketmine\tile;
 
-use pocketmine\inventory\ShulkerInventory;
 use pocketmine\inventory\InventoryHolder;
+use pocketmine\inventory\ShulkerInventory;
+use pocketmine\item\Item;
+use pocketmine\level\format\FullChunk;
 use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\StringTag;
+use pocketmine\nbt\NBT;
 use pocketmine\tile\Container;
 use pocketmine\tile\Nameable;
 use pocketmine\tile\Spawnable;
 
-class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
+abstract class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
 
-	protected $inventory;
+	protected $inventory = null;
+
+	public function __construct(FullChunk $chunk, Compound $nbt) {
+		parent::__construct($chunk, $nbt);
+		$this->inventory = new ShulkerInventory($this);
+		if (!isset($this->namedtag->Items) || !($this->namedtag->Items instanceof Enum)) {
+			$this->namedtag->Items = new Enum("Items", []);
+			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
+		}
+		for ($i = 0; $i < $this->getSize(); ++$i) {
+			$this->inventory->setItem($i, $this->getItem($i));
+		}
+	}
 
 	public function getName() {
 		return "Shulker Box";
 	}
 
 	public function close() {
-		if (!$this->isClosed()) {
-			$this->inventory->removeAllViewers(true);
-			$this->inventory = null;
+		if ($this->closed === false) {
+			foreach ($this->inventory->getViewers() as $viewer) {
+				$viewer->removeWindow($this->inventory);
+			}
 			parent::close();
 		}
 	}
@@ -45,5 +64,3 @@ class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameab
 	}
 
 }
-
-
