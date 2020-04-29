@@ -1078,6 +1078,7 @@ class Item implements ItemIds {
         self::$food[] = Item::BREAD;
         self::$food[] = Item::APPLE;
         self::$food[] = Item::GOLDEN_APPLE;
+        self::$food[] = Item::ENCHANTED_GOLDEN_APPLE;
         self::$food[] = Item::RAW_FISH;
         self::$food[] = Item::COOKED_FISH;
         self::$food[] = Item::RAW_PORKCHOP;

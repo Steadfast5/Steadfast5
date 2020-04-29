@@ -73,7 +73,7 @@ class Cocoa extends Transparent {
 		return false;
 	}
 
-	public function onUpdate($type) {
+	public function onUpdate($type, $deep) {
 		if ($type === Level::BLOCK_UPDATE_NORMAL) {
 			$faces = [3, 4, 2, 5, 3, 4, 2, 5, 3, 4, 2, 5];
 			if ($this->getSide($faces[$this->meta])->isTransparent() === true) {
