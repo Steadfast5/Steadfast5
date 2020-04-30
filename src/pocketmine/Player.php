@@ -213,6 +213,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
     const OS_TVOS = 10;
     const OS_ORBIS = 11;
     const OS_NX = 12;
+    const OS_XBOX = 13;
+    const OS_WINDOWS_PHONE = 14;
     const OS_UNKNOWN = -1;
 
     const INVENTORY_CLASSIC = 0;
