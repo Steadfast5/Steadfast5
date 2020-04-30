@@ -88,7 +88,7 @@ interface Info{
 	const PROTOCOL_395 = 395; // 1.15.0.55
 	const PROTOCOL_396 = 396; // 1.15.0.56
 	const PROTOCOL_400 = 400; // 1.16.0.51
-	const PROTOCOL_401 = 401; // 1.16.0.53
+	const PROTOCOL_401 = 401; // 1.16.0.53, 1.16.0.58, 1.16.0.59
 	const PROTOCOL_402 = 402; // 1.16.0.55
 	const PROTOCOL_403 = 403; // 1.16.0.57
 	
