@@ -1,24 +1,5 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
-
 namespace pocketmine\item;
 
 use pocketmine\entity\Entity;
@@ -27,16 +8,16 @@ use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 
-class Apple extends Item {
+class CookedMutton extends Item {
 
-	public static $food = ['food' => 4, 'saturation' => 2.4];
+	public static $food = ['food' => 6, 'saturation' => 9.6];
 
-	public function __construct($meta = 0, $count = 1){
-		parent::__construct(self::APPLE, 0, $count, "Apple");
+	public function __construct($meta = 0, $count = 1) {
+		parent::__construct(self::COOKED_MUTTON, 0, $count, "Cooked Mutton");
 	}
 
 	public function food() : int {
-		return 4;
+		return 6;
 	}
 
 	public function onConsume(Entity $human) {

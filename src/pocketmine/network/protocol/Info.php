@@ -81,14 +81,14 @@ interface Info{
 	const PROTOCOL_387 = 387; // 1.13.0.15
 	const PROTOCOL_388 = 388; // 1.13.0.25
 	const PROTOCOL_389 = 389; // 1.14.x.x
-	const PROTOCOL_390 = 390; // 1.14.0.60
+	const PROTOCOL_390 = 390; // 1.14.60
 	const PROTOCOL_392 = 392; // 1.15.0.51
 	const PROTOCOL_393 = 393; // 1.15.0.53
 	const PROTOCOL_394 = 394; // 1.15.0.54
 	const PROTOCOL_395 = 395; // 1.15.0.55
 	const PROTOCOL_396 = 396; // 1.15.0.56
 	const PROTOCOL_400 = 400; // 1.16.0.51
-	const PROTOCOL_401 = 401; // 1.16.0.53
+	const PROTOCOL_401 = 401; // 1.16.0.53, 1.16.0.58, 1.16.0.59
 	const PROTOCOL_402 = 402; // 1.16.0.55
 	const PROTOCOL_403 = 403; // 1.16.0.57
 	
@@ -208,6 +208,7 @@ interface Info{
 	const SERVER_SETTINGS_RESPONSE_PACKET = 0x67;			// NEW
 	const SHOW_PROFILE_PACKET = 0x68;						// NEW
 	const SET_DEFAULT_GAME_TYPE_PACKET = 0x69;				// NEW
+	const BLOCK_EVENT_PACKET = 0x7c;
 	
 }
 
