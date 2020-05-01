@@ -52,6 +52,10 @@ class Enchantment{
 	const TYPE_BOW_INFINITY = 22;
 	const TYPE_FISHING_FORTUNE = 23; // Luck of the Sea
 	const TYPE_FISHING_LURE = 24;
+	const TYPE_ARMOR_FROST_WALKER = 25;
+	const TYPE_MENDING = 26;
+	const TYPE_ARMOR_BINDING = 27;
+	const TYPE_VANISHING = 28;
 
 	const RARITY_COMMON = 0;
 	const RARITY_UNCOMMON = 1;

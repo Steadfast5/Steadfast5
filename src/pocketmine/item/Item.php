@@ -400,6 +400,7 @@ class Item implements ItemIds {
 		431 => "Dark Oak Door",
 		431 => "Chorus Fruit",
 		438 => "Splash Potion",
+		450 => "Totem of Undying",
 		457 => "Beetroot",
 		458 => "Beetroot Seed",
 		459 => "Beetroot Soup",
@@ -562,7 +563,7 @@ class Item implements ItemIds {
         }
         self::$list[$id] = $class;
         foreach (self::$creative as $index => $itemData) {
-			$item = $itemData['item'];
+            $item = $itemData['item'];
             if ($item->getId() == $id) {
                 self::$creative[$index] = ['item' => Item::get($id, $item->getDamage()), 'group' => self::CREATIVE_GROUP_NONE];
             }
@@ -1077,6 +1078,7 @@ class Item implements ItemIds {
         self::$food[] = Item::BREAD;
         self::$food[] = Item::APPLE;
         self::$food[] = Item::GOLDEN_APPLE;
+        self::$food[] = Item::ENCHANTED_GOLDEN_APPLE;
         self::$food[] = Item::RAW_FISH;
         self::$food[] = Item::COOKED_FISH;
         self::$food[] = Item::RAW_PORKCHOP;

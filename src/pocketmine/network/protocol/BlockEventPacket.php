@@ -13,13 +13,13 @@ class BlockEventPacket extends PEPacket {
 	public $y;
 	public $z;
 
-	protected function encode($playerProtocol) {
+	public function encode($playerProtocol) {
 		$this->putBlockPosition($this->x, $this->y, $this->z);
 		$this->putVarInt($this->eventType);
 		$this->putVarInt($this->eventData);
 	}
 
-	protected function decode($playerProtocol) {
+	public function decode($playerProtocol) {
 		$this->getBlockPosition($this->x, $this->y, $this->z);
 		$this->eventType = $this->getVarInt();
 		$this->eventData = $this->getVarInt();

@@ -9,11 +9,11 @@ class ShowProfilePacket extends PEPacket {
 
 	public $xuid;
 
-	protected function encode($playerProtocol) {
+	public function encode($playerProtocol) {
 		$this->putString($this->xuid);
 	}
 
-	protected function decode($playerProtocol) {
+	public function decode($playerProtocol) {
 		$this->xuid = $this->getString();
 	}
 

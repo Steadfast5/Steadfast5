@@ -116,6 +116,7 @@ use pocketmine\tile\EnderChest;
 use pocketmine\tile\FlowerPot;
 use pocketmine\tile\Furnace;
 use pocketmine\tile\PistonArm;
+use pocketmine\tile\ShulkerBox;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Sign;
 use pocketmine\tile\Skull;
