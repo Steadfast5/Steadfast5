@@ -193,7 +193,10 @@ class BinaryStream {
 	}
 
 	public function getByte() {
-		return ord($this->buffer[$this->offset++]);
+		if (strlen($this->buffer) < $this->offset + 1) {
+			throw new \Exception('binary stream getByte error');
+		}
+		return ord($this->buffer{$this->offset++});
 	}
 
 	public function putByte($v) {
@@ -529,7 +532,7 @@ class BinaryStream {
 		
 		$additionalSkinData['CapeId'] = $this->getString();
 		$additionalSkinData['FullSkinId'] = $this->getString(); // Full Skin ID	
-		if ($playerProtocol == Info::PROTOCOL_390) {		
+		if ($playerProtocol == Info::PROTOCOL_390) {
 
 			$additionalSkinData['ArmSize'] = $this->getString();
 			$additionalSkinData['SkinColor'] = $this->getString();
@@ -594,13 +597,14 @@ class BinaryStream {
 		if (isset($additionalSkinData['PersonaSkin']) && $additionalSkinData['PersonaSkin']) {
 			static $defaultSkins = [];
 			if (empty($defaultSkins)) {
-				$defaultSkins[] = file_get_contents(__DIR__ . "/defaultSkins/Alex.dat");
-				$defaultSkins[] = file_get_contents(__DIR__ . "/defaultSkins/Steve.dat");
+				$defaultSkins[] = [file_get_contents(__DIR__ . "/defaultSkins/Alex.dat"), 'geometry.humanoid.customSlim'];
+				$defaultSkins[] = [file_get_contents(__DIR__ . "/defaultSkins/Steve.dat"), 'geometry.humanoid.custom'];
 			}
 			$additionalSkinData['skinData'] = $skinData;
 			$additionalSkinData['skinGeomtryName'] = $skinGeomtryName;
 			$additionalSkinData['skinGeomtryData'] = $skinGeomtryData;
-			$skinData = $defaultSkins[array_rand($defaultSkins)];
+			$randomSkinData =  $defaultSkins[array_rand($defaultSkins)];
+			$skinData = $randomSkinData[0];
 			$skinGeomtryData = '';
 			$skinGeomtryName = $randomSkinData[1];
 		} elseif (in_array($skinGeomtryName, ['geometry.humanoid.customSlim', 'geometry.humanoid.custom'])) {
