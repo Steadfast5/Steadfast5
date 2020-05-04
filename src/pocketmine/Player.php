@@ -1776,7 +1776,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::COOKED_RABBIT => ['food' => 5, 'saturation' => 6],
 		Item::COOKED_SALMON => ['food' => 6, 'saturation' => 9.6],
 		Item::COOKIE => ['food' => 2, 'saturation' => 0.4],
-		//Item::GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
+		Item::GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
+		Item::ENCHANTNED_GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
 		Item::GOLDEN_CARROT => ['food' => 6, 'saturation' => 14.4],
 		Item::MELON => ['food' => 2, 'saturation' => 1.2],
 		Item::MUSHROOM_STEW => ['food' => 6, 'saturation' => 7.2],
@@ -1786,6 +1787,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::RABBIT_STEW => ['food' => 10, 'saturation' => 12],
 		Item::RAW_BEEF => ['food' => 3, 'saturation' => 1.8],
 		Item::RAW_CHICKEN => ['food' => 2, 'saturation' => 1.2],
+		// TODO: rewrite fish
 		Item::RAW_FISH => [
 			0 => ['food' => 2, 'saturation' => 0.4], // raw fish
 			1 => ['food' => 2, 'saturation' => 0.4], // raw salmon
