@@ -27,21 +27,68 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
 		for ($i = 0; $i < $this->getSize(); ++$i) {
-			$this->inventory->setItem($i, $this->getItem($i));
+			$this->inventory->setItem($i, $this->getItem($i), false);
 		}
-	}
-
-	public function getName() {
-		return "Shulker Box";
 	}
 
 	public function close() {
 		if ($this->closed === false) {
-			foreach ($this->inventory->getViewers() as $viewer) {
-				$viewer->removeWindow($this->inventory);
+			foreach ($this->inventory->getViewers() as $player) {
+				$player->removeWindow($this->inventory);
 			}
 			parent::close();
 		}
+	}
+
+	public function saveNBT() {
+		parent::saveNBT();
+		$this->namedtag->Items = new Enum("Items", []);
+		$this->namedtag->Items->setTagType(NBT::TAG_Compound);
+		for ($index = 0; $index < $this->getSize(); ++$index) {
+			$this->setItem($index, $this->inventory->getItem($index));
+		}
+	}
+
+	public function getSize() {
+		return 27;
+	}
+
+	protected function getSlotIndex($index) {
+		foreach ($this->namedtag->Items as $i => $slot) {
+			if ((int) $slot["Slot"] === (int) $index) {
+				return (int) $i;
+			}
+		}
+		return -1;
+	}
+
+	public function getItem() {
+		$i = $this->getSlotIndex($index);
+		if ($i < 0) {
+			return Item::get(Item::AIR, 0, 0);
+		} else {
+			return NBT::getItemHelper($this->namedtag->Items[$i]);
+		}
+	}
+
+	public function setItem($index, Item $item) {
+		$i = $this->getSlotIndex($index);
+		$d = NBT::putItemHelper($item, $index);
+		if ($item->getId() === Item::AIR || $item->getCount() <= 0) {
+			if ($i >= 0) {
+				unset($this->namedtag->Items[$i]);
+			}
+		} elseif ($i < 0) {
+			for ($i = 0; $i <= $this->getSize(); ++$i) {
+				if (!isset($this->namedtag->Items[$i])) {
+					break;
+				}
+			}
+			$this->namedtag->Items[$i] = $d;
+		} else {
+			$this->namedtag->Items[$i] = $d;
+		}
+		return true;
 	}
 
 	public function getRealInventory() {
@@ -50,6 +97,22 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 
 	public function getInventory() {
 		return $this->inventory;
+	}
+
+	public function hasName() {
+		return isset($this->namedtag->CustomName);
+	}
+
+	public function setName($str) {
+		if ($str === "") {
+			unset($this->namedtag->CustomName);
+			return;
+		}
+		$this->namedtag->CustomName = new StringTag("CustomName", $str);
+	}
+
+	public function getName() {
+		return $this->hasName() ? $this->namedtag->CustomName->getValue() : parent::getName();
 	}
 
 	public function writeSaveData(Compound $nbt) {

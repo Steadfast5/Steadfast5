@@ -208,7 +208,6 @@ interface Info{
 	const SERVER_SETTINGS_RESPONSE_PACKET = 0x67;			// NEW
 	const SHOW_PROFILE_PACKET = 0x68;						// NEW
 	const SET_DEFAULT_GAME_TYPE_PACKET = 0x69;				// NEW
-	const BLOCK_EVENT_PACKET = 0x7c;
 	
 }
 
