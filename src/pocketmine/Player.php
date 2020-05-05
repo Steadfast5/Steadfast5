@@ -1766,7 +1766,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::BEETROOT => ['food' => 1, 'saturation' => 1.2],
 		Item::BEETROOT_SOUP => ['food' => 6, 'saturation' => 7.2],
 		Item::BREAD => ['food' => 5, 'saturation' => 6],
-		/** @todo cake slice and whole */
+		/** @TODO: cake slice and whole */
 		Item::CARROT => ['food' => 3, 'saturation' => 3.6],
 		Item::CHORUS_FRUIT => ['food' => 4, 'saturation' => 2.4],
 		Item::COOKED_CHICKEN => ['food' => 6, 'saturation' => 7.2],
