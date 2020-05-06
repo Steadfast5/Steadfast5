@@ -199,7 +199,7 @@ use function random_int;
  */
 class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
-	use PlayerSettingsTrait;
+    use PlayerSettingsTrait;
 
     const OS_ANDROID = 1;
     const OS_IOS = 2;
@@ -387,7 +387,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $lastShowModalTick = 0;
 
 	/** @var int */
-   protected $formIdCounter = 0;
+    protected $formIdCounter = 0;
 	/** @var Form[] */
 	protected $forms = [];
 
