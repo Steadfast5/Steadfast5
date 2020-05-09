@@ -199,7 +199,7 @@ use function random_int;
  */
 class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
-	use PlayerSettingsTrait;
+    use PlayerSettingsTrait;
 
     const OS_ANDROID = 1;
     const OS_IOS = 2;
@@ -387,7 +387,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $lastShowModalTick = 0;
 
 	/** @var int */
-   protected $formIdCounter = 0;
+    protected $formIdCounter = 0;
 	/** @var Form[] */
 	protected $forms = [];
 
@@ -3117,10 +3117,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 
 //		if($this->getFood()-$amount <= 6 && !($this->getFood() <= 6)) {
-////			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, false);
+//			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, false);
 //			$this->removeEffect(Effect::SLOWNESS);
 //		} elseif($this->getFood()-$amount < 6 && !($this->getFood() > 6)) {
-////			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, true);
+//			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, true);
 //			$effect = Effect::getEffect(Effect::SLOWNESS);
 //			$effect->setDuration(0x7fffffff);
 //			$effect->setAmplifier(2);
