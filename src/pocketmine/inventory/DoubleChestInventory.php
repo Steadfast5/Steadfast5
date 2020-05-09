@@ -55,7 +55,7 @@ class DoubleChestInventory extends ChestInventory implements InventoryHolder{
 		return $index < $this->left->getSize() ? $this->left->getItem($index) : $this->right->getItem($index - $this->right->getSize());
 	}
 
-	public function setItem($index, Item $item) {
+	public function setItem($index, Item $item, $needCheckComporator = true) {
 		$old = $this->getItem($index);
 		if ($index < $this->left->getSize() ? $this->left->setItem($index, $item) : $this->right->setItem($index - $this->right->getSize(), $item)) {
 			$this->onSlotChange($index, $old);
