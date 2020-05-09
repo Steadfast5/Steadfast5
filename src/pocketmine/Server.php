@@ -197,6 +197,8 @@ class Server{
 	/** @var PluginManager */
 	private $pluginManager = null;
 
+	private $profilingTickRate = 20;
+
 	/** @var ServerScheduler */
 	private $scheduler = null;
 
@@ -209,6 +211,16 @@ class Server{
 	private $nextTick = 0;
 	private $tickAverage = [20, 20, 20, 20, 20];
 	private $useAverage = [20, 20, 20, 20, 20];
+
+	private $currentTPS = 20;
+
+	private $currentUse = 0;
+
+	private $startTime;
+
+	private $doTitleTick = true;
+
+	private $sendUsageTicker = 0;
 
 	/** @var \AttachableThreadedLogger */
 	private $logger;
