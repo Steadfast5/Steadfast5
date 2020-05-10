@@ -1549,6 +1549,7 @@ class Server{
 			"server-port" => 19132,
 			"memory-limit" => "256M",
 			"white-list" => false,
+			"announce-player-achievements" => true,
 			"spawn-protection" => 16,
 			"max-players" => 20,
 			"allow-flight" => false,

@@ -47,6 +47,7 @@ use pocketmine\event\inventory\CraftItemEvent;
 use pocketmine\event\inventory\InventoryCloseEvent;
 use pocketmine\event\inventory\InventoryPickupArrowEvent;
 use pocketmine\event\inventory\InventoryPickupItemEvent;
+use pocketmine\event\player\PlayerAchievementAwardedEvent;
 use pocketmine\event\player\PlayerAnimationEvent;
 use pocketmine\event\player\PlayerBedEnterEvent;
 use pocketmine\event\player\PlayerBedLeaveEvent;
@@ -264,6 +265,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	public $speed = null;
 
 	public $blocked = false;
+	public $achievements = [];
 	public $lastCorrect;
 
 	public $craftingType = self::CRAFTING_DEFAULT;
@@ -873,6 +875,23 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 	}
 
+	public function removeAchievement($achievementId) {
+		if ($this->hasAchievement($achievementId)) {
+			$this->achievements[$achievementId] = false;
+		}
+	}
+
+	public function hasAchievement($achievementId) {
+		if (!isset(Achievement::$list[$achievementId]) || !isset($this->achievements)) {
+			$this->achievements = [];
+			return false;
+		}
+		if (!isset($this->achievements[$achievementId]) || $this->achievements[$achievementId] == false) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -1357,6 +1376,25 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 	}
 
+	public function awardAchievement($achievementId) {
+		if (isset(Achievement::$list[$achievementId]) && !$this->hasAchievement($achievementId)) {
+			foreach (Achievement::$list[$achievementId]["requires"] as $requerimentId) {
+				if (!$this->hasAchievement($requerimentId)) {
+					return false;
+				}
+			}
+			$this->server->getPluginManager()->callEvent($ev = new PlayerAchievementAwardedEvent($this, $achievementId));
+			if (!$ev->isCancelled()) {
+				$this->achievements[$achievementId] = true;
+				Achievement::broadcast($this, $achievementId);
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * @return int
 	 */
@@ -1474,19 +1512,17 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 //	}
 
 	protected function checkGroundState($movX, $movY, $movZ, $dx, $dy, $dz){
-		/*
-		if(!$this->onGround or $movY != 0){
-			$bb = clone $this->boundingBox;
-			$bb->maxY = $bb->minY + 0.5;
-			$bb->minY -= 1;
-			if(count($this->level->getCollisionBlocks($bb, true)) > 0){
-				$this->onGround = true;
-			} else {
-				$this->onGround = false;
-			}
-		}
-		$this->isCollided = $this->onGround;
-		*/
+//		if(!$this->onGround or $movY != 0){
+//			$bb = clone $this->boundingBox;
+//			$bb->maxY = $bb->minY + 0.5;
+//			$bb->minY -= 1;
+//			if(count($this->level->getCollisionBlocks($bb, true)) > 0){
+//				$this->onGround = true;
+//			} else {
+//				$this->onGround = false;
+//			}
+//		}
+//		$this->isCollided = $this->onGround;
 	}
 
 	protected function checkNearEntities($tickDiff){
@@ -1527,6 +1563,15 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 						$this->server->getPluginManager()->callEvent($ev = new InventoryPickupItemEvent($this->inventory, $entity));
 						if($ev->isCancelled()){
 							continue;
+						}
+
+						switch ($item->getId()) {
+							case Item::WOOD:
+								$this->awardAchievement("mineWood");
+								break;
+							case Item::DIAMOND:
+								$this->awardAchievement("diamond");
+								break;
 						}
 
 						$pk = new TakeItemEntityPacket();
@@ -2379,6 +2424,41 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					break;
 				}
 
+				switch ($recipe->getResult()->getId()) {
+					case Item::WORKBENCH:
+						$this->awardAchievement("buildWorkBench");
+						break;
+					case Item::WOODEN_PICKAXE:
+						$this->awardAchievement("buildPickaxe");
+						break;
+					case Item::FURNACE:
+						$this->awardAchievement("buildFurnace");
+						break;
+					case Item::WOODEN_HOE:
+						$this->awardAchievement("buildHoe");
+						break;
+					case Item::BREAD:
+						$this->awardAchievement("makeBread");
+						break;
+					case Item::CAKE:
+						//TODO: detect complex recipes like cake that leave remains
+						$this->awardAchievement("bakeCake");
+						$this->inventory->addItem(Item::get(Item::BUCKET, 0, 3));
+						break;
+					case Item::STONE_PICKAXE:
+					case Item::GOLD_PICKAXE:
+					case Item::IRON_PICKAXE:
+					case Item::DIAMOND_PICKAXE:
+						$this->awardAchievement("buildBetterPickaxe");
+						break;
+					case Item::WOODEN_SWORD:
+						$this->awardAchievement("buildSword");
+						break;
+					case Item::DIAMOND:
+						$this->awardAchievement("diamond");
+						break;
+				}
+
 				if (is_null($recipe) || !$result->deepEquals($recipe->getResult(), true, false) ) { //hack for win10
 					$newRecipe = $this->server->getCraftingManager()->getRecipeByHash($result->getId() . ":" . $result->getDamage());
 					if (!is_null($newRecipe)) {
@@ -2895,6 +2975,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				$this->namedtag["SpawnX"] = (int) $this->spawnPosition->x;
 				$this->namedtag["SpawnY"] = (int) $this->spawnPosition->y;
 				$this->namedtag["SpawnZ"] = (int) $this->spawnPosition->z;
+			}
+
+			foreach ($this->achievements as $achievement => $status) {
+				$this->namedtag->Achievements[$achievement] = new ByteTag($achievement, $status === true ? 1 : 0);
 			}
 
 			$this->namedtag["playerGameType"] = $this->gamemode;
@@ -3653,6 +3737,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				$targetItem = clone $items[$targetSlot];
 				$targetItem->count -= $newItem->count;
 			}
+			$this->transactionGroupQueue[] = $trGroup;
 			$pairTransaction = new BaseTransaction($inventory, $targetSlot, $items[$targetSlot], $targetItem);
 			$trGroup->addTransaction($pairTransaction);
 
@@ -3720,6 +3805,50 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 		if (($oldItem instanceof Armor || $oldItem instanceof Tool) && $transaction->getInventory() === $this->inventory) {
 			$enchantInv->setItem(0, $oldItem);
+		}
+	}
+
+	protected function executeTransactions() {
+		foreach ($this->transactionGroupQueue as $key => $group) {
+			$achievements = [];
+			// check inventories for achievements
+			foreach ($group->getTransactions() as $ts) {
+				$inv = $ts->getInventory();
+				if ($inv instanceof FurnaceInventory && $ts->getSlot() === 2) {
+					switch ($inv->getResult()->getId()) {
+						case Item::IRON_INGOT:
+							$achievements[] = "acquireIron";
+							break 2;
+					}
+				}
+			}
+			// execute transactions group
+			try {
+				$isExecute = $group->execute();
+				if ($isExecute) {
+					foreach ($achievements as $a) {
+						$this->awardAchievement($a);
+					}
+					unset($this->transactionGroupQueue[$key]);
+				} else {
+					echo 'Transaction execute fail.'.PHP_EOL;
+					if ($group->getCreationTime() < (microtime(true) - 1)) {
+						$group->sendInventories();
+						unset($this->transactionGroupQueue[$key]);
+					}
+				}
+			}
+			catch (\Exception $ex) {
+				$group->sendInventories();
+				unset($this->transactionGroupQueue[$key]);
+			}
+		}
+		foreach ($this->transactionQueue as $trKey => $tr) {
+			if ($tr->getCreationTime() < (microtime(true) - 1)) {
+				$tr->revert($this);
+				unset($this->transactionQueue[$trKey]);
+				continue;
+			}
 		}
 	}
 
