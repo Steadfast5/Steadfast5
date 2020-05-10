@@ -89,7 +89,7 @@ use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
 use pocketmine\tile\Chest;
-use pocketmine\tile\Tile;;
+use pocketmine\tile\Tile;
 use pocketmine\utils\LevelException;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\ReversePriorityQueue;
