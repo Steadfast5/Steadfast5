@@ -97,6 +97,7 @@ class Item implements ItemIds {
 		21 => "Lapis Ore",
 		22 => "Lapis Block",
 		24 => "Sandstone",
+		25 => "Note block",
 		26 => "Bed",
 		30 => "Cobweb",
 		31 => "Tall Grass",
@@ -719,7 +720,7 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::BRICK_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::STONE_BRICK_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::NETHER_BRICKS_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
-		self::addCreativeItem(Item::get(Item::SANDSTONE_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);       
+		self::addCreativeItem(Item::get(Item::SANDSTONE_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::QUARTZ_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::RED_SANDSTONE_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		
@@ -1042,6 +1043,8 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::REDSTONE_BLOCK, 0));
 		self::addCreativeItem(Item::get(Item::HOPPER, 0));
 		self::addCreativeItem(Item::get(Item::TNT, 0));
+		self::addCreativeItem(Item::get(Item::NOTE_BLOCK, 0));
+		self::addCreativeItem(Item::get(Item::DROPPER, 0));
 		
 	}
 	
