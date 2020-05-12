@@ -68,7 +68,6 @@ use pocketmine\level\format\pmanvil\PMAnvil;
 use pocketmine\level\format\LevelProviderManager;
 use pocketmine\level\format\mcregion\McRegion;
 use pocketmine\level\generator\Generator;
-use pocketmine\level\ender\Ender;
 use pocketmine\level\Level;
 use pocketmine\metadata\EntityMetadataStore;
 use pocketmine\metadata\LevelMetadataStore;
@@ -1705,9 +1704,7 @@ class Server{
 		LevelProviderManager::addProvider($this, Anvil::class);
 		LevelProviderManager::addProvider($this, PMAnvil::class);
 		LevelProviderManager::addProvider($this, McRegion::class);
-
-		Generator::addGenerator(Ender::class, "ender");
-
+		
 		foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
 			if($this->loadLevel($name) === false){
 				$seed = $this->getProperty("worlds.$name.seed", time());
