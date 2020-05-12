@@ -53,11 +53,11 @@ class Ender extends Generator{
 		}
 	}
 
-	public function getName(): string {
+	public function getName() {
 		return "Ender";
 	}
 
-	public function getWaterHeight(): int {
+	public function getWaterHeight() {
 		return $this->waterHeight;
 	}
 
@@ -122,4 +122,5 @@ class Ender extends Generator{
 	public function getSpawn(){
 		return new Vector3(48, 128, 48);
 	}
+
 }
