@@ -1696,7 +1696,10 @@ class Server{
 		LevelProviderManager::addProvider($this, Anvil::class);
 		LevelProviderManager::addProvider($this, PMAnvil::class);
 		LevelProviderManager::addProvider($this, McRegion::class);
-		
+
+		Generator::addGenerator(Ender::class, "ender");
+		Generator::addGenerator(Ender::class, "end");
+
 		foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
 			if($this->loadLevel($name) === false){
 				$seed = $this->getProperty("worlds.$name.seed", time());
