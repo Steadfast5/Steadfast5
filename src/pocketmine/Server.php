@@ -74,6 +74,7 @@ use pocketmine\level\format\generator\VoidWorld;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\hell\Nether;
 use pocketmine\level\generator\Normal;
+use pocketmine\level\generator\ender\Ender;
 use pocketmine\level\Level;
 use pocketmine\metadata\EntityMetadataStore;
 use pocketmine\metadata\LevelMetadataStore;
@@ -330,6 +331,9 @@ class Server{
 	private $serverPrivateKey = '';
 	private $serverToken = 'hksdYI3has';
 	private $isUseEncrypt = false;
+	public $enderEnabled = true;
+	public $enderName = "ender";
+	public $enderLevel = null;
 	
 	private $modsManager = null;
 
@@ -1734,6 +1738,8 @@ class Server{
 		Generator::addGenerator(Nether::class, "hell");
 		Generator::addGenerator(Nether::class, "nether");
 		Generator::addGenerator(VoidWorld::class, "void");
+		Generator::addGenerator(Ender::class, "ender");
+		Generator::addGenerator(Ender::class, "end");
 
 		foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
 			if($this->loadLevel($name) === false){
