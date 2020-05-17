@@ -46,6 +46,7 @@ use pocketmine\entity\Snowball;
 use pocketmine\entity\Egg;
 use pocketmine\entity\Squid;
 use pocketmine\entity\Villager;
+use pocketmine\entity\Lightning;
 use pocketmine\entity\Minecart;
 use pocketmine\entity\Boat;
 use pocketmine\entity\FishingHook;
@@ -65,9 +66,14 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\level\format\anvil\Anvil;
 use pocketmine\level\format\pmanvil\PMAnvil;
+use pocketmine\level\format\leveldb\LevelDB;
 use pocketmine\level\format\LevelProviderManager;
 use pocketmine\level\format\mcregion\McRegion;
+use pocketmine\level\format\generator\Flat;
+use pocketmine\level\format\generator\VoidWorld;
 use pocketmine\level\generator\Generator;
+use pocketmine\level\generator\hell\Nether;
+use pocketmine\level\generator\Normal;
 use pocketmine\level\Level;
 use pocketmine\metadata\EntityMetadataStore;
 use pocketmine\metadata\LevelMetadataStore;
@@ -306,7 +312,13 @@ class Server{
 	private $animalLimit;
 	private $useMonster ;
 	private $monsterLimit;
-		
+
+	public $weatherEnabled = true;
+	public $weatherRandomDurationMin = 6000;
+	public $weatherRandomDurationMax = 12000;
+	public $lightningTime = 200;
+	public $lightningFire = false;
+
 	public $packetMaker = null;
 	
 	private $jsonCommands = [];
@@ -1572,6 +1584,11 @@ class Server{
 			"auto-generate" => true,
 			"save-player-data" => true,
 			"time-update" => true,
+			"level.weather" => true,
+			"level.weather-random-duration-min" => 6000,
+			"level.weather-random-duration-max" => 12000,
+			"level.lightning-time" => 200,
+			"level.lightning-fire" => false,
 			"use-encrypt" => false
 		]);
 
@@ -1598,6 +1615,12 @@ class Server{
 		@touch($this->dataPath . "banned-ips.txt");
 		$this->banByIP = new BanList($this->dataPath . "banned-ips.txt");
 		$this->banByIP->load();
+
+		$this->weatherEnabled = $this->getConfigBoolean("level.weather", true);
+		$this->weatherRandomDurationMin = $this->getConfigInt("level.weather-random-duration-min", 6000);
+		$this->weatherRandomDurationMax = $this->getConfigInt("level.weather-random-duration-max", 12000);
+		$this->lightningTime = $this->getConfigInt("level.lightning-time", 200);
+		$this->lightningFire = $this->getConfigBoolean("level.lightning-fire", false);
 
 		$this->maxPlayers = $this->getConfigInt("max-players", 20);
 		$this->setAutoSave($this->getConfigBoolean("auto-save", true));
@@ -1704,7 +1727,14 @@ class Server{
 		LevelProviderManager::addProvider($this, Anvil::class);
 		LevelProviderManager::addProvider($this, PMAnvil::class);
 		LevelProviderManager::addProvider($this, McRegion::class);
-		
+		//LevelProviderManager::addProvider($this, LevelDB::class);
+
+		Generator::addGenerator(Flat::class, "flat");
+		Generator::addGenerator(Normal::class, "normal");
+		Generator::addGenerator(Nether::class, "hell");
+		Generator::addGenerator(Nether::class, "nether");
+		Generator::addGenerator(VoidWorld::class, "void");
+
 		foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
 			if($this->loadLevel($name) === false){
 				$seed = $this->getProperty("worlds.$name.seed", time());
@@ -2617,6 +2647,7 @@ class Server{
 		Entity::registerEntity(Enderman::class);
 		Entity::registerEntity(Ghast::class);
 		Entity::registerEntity(IronGolem::class);
+		Entity::registerEntity(Lightning::class);
 		Entity::registerEntity(Mooshroom::class);
 		Entity::registerEntity(Ocelot::class);
 		Entity::registerEntity(Pig::class);

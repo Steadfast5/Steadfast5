@@ -46,18 +46,19 @@ class ForestBiome extends GrassyBiome{
 
 		$this->addPopulator($tallGrass);
 
-		$this->setElevation(63, 68);
+		$this->setElevation(63, 81);
 
 		if($type === self::TYPE_BIRCH){
-			$this->temperature = 0.5;
+			$this->temperature = 0.6;
 			$this->rainfall = 0.5;
 		}else{
 			$this->temperature = 0.7;
-			$this->temperature = 0.8;
+			$this->rainfall = 0.8;
 		}
 	}
 
-	public function getName(){
+	public function getName() {
 		return $this->type === self::TYPE_BIRCH ? "Birch Forest" : "Forest";
 	}
+
 }

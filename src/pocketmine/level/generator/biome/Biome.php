@@ -23,7 +23,7 @@ namespace pocketmine\level\generator\biome;
 
 use pocketmine\block\Block;
 use pocketmine\level\ChunkManager;
-use pocketmine\level\generator\normal\biome\SwampBiome;
+use pocketmine\level\generator\ender\biome\EnderBiome;
 use pocketmine\level\generator\normal\biome\DesertBiome;
 use pocketmine\level\generator\normal\biome\ForestBiome;
 use pocketmine\level\generator\normal\biome\IcePlainsBiome;
@@ -32,11 +32,15 @@ use pocketmine\level\generator\normal\biome\OceanBiome;
 use pocketmine\level\generator\normal\biome\PlainBiome;
 use pocketmine\level\generator\normal\biome\RiverBiome;
 use pocketmine\level\generator\normal\biome\SmallMountainsBiome;
+use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\TaigaBiome;
+use pocketmine\level\generator\normal\biome\MesaBiome;
+use pocketmine\level\generator\hell\HellBiome;
+use pocketmine\level\generator\populator\Flower;
 use pocketmine\level\generator\populator\Populator;
 use pocketmine\utils\Random;
 
-abstract class Biome{
+abstract class Biome {
 
 	const OCEAN = 0;
 	const PLAINS = 1;
@@ -48,6 +52,7 @@ abstract class Biome{
 	const RIVER = 7;
 
 	const HELL = 8;
+	const ENDER = 9;
 
 	const ICE_PLAINS = 12;
 
@@ -57,6 +62,9 @@ abstract class Biome{
 
 	const BIRCH_FOREST = 27;
 
+	const MESA = 37;
+    const MESA_PLATEAU_F = 38;
+    const MESA_PLATEAU = 39;
 
 	const MAX_BIOMES = 256;
 
@@ -81,6 +89,20 @@ abstract class Biome{
 		self::$biomes[(int) $id] = $biome;
 		$biome->setId((int) $id);
 		$biome->grassColor = self::generateBiomeColor($biome->getTemperature(), $biome->getRainfall());
+
+		$flowerPopFound = false;
+
+		foreach ($biome->getPopulators() as $populator) {
+			if ($populator instanceof Flower) {
+				$flowerPopFound = true;
+				break;
+			}
+		}
+
+		if($flowerPopFound === false) {
+			$flower = new Flower();
+			$biome->addPopulator($flower);
+		}
 	}
 
 	public static function init(){
@@ -93,10 +115,13 @@ abstract class Biome{
 		self::register(self::SWAMP, new SwampBiome());
 		self::register(self::RIVER, new RiverBiome());
 
+		self::register(self::MESA, new MesaBiome());
 		self::register(self::ICE_PLAINS, new IcePlainsBiome());
 
 
 		self::register(self::SMALL_MOUNTAINS, new SmallMountainsBiome());
+		self::register(self::HELL, new HellBiome());
+		self::register(self::ENDER, new EnderBiome());
 
 		self::register(self::BIRCH_FOREST, new ForestBiome(ForestBiome::TYPE_BIRCH));
 	}
@@ -107,7 +132,7 @@ abstract class Biome{
 	 * @return Biome
 	 */
 	public static function getBiome($id){
-		return isset(self::$biomes[$id]) ? self::$biomes[$id] : self::$biomes[self::OCEAN];
+		return self::$biomes[$id] ?? self::$biomes[self::OCEAN];
 	}
 
 	public function clearPopulators(){
@@ -201,4 +226,5 @@ abstract class Biome{
 	 * @return int (Red|Green|Blue)
 	 */
 	abstract public function getColor();
+
 }

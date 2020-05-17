@@ -458,8 +458,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $additionalSkinData = [];
 	protected $playerListIsSent = false;
 
-	public function getLeaveMessage(){
-		return "";
+	public function getLeaveMessage() {
+		return TextFormat::YELLOW . $this->getDisplayName() . " left the game";
 	}
 
 	/**
@@ -998,49 +998,74 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 			}
 		}
+		if ($this->chunkLoadCount >= $this->spawnThreshold && $this->spawned === false) {
+			$this->doFirstSpawn();
+		}
+	}
 
-		if ((!$this->isFirstConnect || $this->chunkLoadCount >= $this->spawnThreshold) && $this->spawned === false) {
-			$this->sendSettings();
-			$this->sendPotionEffects($this);
-			$this->sendData($this);
-			$this->inventory->sendContents($this);
-			$this->inventory->sendArmorContents($this);
+	protected function doFirstSpawn(){
+		$this->spawned = true;
 
-			$pk = new SetTimePacket();
-			$pk->time = $this->level->getTime();
-			$pk->started = $this->level->stopTime == false;
-			$this->dataPacket($pk);
-			$this->setDaylightCycle(!$this->level->stopTime);
+		$this->sendSettings();
+		$this->sendPotionEffects($this);
+		$this->sendData($this);
+		$this->inventory->sendContents($this);
+		$this->inventory->sendArmorContents($this);
 
-			$pk = new PlayStatusPacket();
-			$pk->status = PlayStatusPacket::PLAYER_SPAWN;
-			$this->dataPacket($pk);
+		$pk = new SetTimePacket();
+		$pk->time = $this->level->getTime();
+		$pk->started = $this->level->stopTime == false;
+		$this->dataPacket($pk);
+		$this->setDaylightCycle(!$this->level->stopTime);
 
-			$this->setImmobile(false);
-			$this->noDamageTicks = 60;
-			$this->spawned = true;
-			$chunkX = $chunkZ = null;
-			foreach ($this->usedChunks as $index => $c) {
-				Level::getXZ($index, $chunkX, $chunkZ);
-				foreach ($this->level->getChunkEntities($chunkX, $chunkZ) as $entity) {
-					if ($entity !== $this && !$entity->closed && !$entity->dead && $this->canSeeEntity($entity)) {
-						$entity->spawnTo($this);
-					}
+		$pos = $this->level->getSafeSpawn($this);
+
+		$this->server->getPluginManager()->callEvent($ev = new PlayerRespawnEvent($this, $pos));
+
+		$pos = $ev->getRespawnPosition();
+
+		$pk = new RespawnPacket();
+		$pk->x = $pos->x;
+		$pk->y = $pos->y;
+		$pk->z = $pos->z;
+		$this->dataPacket($pk);
+
+		$pk = new PlayStatusPacket();
+		$pk->status = PlayStatusPacket::PLAYER_SPAWN;
+		$this->dataPacket($pk);
+
+
+		$this->server->getPluginManager()->callEvent($ev = new PlayerJoinEvent($this,
+			TextFormat::YELLOW . $this->getDisplayName() . " joined the game"
+		));
+		if (strlen(trim($ev->getJoinMessage())) > 0) {
+			$this->server->broadcastMessage($ev->getJoinMessage());
+		}
+
+		$this->setImmobile(false);
+		$this->noDamageTicks = 60;
+
+		foreach ($this->usedChunks as $index => $c) {
+			Level::getXZ($index, $chunkX, $chunkZ);
+			foreach ($this->level->getChunkEntities($chunkX, $chunkZ) as $entity) {
+				if ($entity !== $this && !$entity->closed && $entity->isAlive()) {
+					$entity->spawnTo($this);
 				}
 			}
-			$this->setInteractButtonText('', true);
-			$this->server->getPluginManager()->callEvent($ev = new PlayerJoinEvent($this, ""));
-			if (!is_null($this->beforeSpawnViewRadius)) {
-				$this->setViewRadius($this->beforeSpawnViewRadius);
-				$this->beforeSpawnViewRadius = null;
-			}
-			if (!is_null($this->beforeSpawnTeleportPosition)) {
-				$this->teleport($this->beforeSpawnTeleportPosition[0], $this->beforeSpawnTeleportPosition[1], $this->beforeSpawnTeleportPosition[2]);
-				$this->beforeSpawnTeleportPosition = null;
-			}
-			$this->nextChunkOrderRun = 1;
-			$this->joinCompleted = true;
 		}
+		$this->teleport($pos);
+
+		$this->spawnToAll();
+
+		if ($this->getHealth() <= 0) {
+			$pk = new RespawnPacket();
+			$pos = $this->getSpawn();
+			$pk->x = $pos->x;
+			$pk->y = $pos->y;
+			$pk->z = $pos->z;
+			$this->dataPacket($pk);
+		}
+		$this->joined = true;
 	}
 
 	protected function orderChunks() {
@@ -2133,7 +2158,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 							$breakTime = ceil($this->getBreakTime($block) * 20);
 							$fireBlock = $block->getSide($packet->face);
 							if ($fireBlock->getId() === Block::FIRE) {
-								$fireBlock->onUpdate(Level::BLOCK_UPDATE_TOUCH);
+								$fireBlock->onUpdate(Level::BLOCK_UPDATE_TOUCH, 1);
 							}
 							if ($breakTime > 0) {
 								$pk = new LevelEventPacket();
@@ -2849,9 +2874,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 			$this->loggedIn = false;
 
-//			if(isset($ev) and $this->username != "" and $this->spawned !== false and $ev->getQuitMessage() != ""){
-//				$this->server->broadcastMessage($ev->getQuitMessage());
-//			}
+			if (isset($ev) && $this->username != "" && $this->spawned !== false && $ev->getQuitMessage() != "") {
+				$this->server->broadcastMessage($ev->getQuitMessage());
+			}
 
 			$this->server->getPluginManager()->unsubscribeFromPermission(Server::BROADCAST_CHANNEL_USERS, $this);
 			$this->spawned = false;

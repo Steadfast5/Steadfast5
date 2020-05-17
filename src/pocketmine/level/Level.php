@@ -47,6 +47,7 @@ use pocketmine\block\Wheat;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item as DroppedItem;
+use pocketmine\entity\Lightning;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\block\BlockUpdateEvent;
@@ -58,6 +59,7 @@ use pocketmine\event\level\LevelUnloadEvent;
 use pocketmine\event\level\SpawnChangeEvent;
 use pocketmine\event\LevelTimings;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\Timings;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item;
 use pocketmine\level\format\Chunk;
@@ -65,9 +67,12 @@ use pocketmine\level\format\FullChunk;
 use pocketmine\level\format\generic\BaseLevelProvider;
 use pocketmine\level\format\generic\EmptyChunkSection;
 use pocketmine\level\format\LevelProvider;
+use pocketmine\level\generator\LightPopulationTask;
 use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\level\particle\Particle;
 use pocketmine\level\sound\Sound;
+use pocketmine\level\weather\Weather;
+use pocketmine\level\weather\WeatherManager;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
@@ -150,6 +155,9 @@ class Level implements ChunkManager, Metadatable{
 
 	/** @var LevelProvider */
 	protected $provider;
+
+	/** @var Weather */
+	private $weather;
 
 	/** @var Player[][] */
 	protected $usedChunks = [];
@@ -326,6 +334,13 @@ class Level implements ChunkManager, Metadatable{
 		if ($this->server->getAutoGenerate()) {
 			$this->generator = Generator::getGenerator($this->provider->getGenerator());
 		}
+		$this->weather = new Weather($this, 0);
+		if ($this->server->weatherEnabled) {
+			WeatherManager::registerLevel($this);
+			$this->weather->setCanCalculate(true);
+		} else {
+			$this->weather->setCanCalculate(false);
+		}
 	}
 	
 	public function initLevel(){
@@ -465,6 +480,10 @@ class Level implements ChunkManager, Metadatable{
 			$this->server->setDefaultLevel(null);
 		}
 
+		if ($this->weather != null) {
+			WeatherManager::unregisterLevel($this);
+		}
+
 		$this->close();
 
 		return true;
@@ -549,6 +568,8 @@ class Level implements ChunkManager, Metadatable{
 		if(($currentTick % 200) === 0 && $this->server->getConfigBoolean("time-update", true)){
 			$this->sendTime();
 		}
+
+		$this->weather->calcWeather($currentTick);
 
 		$this->unloadChunks();
 
@@ -789,6 +810,10 @@ class Level implements ChunkManager, Metadatable{
 
 	public function __debugInfo(){
 		return [];
+	}
+
+	public function getWeather() {
+		return $this->weather;
 	}
 
 	/**
@@ -1765,6 +1790,43 @@ class Level implements ChunkManager, Metadatable{
 		$chunk->setChanged();
 	}
 
+	public function sendLighting(int $x, int $y, int $z, Player $p) {
+		$pk = new AddEntityPacket();
+		$pk->type = Lightning::NETWORK_ID;
+		$pk->eid = mt_rand(10000000, 100000000);
+		$pk->x = $x;
+		$pk->y = $y;
+		$pk->z = $z;
+		$pk->metadata = array(3, 3, 3, 3);
+		$p->dataPacket($pk);
+	}
+
+	public function spawnLightning(Vector3 $pos) : Lightning {
+		$nbt = new Compound("", [
+			"Pos" => new Enum("Pos", [
+				new DoubleTag("", $pos->getX()),
+				new DoubleTag("", $pos->getY()),
+				new DoubleTag("", $pos->getZ()),
+			]),
+			"Motion" => new Enum("Motion", [
+				new DoubleTag("", 0),
+				new DoubleTag("", 0),
+				new DoubleTag("", 0),
+			]),
+			"Rotation" => new Enum("Rotation", [
+				new FloatTag("", 0),
+				new FloatTag("", 0),
+			]),
+		]);
+
+		$chunk = $this->getChunk($pos->x >> 4, $pos->z >> 4, false);
+
+		$lightning = new Lightning($chunk, $nbt);
+		$lightning->spawnToAll();
+
+		return $lightning;
+	}
+
 	/**
 	 * Gets the highest block Y value at a specific $x and $z
 	 *
@@ -1949,31 +2011,40 @@ class Level implements ChunkManager, Metadatable{
 	 *
 	 * @return bool
 	 */
-	public function loadChunk($x, $z, $generate = true){
+	public function loadChunk($x, $z, $generate = true) {
 		if(isset($this->chunks[$index = self::chunkHash($x, $z)])){
 			return true;
 		}
+
+		$this->timings->syncChunkLoadTimer->startTiming();
 
 		$this->cancelUnloadChunkRequest($x, $z);
 
 		$chunk = $this->provider->getChunk($x, $z, $generate);
 		if($chunk !== null){
-			$this->chunks[$index] = $chunk;
-			$chunk->initChunk();
-		}else{
-			//$this->timings->syncChunkLoadTimer->startTiming();
-			$this->provider->loadChunk($x, $z, $generate);
-			//$this->timings->syncChunkLoadTimer->stopTiming();
-
-			if(($chunk = $this->provider->getChunk($x, $z)) !== null){
-				$this->chunks[$index] = $chunk;
-				$chunk->initChunk();
-			}else{
-				return false;
+			if ($generate) {
+				throw new \InvalidStateException("Could not create new Chunk");
 			}
+			return false;
 		}
+		$this->chunks[$index] = $chunk;
+		$chunk->initChunk();
 
 		$this->server->getPluginManager()->callEvent(new ChunkLoadEvent($chunk, !$chunk->isGenerated()));
+
+		if (!$chunk->isLightPopulated() && $chunk->isPopulated() && $this->getServer()->getProperty("chunk-ticking.light-updates", false)) {
+			$this->getServer()->getScheduler()->scheduleAsyncTask(new LightPopulationTask($this, $chunk));
+		}
+
+		if ($this->isChunkInUse($x, $z)) {
+			foreach ($this->getChunkLoaders($x, $z) as $loader) {
+				$loader->onChunkLoaded($chunk);
+			}
+		} else {
+			$this->unloadChunkRequest($x, $z);
+		}
+
+		$this->timings->syncChunkLoadTimer->stopTiming();
 
 		return true;
 	}
@@ -2218,18 +2289,15 @@ class Level implements ChunkManager, Metadatable{
 	
 
 	public function generateChunk(int $x, int $z, bool $force = false){
-		if (is_null($this->generator)) {
-			return;
-		}
 		if(count($this->chunkGenerationQueue) >= $this->chunkGenerationQueueSize and !$force){
 			return;
 		}
 		if(!isset($this->chunkGenerationQueue[$index = Level::chunkHash($x, $z)])){
-			//Timings::$generationTimer->startTiming();
+			Timings::$generationTimer->startTiming();
 			$this->chunkGenerationQueue[$index] = true;
 			$task = new GenerationTask($this, $this->getChunk($x, $z, true));
-			$this->server->getScheduler()->scheduleAsyncTask($task);			
-			//Timings::$generationTimer->stopTiming();
+			$this->server->getScheduler()->scheduleAsyncTask($task);
+			Timings::$generationTimer->stopTiming();
 		}
 	}
 	
