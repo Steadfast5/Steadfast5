@@ -66,8 +66,16 @@ class BiomeSelector{
 		return ($this->temperature->noise2D($x, $z, true) + 1) / 2;
 	}
 
+	public function setTemperature($value) {
+		$this->temperature = $value;
+	}
+
 	public function getRainfall($x, $z){
 		return ($this->rainfall->noise2D($x, $z, true) + 1) / 2;
+	}
+
+	public function setRainfall($value) {
+		$this->rainfall = $value;
 	}
 
 	/**

@@ -3,9 +3,15 @@
 namespace pocketmine\level\generator\normal\biome;
 
 use pocketmine\block\Block;
+use pocketmine\block\GoldOre;
 use pocketmine\block\StainedClay;
+use pocketmine\level\generator\normal\Normal;
 use pocketmine\level\generator\normal\populator\Cactus;
 use pocketmine\level\generator\normal\populator\DeadBush;
+use pocketmine\level\generator\normal\populator\Ore;
+use pocketmine\level\generator\normal\populator\OreType;
+use pocketmine\level\generator\normal\populator\SugarCane;
+use pocketmine\level\generator\normal\populator\Tree;
 
 class MesaBiome extends SandyBiome {
 
@@ -15,12 +21,27 @@ class MesaBiome extends SandyBiome {
         $cactus = new Cactus();
         $cactus->setBaseAmount(0);
         $cactus->setRandomAmount(5);
+
         $deadBush = new DeadBush();
         $cactus->setBaseAmount(2);
         $deadBush->setRandomAmount(10);
 
+		$sugarCane = new SugarCane();
+		$sugarCane->setRandomAmount(20);
+		$sugarCane->setBaseAmount(3);
+
+		$trees = new Tree();
+		$sugarCane->setRandomAmount(2);
+		$sugarCane->setBaseAmount(0);
+
+		$ores = new Ore();
+		$ores->setOreTypes([
+			new OreType(new GoldOre(), 2, 8, 0, 32),
+		]);
+
         $this->addPopulator($cactus);
         $this->addPopulator($deadBush);
+		$this->addPopulator($sugarCane);
 
         $this->setElevation(63, 81);
 

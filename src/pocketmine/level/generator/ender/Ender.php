@@ -9,10 +9,11 @@ use pocketmine\level\generator\ender\populator\EnderPilar;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\noise\Simplex;
 use pocketmine\level\generator\populator\Populator;
-use pocketmine\math\Vector3 as Vector3;
+use pocketmine\level\format\FullChunk;
+use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 
-class Ender extends Generator{
+class Ender extends Generator {
 
 	/** @var Populator[] */
 	private $populators = [];

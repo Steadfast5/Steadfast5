@@ -35,6 +35,7 @@ use pocketmine\level\generator\normal\biome\SmallMountainsBiome;
 use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\TaigaBiome;
 use pocketmine\level\generator\normal\biome\MesaBiome;
+use pocketmine\level\generator\normal\biome\MesaPlainsBiome;
 use pocketmine\level\generator\hell\HellBiome;
 use pocketmine\level\generator\populator\Flower;
 use pocketmine\level\generator\populator\Populator;
@@ -116,6 +117,7 @@ abstract class Biome {
 		self::register(self::RIVER, new RiverBiome());
 
 		self::register(self::MESA, new MesaBiome());
+		self::register(self::MESA_PLAINS, new MesaPlainsBiome());
 		self::register(self::ICE_PLAINS, new IcePlainsBiome());
 
 

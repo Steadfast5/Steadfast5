@@ -21,6 +21,7 @@
 
 namespace pocketmine\level\generator\normal\biome;
 
+use pocketmine\block\Block;
 use pocketmine\level\generator\populator\TallGrass;
 
 class RiverBiome extends GrassyBiome {
@@ -37,6 +38,19 @@ class RiverBiome extends GrassyBiome {
 
 		$this->temperature = 0.5;
 		$this->rainfall = 0.7;
+		$this->setGroundCover([
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+		]);
 	}
 
 	public function getName() {

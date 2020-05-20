@@ -3,17 +3,27 @@
 namespace pocketmine\level\generator\hell;
 
 use pocketmine\block\Block;
+use pocketmine\block\Gravel;
 use pocketmine\block\NetherQuartzOre as QuartzOre;
 use pocketmine\block\Lava;
+use pocketmine\block\SoulSand;
 use pocketmine\level\ChunkManager;
+use pocketmine\level\Level;
+use pocketmine\level\format\anvil\Anvil;
+use pocketmine\level\format\anvil\Chunk;
+use pocketmine\level\format\FullChunk;
+use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\biome\BiomeSelector;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\noise\Simplex;
 use pocketmine\level\generator\object\OreType;
+use pocketmine\level\populator\GroundFire;
+use pocketmine\level\populator\NetherGlowStone;
+use pocketmine\level\generator\populator\NetherLava;
 use pocketmine\level\generator\populator\Ore;
 use pocketmine\level\generator\populator\Populator;
-use pocketmine\math\Vector3 as Vector3;
+use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 
 class Nether extends Generator {
@@ -64,8 +74,16 @@ class Nether extends Generator {
 		}
 	}
 
+	public function getDimension() {
+		return 1;
+	}
+
 	public function getName() {
 		return "nether";
+	}
+
+	public function getWaterHeight() {
+		return $this->waterHeight;
 	}
 
 	public function getSettings() {
@@ -82,12 +100,24 @@ class Nether extends Generator {
 		$ores = new Ore();
 		$ores->setOreTypes([
 			new OreType(New QuartzOre(), 20, 8, 0, 64),
+			new OreType(new SoulSand(), 5, 64, 0, 127),
+			new OreType(new Gravel(), 8, 33, 0, 127),
 			new OreType(New Lava(), 1, 1, 0, 128),
 		]);
 		$this->populators[] = $ores;
+		$this->populators[] = new NetherGlowStone();
+		$groundFire = new GroundFire();
+		$groundFire->setBaseAmount(1);
+		$groundFire->setRandomAmount(1);
+		$this->populators[] = $groundFire;
+		$lava = new NetherLava();
+		$lava->setBaseAmount(0);
+		$lava->setRandomAmount(0);
+		$this->populators[] = $lava;
 	}
 
 	public function generateChunk($chunkX, $chunkZ) {
+		$level = $this->level;
 		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
 
 		$noise = Generator::getFastNoise3D($this->noiseBase, 16, 128, 16, 4, 8, 4, $chunkX * 16, 0, $chunkZ * 16);

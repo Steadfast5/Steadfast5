@@ -22,13 +22,22 @@
 namespace pocketmine\level\generator\normal\biome;
 
 use pocketmine\block\Sapling;
+use pocketmine\level\generator\biome\Biome;
+use pocketmine\level\generator\normal\Normal;
+use pocketmine\level\generator\populator\Bush;
+use pocketmine\level\generator\populator\FallenTree;
 use pocketmine\level\generator\populator\TallGrass;
 use pocketmine\level\generator\populator\Tree;
 
-class ForestBiome extends GrassyBiome{
+class ForestBiome extends GrassyBiome implements Mountainable {
 
 	const TYPE_NORMAL = 0;
 	const TYPE_BIRCH = 1;
+
+	public static $types = [
+		"Oak Forest",
+		"Birch Forest",
+	];
 
 	public $type;
 
@@ -37,6 +46,13 @@ class ForestBiome extends GrassyBiome{
 
 		$this->type = $type;
 
+		$bush = new Bush();
+		$bush->setBaseAmount(10);
+
+		$fallenTree = new FallenTree();
+		$fallenTree->setBaseAmount(0);
+		$fallenTree->setRandomAmount(4);
+
 		$trees = new Tree($type === self::TYPE_BIRCH ? Sapling::BIRCH : Sapling::OAK);
 		$trees->setBaseAmount(5);
 		$this->addPopulator($trees);
@@ -44,14 +60,15 @@ class ForestBiome extends GrassyBiome{
 		$tallGrass = new TallGrass();
 		$tallGrass->setBaseAmount(3);
 
+		$this->addPopulator($bush);
 		$this->addPopulator($tallGrass);
 
 		$this->setElevation(63, 81);
 
-		if($type === self::TYPE_BIRCH){
+		if ($type === self::TYPE_BIRCH) {
 			$this->temperature = 0.6;
 			$this->rainfall = 0.5;
-		}else{
+		} else {
 			$this->temperature = 0.7;
 			$this->rainfall = 0.8;
 		}
