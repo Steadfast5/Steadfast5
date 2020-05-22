@@ -17,7 +17,7 @@
 		"maxCount": 4,
 		"id": 263,
 		"data": 0,
-		"minStacks" 1,
+		"minStacks": 1,
 		"maxStacks": 1
 	},
 	"Apple":
@@ -27,8 +27,8 @@
 		"maxCount": 3,
 		"id": 260,
 		"data": 0,
-		"minStacks" 1,
-		"maxStacks" 1
+		"minStacks": 1,
+		"maxStacks": 1
 	},
 	"Wheat":
 	{
@@ -53,8 +53,8 @@
 	"RottenFlesh":
 	{
 		"percentage": 55.3
-		"minCount": 1
-		"maxCount": 1
+		"minCount": 1,
+		"maxCount": 1,
 		"id": 367,
 		"data": 0,
 		"minStacks": 1,
