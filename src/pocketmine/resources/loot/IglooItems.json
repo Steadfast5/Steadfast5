@@ -52,7 +52,7 @@
 	},
 	"RottenFlesh":
 	{
-		"percentage": 55.3
+		"percentage": 55.3,
 		"minCount": 1,
 		"maxCount": 1,
 		"id": 367,
@@ -72,7 +72,7 @@
 	},
 	"Emerald":
 	{
-		"percentage": 7.6
+		"percentage": 7.6,
 		"minCount": 1,
 		"maxCount": 1,
 		"id": 388,
