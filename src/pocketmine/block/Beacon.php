@@ -4,11 +4,13 @@ namespace pocketmine\block;
 
 use pocketmine\block\Block;
 use pocketmine\item\Item;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
+use pocketmine\tile\Beacon as TileBeacon;
 use pocketmine\tile\Tile;
 
 class Beacon extends Solid {
@@ -49,6 +51,20 @@ class Beacon extends Solid {
 			Tile::createTile(Tile::BEACON, $level->getChunk($this->x >> 4, $this->z >> 4), $nbt);
 		}
 		return $result;
+	}
+
+	public function onActivate(Item $item, Player $player = null) {
+		if ($player instanceof Player) {
+			$tile = $this->level->getTile($this);
+			if ($tile instanceof TileBeacon) {
+				$top = $this->getSide(Vector3::SIDE_UP);
+				if ($top->isTransparent() !== true) {
+					return true;
+				}
+				$player->addWindow($tile->getInventory());
+			}
+		}
+		return true;
 	}
 
 }
