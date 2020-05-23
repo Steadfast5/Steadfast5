@@ -28,4 +28,8 @@ class Cauldron extends Spawnable {
 		return $compound;
 	}
 
+	public function getName() {
+		return "Cauldron";
+	}
+
 }
