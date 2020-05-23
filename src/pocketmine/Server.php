@@ -1773,6 +1773,27 @@ class Server{
 			$this->setDefaultLevel($this->getLevelByName($default));
 		}
 
+		if ($this->isAllowNether() && $this->getNetherLevel() === null) {
+			$netherLevelName = $this->getConfigString("dimensions.nether.level-name", "nether");
+			if (trim($netherLevelName) == "") {
+				$netherLevelName = "nether";
+			}
+			if (!$this->loadLevel($netherLevelName)) {
+				$this->generateLevel($netherLevelName, time(), Generator::getGenerator("hell"));
+			}
+			$this->setNetherLevel($this->getLevelByName($netherLevelName));
+		}
+
+		if ($this->isAllowTheEnd() && $this->getTheEndLevel() === null) {
+			$endLevelName = $this->getConfigString("dimensions.the-end.level-name", "end");
+			if (trim($endLevelName) == "") {
+				$endLevelName = "end";
+			}
+			if (!$this->loadLevel($endLevelName)) {
+				$this->generateLevel($endLevelName, time(), Generator::getGenerator("end"));
+			}
+			$this->setTheEndLevel($this->getLevelByName($endLevelName));
+		}
 
 		$this->properties->save();
 
@@ -1804,7 +1825,15 @@ class Server{
 		
 		$this->start();
 	}
-	
+
+	public function isAllowNether() {
+		return $this->getConfigString("dimensions.nether.active", true);
+	}
+
+	public function isAllowTheEnd() {
+		return $this->getConfigString("dimensions.the-end.active", true);
+	}
+
 	/**
 	 * @return AdvancedSourceInterface
 	 */

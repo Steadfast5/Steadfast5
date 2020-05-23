@@ -288,6 +288,10 @@ abstract class Entity extends Location implements Metadatable{
 	
 	protected $blocksAround = [];
 
+	protected $inPortal = false;
+	protected $timeUntilPortal = 0;
+	protected $portalCounter = 0;
+
 	public function __construct(FullChunk $chunk, Compound $nbt){
 		if($chunk === null or $chunk->getProvider() === null){
 			throw new ChunkException("Invalid garbage Chunk given to Entity");
@@ -391,6 +395,17 @@ abstract class Entity extends Location implements Metadatable{
 //		$this->setDataProperty(self::DATA_SHOW_NAMETAG, self::DATA_TYPE_BYTE, $value ? 1 : 0);
 	}
 
+	public function isRiding() {
+		return $this->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_RIDING);
+	}
+
+	public function setRiding($value) {
+		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_RIDING, $value);
+	}
+
+	public function getRidingEntity() {
+		return $this->ridingEid !== null ? $this->server->findEntity($this->ridingEid) : null;
+	}
 
     /**
      * @param bool $value
@@ -438,6 +453,10 @@ abstract class Entity extends Location implements Metadatable{
 	
 	public function setFlyingFlag($value = true){
 		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_FALL_FLYING, (bool) $value);
+	}
+
+	public function isInPortal() {
+		return $this->inPortal;
 	}
 
 	/**
@@ -953,6 +972,24 @@ abstract class Entity extends Location implements Metadatable{
 		
 		$this->checkBlockCollision();
 
+		if ($this->inPortal) {
+			if ($this->server->isAllowNether()) {
+				if (!$this->isRiding() && $this->portalCounter++ > $this->getMaxInPortalTime()) {
+					$this->portalCounter = $this->getMaxInPortalTime();
+					$this->timeUntilPortal = $this->getPortalCooldown();
+					$this->travelToDimension($this->level->getDimension() === ChangeDimensionPacket::NETHER ? ChangeDimensionPacket::OVERWORLD : ChangeDimensionPacket::NETHER);
+					$this->inPortal = false;
+				}
+			}
+		} else {
+			if ($this->portalCounter > 0) {
+				$this->portalCounter -= 4;
+			}
+			if ($this->portalCounter < 0) {
+				$this->portalCounter = 0;
+			}
+		}
+
 		if ($this->fireTicks > 0) {
 			if ($this->fireProof) {
 				$this->fireTicks -= 4 * $tickDiff;
@@ -972,6 +1009,25 @@ abstract class Entity extends Location implements Metadatable{
 			}
 		}
 		return $hasUpdate;
+	}
+
+	public function getMaxInPortalTime() {
+		return 0;
+	}
+
+	public function getPortalCooldown() {
+		return 300;
+	}
+
+	public function travelToDimension(int $dimensionId) {
+		if ($dimensionId === ChangeDimensionPacket::NETHER) {
+			$targetLevel = $this->server->getNetherLevel();
+		} elseif ($dimensionId === ChangeDimensionPacket::THE_END) {
+			$targetLevel = $this->server->getTheEndLevel();
+		} else {
+			$targetLevel = $this->server->getDefaultLevel();
+		}
+		$this->teleport($targetLevel->getSafeSpawn());
 	}
 
 	protected function updateMovement(){
