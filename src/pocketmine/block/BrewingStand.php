@@ -28,8 +28,8 @@ class BrewingStand extends Transparent {
 
 	protected $id = self::BREWING_STAND;
 
-	public function __construct() {
-		
+	public function __construct($meta = 0) {
+		$this->meta = $meta;
 	}
 
 	public function canBeActivated() {
