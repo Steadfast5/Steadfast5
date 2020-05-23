@@ -56,4 +56,8 @@ class ShulkerInventory extends ContainerInventory {
 		parent::onClose($who);
 	}
 
+	public function getHolder() {
+		return $this->holder;
+	}
+
 }
