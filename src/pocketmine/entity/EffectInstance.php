@@ -15,7 +15,7 @@ class EffectInstance {
 	private $ambient;
 	private $color;
 
-	public function __construct(Effect $effectType, ?int $duration = null, int $amplifier = 0, bool $visible = true, bool $ambient = false, ?Color $overrideColor = null) {
+	public function __construct(Effect $effectType, $duration = null, $amplifier = 0, $visible = true, $ambient = false, $overrideColor = null) {
 		$this->effectType = $effectType;
 		$this->setDuration($duration ?? $effectType->getDefaultDuration());
 		$this->amplifier = $amplifier;
