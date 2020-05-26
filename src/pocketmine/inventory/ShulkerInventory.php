@@ -23,7 +23,7 @@ class ShulkerInventory extends ContainerInventory {
 	}
 
 	public function getHolder() {
-		return $this->getHolder;
+		return $this->holder;
 	}
 
 	public function getSize() {
@@ -54,10 +54,6 @@ class ShulkerInventory extends ContainerInventory {
 			$level->broadcastLevelSoundEvent($this->getHolder()->add(0.5, 0.5, 0.5), LevelSoundEventPacket::SOUND_SHULKERBOX_CLOSED);
 		}
 		parent::onClose($who);
-	}
-
-	public function getHolder() {
-		return $this->holder;
 	}
 
 }
