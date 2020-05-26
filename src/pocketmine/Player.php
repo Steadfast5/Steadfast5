@@ -82,6 +82,7 @@ use pocketmine\inventory\BigShapelessRecipe;
 use pocketmine\inventory\EnchantInventory;
 use pocketmine\inventory\Inventory;
 use pocketmine\inventory\InventoryHolder;
+use pocketmine\inventory\OffHandInventory;
 use pocketmine\inventory\PlayerInventory;
 use pocketmine\inventory\ShapedRecipe;
 use pocketmine\inventory\ShapelessRecipe;
@@ -131,6 +132,7 @@ use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\network\protocol\RespawnPacket;
 use pocketmine\network\protocol\SetEntityDataPacket;
 use pocketmine\network\protocol\TextPacket;
+use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\network\protocol\MovePlayerPacket;
 use pocketmine\network\protocol\SetDifficultyPacket;
 use pocketmine\network\protocol\SetEntityMotionPacket;
@@ -442,6 +444,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $inventoryPacketQueue = [];
 	protected $lastMoveBuffer = '';
 	protected $countMovePacketInLastTick = 0;
+
+	protected $offhandInventory = null;
 
 	protected $commandPermissions = AdventureSettingsPacket::COMMAND_PERMISSION_LEVEL_ANY;
 	protected $isTransfered = false;
@@ -857,6 +861,70 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->createInventory();
 		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_HAS_COLLISION, true, self::DATA_TYPE_LONG, false);
 		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_AFFECTED_BY_GRAVITY, true, self::DATA_TYPE_LONG, false);
+	}
+
+	protected function initEntity() {
+		$this->offhandInventory = new OffHandInventory($this);
+		if ($this->namedtag->hasTag("offHand", Compound::class)) {
+			$this->offhandInventory->setItemInOffHand(Item::nbtDeserialize($this->namedtag->getCompoundTag("offHand")));
+		}
+		parent::initEntity();
+	}
+
+	public function addDefaultWindows() {
+		parent::addDefaultWindows();
+		$this->addWindow($this->offhandInventory, Protocol120::CONTAINER_ID_OFFHAND, true);
+	}
+
+	public function getOffHandInventory() {
+		return $this->offhandInventory;
+	}
+
+	public function saveNBT() {
+		parent::saveNBT();
+		$this->namedtag->setTag($this->offhandInventory->getItemInOffHand()->nbtSerialize(-1, "offHand"));
+	}
+
+	public function handleMobEquipment(MobEquipmentPacket $packet) {
+		if ($packet->windowId === Protocol120::CONTAINER_ID_OFFHAND) {
+			$item = $this->offhandInventory->getItem($packet->hotbarSlot);
+			if (!$item->equals($packet->item)) {
+				$this->server->getLogger()->debug("Tried to equip " . $packet->item . " but have " . $item . " in target slot");
+				$this->offhandInventory->sendContents($this);
+				return false;
+			}
+			$this->offhandInventory->setItemInOffHand($packet->item);
+			$this->namedtag->setTag($packet->item->nbtSerialize(-1, "offHand"));
+			return true;
+		}
+		return parent::handleMobEquipment($packet);
+	}
+
+	protected function onDeath() {
+		$this->doCloseInventory();
+		$drops = array_merge($this->getDrops(), $this->offhandInventory->getContents(false));
+		$ev = new PlayerDeathEvent($this, $drops);
+		$ev->call();
+		if (!$ev->getKeepInventory()) {
+			foreach ($ev->getDrops() as $item) {
+				$this->level->dropItem($this, $item);
+			}
+			if ($this->inventory !== null) {
+				$this->inventory->setHeldItemIndex(0);
+				$this->inventory->clearAll();
+			}
+			if ($this->armorInventory !== null) {
+				$this->armorInventory->clearAll();
+			}
+			if ($this->offhandInventory !== null) {
+				$this->offhandInventory->clearAll();
+			}
+		}
+		$this->level->dropExperience($this, $this->getXpDropAmount());
+		$this->setXpAndProgress(0, 0);
+		if ($ev->getDeathMessage() != "") {
+			$this->server->broadcastMessage($ev->getDeathMessage());
+		}
 	}
 
 	protected function createInventory() {
