@@ -71,6 +71,7 @@ use pocketmine\event\player\PlayerRespawnAfterEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerToggleSprintEvent;
 use pocketmine\event\server\DataPacketSendEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\TextContainer;
 use pocketmine\event\Timings;
 use pocketmine\form\Form;
@@ -1876,6 +1877,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 * @param DataPacket $packet
 	 */
 	public function handleDataPacket(DataPacket $packet){
+		$this->server->getPluginManager()->callEvent(new DataPacketReceiveEvent($this, $packet));
 		if($this->connected === false){
 			return;
 		}
