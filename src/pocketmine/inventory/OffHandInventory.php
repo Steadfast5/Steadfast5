@@ -21,7 +21,7 @@ class OffHandInventory extends BaseInventory {
 		return $this->holder;
 	}
 
-	public function setSize($size) {
+	public function getSize() {
 		return 1;
 	}
 
