@@ -649,6 +649,10 @@ class Server{
 		return $this->getConfigBoolean("allow-flight", false);
 	}
 
+	public function getAllowInvCheats() {
+		return $this->getProperty("player.inventory.allow-cheats", false);
+	}
+
 	/**
 	 * @return bool
 	 */
