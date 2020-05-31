@@ -51,6 +51,7 @@ abstract class Tile extends Position{
 	const SHULKER_BOX = "ShulkerBox";
 	const DISPENSER = "Dispenser";
 	const ITEM_FRAME = "ItemFrame";
+	const JUKE_BOX = "Jukebox";
 	const DROPPER = "Dropper";
 	const HOPPER = "Hopper";
 	const BEACON = "Beacon";

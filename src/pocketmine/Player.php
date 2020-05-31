@@ -72,6 +72,7 @@ use pocketmine\event\player\PlayerRespawnAfterEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerToggleSprintEvent;
 use pocketmine\event\server\DataPacketSendEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\TextContainer;
 use pocketmine\event\Timings;
 use pocketmine\form\Form;
@@ -2017,6 +2018,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 * @param DataPacket $packet
 	 */
 	public function handleDataPacket(DataPacket $packet){
+		$this->server->getPluginManager()->callEvent(new DataPacketReceiveEvent($this, $packet));
 		if($this->connected === false){
 			return;
 		}
@@ -3423,7 +3425,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			if (!is_null($this->currentWindow)) {
 				$this->removeWindow($this->currentWindow);
 			}
-			$this->sendPosition($this, $this->pitch, $this->yaw, MovePlayerPacket::MODE_RESET);
+			$this->sendPosition($this, $this->yaw, $this->pitch, MovePlayerPacket::MODE_RESET);
 
 			$this->resetFallDistance();
 			$this->nextChunkOrderRun = 0;
