@@ -117,6 +117,7 @@ use pocketmine\tile\Furnace;
 use pocketmine\tile\PistonArm;
 use pocketmine\tile\ShulkerBox;
 use pocketmine\tile\ItemFrame;
+use pocketmine\tile\Jukebox;
 use pocketmine\tile\Sign;
 use pocketmine\tile\Skull;
 use pocketmine\tile\Tile;
@@ -2651,6 +2652,7 @@ class Server{
 		Tile::registerTile(PistonArm::class);
 		Tile::registerTile(ShulkerBox::class);
 		Tile::registerTile(ItemFrame::class);
+		Tile::registerTile(Jukebox::class);
 		Tile::registerTile(Dropper::class);
 		Tile::registerTile(Hopper::class);
 		Tile::registerTile(Beacon::class);
