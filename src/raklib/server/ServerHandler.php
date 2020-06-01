@@ -88,6 +88,7 @@ class ServerHandler{
     public function handlePacket(){
         if(strlen($packet = $this->server->readThreadToMainPacket()) > 0){
             $id = ord($packet{0});
+
             $offset = 1;
             if($id === RakLib::PACKET_ENCAPSULATED){
 //				var_dump(debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 20));
