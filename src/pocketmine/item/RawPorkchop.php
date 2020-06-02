@@ -36,11 +36,6 @@ class RawPorkchop extends Item {
 		$position = [ 'x' => $human->getX(), 'y' => $human->getY(), 'z' => $human->getZ() ];
 		$human->sendSound("SOUND_BURP", $position, 63);
 
-		$human->addEffect(Effect::getEffect(Effect::REGENERATION)->setAmplifier(1)->setDuration(5 * 20));
-		$human->addEffect(Effect::getEffect(Effect::ABSORPTION)->setAmplifier(0)->setDuration(120 * 20));
-
-		$human->setAbsorption(4);
-
 		if ($human instanceof Player && $human->getGamemode() === 1) {
 			return;
 		}
