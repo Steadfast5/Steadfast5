@@ -50,7 +50,7 @@ class RottenFlesh extends Item {
 			$human->getInventory()->setItemInHand(Item::get(self::AIR));
 		} else {
 			--$this->count;
-      $human->getInventory()->setItemInHand($this);
+			$human->getInventory()->setItemInHand($this);
 		}
 		return [];
 	}
