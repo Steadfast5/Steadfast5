@@ -351,22 +351,22 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 	private $elytraIsActivated = false;
 
-    /** @IMPORTANT don't change the scope */
-    private $inventoryType = self::INVENTORY_CLASSIC;
+	/** @IMPORTANT don't change the scope */
+	private $inventoryType = self::INVENTORY_CLASSIC;
 	private $languageCode = false;
 
-    /** @IMPORTANT don't change the scope */
-    private $deviceType = self::OS_UNKNOWN;
+	/** @IMPORTANT don't change the scope */
+	private $deviceType = self::OS_UNKNOWN;
 
 	private $messageQueue = [];
 
 	private $noteSoundQueue = [];
 
-    private $xuid = '';
+	private $xuid = '';
 
 	private $ping = 0;
 
-    protected $xblName = '';
+	protected $xblName = '';
 
 	protected $viewRadius = 3;
 
@@ -388,7 +388,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $lastShowModalTick = 0;
 
 	/** @var int */
-    protected $formIdCounter = 0;
+	protected $formIdCounter = 0;
 	/** @var Form[] */
 	protected $forms = [];
 
@@ -405,16 +405,17 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	/** @var float */
 	private $saturation = 5.0;
 
-    /** @var float */
-    private $absorption = 0.0;
+	/** @var float */
+	private $absorption = 0.0;
 
 	public function setSaturation(float $saturation) {
-	    $this->saturation = $saturation;
-    }
+		$this->saturation = $saturation;
+	}
 
-    public function getSaturarion(): float {
-	    return $this->saturation;
-    }
+	public function getSaturarion(): float {
+		return $this->saturation;
+	}
+
 	/** @var float */
 	private $exhaustion = 0.0;
 	/** @var integer */
@@ -481,9 +482,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	public function sendForm(Form $form) : void {
 		$id = $this->formIdCounter++;
 		$pk = new ShowModalFormPacket();
-    	$pk->formId = $id;
+		$pk->formId = $id;
 		$pk->data = json_encode($form);
-		if($pk->data === false){
+		if ($pk->data === false) {
 
 			throw new \InvalidArgumentException("Failed to encode form JSON: " . json_last_error_msg());
 
@@ -3152,7 +3153,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->dataPacket($pk);
 	}
 
-    public function getAbsorption() {
+	public function getAbsorption() {
 		return $this->absorption;
 	}
 
