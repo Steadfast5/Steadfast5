@@ -175,8 +175,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			$player = $this->players[$identifier];
 			try{
 				if($buffer !== ""){
-					$pk = $this->getPacket($buffer, $player);	
-
+					$pk = $this->getPacket($buffer, $player);			
 					if (!is_null($pk)) {
 						try {
 							$pk->decode($player->getPlayerProtocol());
@@ -184,8 +183,6 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 							file_put_contents("logs/" . date('Y.m.d') . "_decode_error.log", $e->getMessage() . "\n", FILE_APPEND | LOCK_EX);
 							return;
 						}
-
-
 						$player->handleDataPacket($pk);
 					}
 				}
@@ -241,7 +238,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 	private function getPacket($buffer, $player){	
 		$tmpStream = new BinaryStream($buffer);
 		$header = $tmpStream->getVarInt();
-		$pid = $header & 0x3FF;
+		$pid = $header & 0x3FF;		
 		if ($pid == 0x13) { //speed hack
 			$player->setLastMovePacket($buffer);
 			return null;
