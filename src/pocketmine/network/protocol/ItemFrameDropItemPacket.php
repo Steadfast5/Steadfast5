@@ -23,5 +23,7 @@ class ItemFrameDropItemPacket extends PEPacket{
         //$this->reset($playerProtocol);
         //$this->putBlockCoords($this->x, $this->y, $this->z);
         //$this->setS
+		$this->getBlockPosition($this->x, $this->y, $this->z);
 	}
+
 }
