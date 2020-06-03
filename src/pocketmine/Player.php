@@ -488,9 +488,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	public function sendForm(Form $form) : void {
 		$id = $this->formIdCounter++;
 		$pk = new ShowModalFormPacket();
-    	$pk->formId = $id;
+		$pk->formId = $id;
 		$pk->data = json_encode($form);
-		if($pk->data === false){
+		if ($pk->data === false) {
 
 			throw new \InvalidArgumentException("Failed to encode form JSON: " . json_last_error_msg());
 
@@ -3324,7 +3324,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->dataPacket($pk);
 	}
 
-    public function getAbsorption() {
+	public function getAbsorption() {
 		return $this->absorption;
 	}
 
