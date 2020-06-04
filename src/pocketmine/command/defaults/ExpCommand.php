@@ -24,7 +24,7 @@ class ExpCommand extends VanillaCommand {
 			return true;
 		}
 
-    if (count($args) > 0) {
+		if (count($args) > 0) {
 			$inputAmount = $args[0];
 			$player = null;
 
