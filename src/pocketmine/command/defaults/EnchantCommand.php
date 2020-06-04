@@ -1,5 +1,7 @@
 <?php
 
+namespace pocketmine\command\defaults;
+
 use pocketmine\command\CommandSender;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\utils\TextFormat;
