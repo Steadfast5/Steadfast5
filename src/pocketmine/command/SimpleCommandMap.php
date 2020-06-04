@@ -62,8 +62,10 @@ use pocketmine\Server;
 use pocketmine\utils\MainLogger;
 use pocketmine\command\defaults\TransferCommand;
 use pocketmine\command\defaults\PingCommand;
+use pocketmine\command\defaults\SetBlockCommand;
+use pocketmine\command\defaults\EnchantCommand;
 
-class SimpleCommandMap implements CommandMap{
+class SimpleCommandMap implements CommandMap {
 
 	/**
 	 * @var Command[]
@@ -117,6 +119,9 @@ class SimpleCommandMap implements CommandMap{
 		
 		$this->register("pocketmine", new TransferCommand("transfer"));
 		$this->register("pocketmine", new PingCommand("ping"));
+
+		$this->register("pocketmine", new SetBlockCommand("setblock"));
+		$this->register("pocketmine", new EnchantCommand("enchant"));
 
 		if($this->server->getProperty("debug.commands", false) === true){
 			$this->register("pocketmine", new StatusCommand("status"));
