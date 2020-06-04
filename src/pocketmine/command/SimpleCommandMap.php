@@ -64,6 +64,7 @@ use pocketmine\command\defaults\TransferCommand;
 use pocketmine\command\defaults\PingCommand;
 use pocketmine\command\defaults\SetBlockCommand;
 use pocketmine\command\defaults\EnchantCommand;
+use pocketmine\command\defaults\ExpCommand;
 
 class SimpleCommandMap implements CommandMap {
 
@@ -122,6 +123,7 @@ class SimpleCommandMap implements CommandMap {
 
 		$this->register("pocketmine", new SetBlockCommand("setblock"));
 		$this->register("pocketmine", new EnchantCommand("enchant"));
+		$this->register("pocketmine", new ExpCommand("xp"));
 
 		if($this->server->getProperty("debug.commands", false) === true){
 			$this->register("pocketmine", new StatusCommand("status"));
