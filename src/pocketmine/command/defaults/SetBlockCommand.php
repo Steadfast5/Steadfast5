@@ -7,7 +7,6 @@ use pocketmine\math\Vector3;
 use pocketmine\item\ItemBlock;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
-use pocketmine\event\TranslationContainer;
 use pocketmine\utils\TextFormat;
 
 class SetBlockCommand extends VanillaCommand {
@@ -15,8 +14,8 @@ class SetBlockCommand extends VanillaCommand {
 	public function __construct($name) {
 		parent::__construct(
 			$name,
-			"%pocketmine.command.setblock.description",
-			"%commands.setblock.usage"
+			"Changes a block to another block.",
+			"setblock <position: x y z> <tileName: Block> [tileData: int] [destroy|keep|replace]"
 		);
 		$this->setPermission("pocketmine.command.setblock");
 	}
@@ -26,7 +25,7 @@ class SetBlockCommand extends VanillaCommand {
 			return true;
 		}
 		if (!isset($args[3])) {
-			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
+			$sender->sendMessage("Usage: {%0}", [$this->usageMessage]);
 		} else {
 			$x = $args[0];
 			$y = $args[1];
@@ -38,7 +37,7 @@ class SetBlockCommand extends VanillaCommand {
 					$block[1] = 0;
 				}
 				$level->setBlock(new Vector3($x, $y, $z), $block[0], $block[1]);
-				Command::broadcastCommandMessage($sender, new TranslationContainer("%commands.setblock.success", [$x, $y, $z, $block]));
+				Command::broadcastCommandMessage($sender, "Successfully set block", [$x, $y, $z, $block]);
 			}
 		}
 	}
