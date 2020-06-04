@@ -3366,7 +3366,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->server->getLogger()->warning($this->getName() . "has an XUID, but their login keychain is not signed by Mojang");
 			$xuid = "";
 		}
-		if ($xuid === "" or !is_string($xuid)) {
+		if ($xuid === "" || !is_string($xuid)) {
 			if ($signed) {
 				$this->server->getLogger()->error($this->getName() . "should have an XUID, but none found");
 			}
