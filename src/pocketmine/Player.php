@@ -1223,17 +1223,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		if (count($this->packetQueue) <= 0 && count($this->inventoryPacketQueue) <= 0) {
 			return;
 		}
-		//for debug
-		var_dump('to client');
 		$buffer = '';
 		foreach ($this->packetQueue as $pkBuf) {
-			//for debug
-			var_dump(ord($pkBuf{0}));
-			if (strlen($pkBuf) > 1000) {
-				var_dump(strlen($pkBuf));
-			} else {
-				var_dump($pkBuf);
-			}
 			$buffer .= Binary::writeVarInt(strlen($pkBuf)) . $pkBuf;
 		}
 		foreach ($this->inventoryPacketQueue as $pk) {
@@ -5506,7 +5497,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$buffer .= Binary::writeVarInt(strlen($pkBuf)) . $pkBuf;
 		}
 		$pk = new BatchPacket();
-		$pk->payload = zlib_encode($buffer, self::getCompressAlg($this->originalProtocol), 7);
+		$pk->payload = zlib_encode($buffer, ZLIB_ENCODING_DEFLATE, 7);
 		$this->dataPacket($pk);
 	}
 
@@ -5632,13 +5623,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			return true;
 		}
 		return false;
-	}
-
-	public static function getCompressAlg($protocol) {
-		if ((int)$protocol >= 406) {
-			return ZLIB_ENCODING_RAW;
-		}
-		return ZLIB_ENCODING_DEFLATE;
 	}
 
 }

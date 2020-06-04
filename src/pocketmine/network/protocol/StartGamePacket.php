@@ -23,8 +23,7 @@ namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
 
-class StartGamePacket extends PEPacket {
-
+class StartGamePacket extends PEPacket{
 	const NETWORK_ID = Info::START_GAME_PACKET;
 	const PACKET_NAME = "START_GAME_PACKET";
 	
@@ -72,17 +71,12 @@ class StartGamePacket extends PEPacket {
 		
 		$this->putSignedVarInt($this->seed);
 		
-		if ($playerProtocol == Info::PROTOCOL_400) {
+		if ($playerProtocol >= Info::PROTOCOL_400) {
 			$this->putByte(0);
 			$this->putByte(0);
 			$this->putString('');
 		}
-		if ($playerProtocol >= Info::PROTOCOL_406) {
-			//$this->putShort(0); //SpawnSettingsType
-			$this->putByte(0);
-			$this->putString(''); //User Difined Biome type
-		}
-
+		
 		$this->putSignedVarInt($this->dimension);
 		
 		$this->putSignedVarInt($this->generator);
@@ -100,22 +94,14 @@ class StartGamePacket extends PEPacket {
 		
 		$this->putSignedVarInt(0); // DayCycleStopTyme 1x VarInt
 		
-		if ($playerProtocol == Info::PROTOCOL_400) {
+		if ($playerProtocol >= Info::PROTOCOL_400) {
 			$this->putByte(0);
-		}
-
-		if ($playerProtocol >= Info::PROTOCOL_406) {
-			$this->putSignedVarInt(0); //edu edition offer
 		}
 		
 		$this->putByte(0); //edu mode
 		
 		if ($playerProtocol >= Info::PROTOCOL_260 && $this->stringClientVersion != '1.2.20.1') {
 			$this->putByte(0); // Are education features enabled?
-		}
-
-		if ($playerProtocol >= Info::PROTOCOL_406) {
-			$this->putString(''); //edu product id
 		}
 
 		$this->putLFloat(0); //rain level
@@ -199,12 +185,11 @@ class StartGamePacket extends PEPacket {
 			}
 		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
-			$this->putLInt(16); // limited word width
-			$this->putLInt(16); // limited word depth			
-		}
-
-		if ($playerProtocol >= Info::PROTOCOL_400) {
-			$this->putByte(0); // nether type
+			$this->putLInt(16); //unknown
+			$this->putLInt(16); //unknown
+			if ($playerProtocol >= Info::PROTOCOL_400) {
+				$this->putByte(0);
+			}
 		}
 		
 		// level settings end
@@ -228,7 +213,7 @@ class StartGamePacket extends PEPacket {
 			$this->putString($this->multiplayerCorrelationId);
 		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
-			$this->putByte(0); // whether the new item stack net manager is enabled for server authoritative inventory
+			$this->putByte(0); // unknown
 		}
 	}
 
