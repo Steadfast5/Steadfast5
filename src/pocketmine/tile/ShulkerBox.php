@@ -62,7 +62,7 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 		return -1;
 	}
 
-	public function getItem() {
+	public function getItem($index) {
 		$i = $this->getSlotIndex($index);
 		if ($i < 0) {
 			return Item::get(Item::AIR, 0, 0);
