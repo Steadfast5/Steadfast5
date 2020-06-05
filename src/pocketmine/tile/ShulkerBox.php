@@ -129,15 +129,4 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 		return $compound;
 	}
 
-	public function writeSaveData(Compound $nbt) {
-		$this->saveName($nbt);
-		$this->saveItems($nbt);
-	}
-
-	public function readSaveData(Compound $nbt) {
-		$this->loadName($nbt);
-		$this->inventory = new ShulkerInventory($this);
-		$this->loadItems($nbt);
-	}
-
 }
