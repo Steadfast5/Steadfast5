@@ -115,6 +115,20 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 		return $this->hasName() ? $this->namedtag->CustomName->getValue() : parent::getName();
 	}
 
+	public function getSpawnCompound() {
+		$compound = new Compound("", [
+			new StringTag("id", TIle::SHULKER_BOX),
+			new IntTag("x", (int) $this->x),
+			new IntTag("y", (int) $this->y),
+			new IntTag("z", (int) $this->z)
+		]);
+		if ($this->hasName()) {
+			$compound->CustomName = $this->namedtag->CustomName;
+		}
+
+		return $compound;
+	}
+
 	public function writeSaveData(Compound $nbt) {
 		$this->saveName($nbt);
 		$this->saveItems($nbt);
