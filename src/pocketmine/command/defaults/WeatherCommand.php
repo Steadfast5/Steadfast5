@@ -91,7 +91,7 @@ class WeatherCommand extends VanillaCommand {
 		}
 		if ($wea >= 0 && $wea <= 3) {
 			$level->getWeather()->setWeather($wea, $duration);
-			$sender->sendMessage("Weather changed successfully in level " . $sender->getLevel()->getFolderName() . "!");
+			$sender->sendMessage("Weather changed successfully in level " . $args[0] . "!");
 			return true;
 //			if (WeatherManager::isRegistered($level)) {
 //				$level->getWeather()->setWeather($wea, $duration);
