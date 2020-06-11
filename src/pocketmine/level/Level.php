@@ -365,6 +365,10 @@ class Level implements ChunkManager, Metadatable{
 		return $this->dimension;
 	}
 
+	public function getWeather() {
+		return $this->weather;
+	}
+
 	public function initLevel(){
 		if (!is_null($this->generator)) {
 			$generator = $this->generator;
