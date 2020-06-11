@@ -32,7 +32,7 @@ class Trapdoor extends Transparent{
 
 	protected $id = self::TRAPDOOR;
 
-	protected $newMaskOpened = 0x10;
+	protected $newMaskOpened = 0x0d;
 
 	public function __construct($meta = 0){
 		$this->meta = $meta;

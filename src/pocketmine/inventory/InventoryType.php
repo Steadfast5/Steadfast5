@@ -24,7 +24,8 @@ namespace pocketmine\inventory;
 /**
  * Saves all the information regarding default inventory sizes and types
  */
-class InventoryType{
+class InventoryType {
+
 	const CHEST = 0;
 	const DOUBLE_CHEST = 1;
 	const PLAYER = 2;

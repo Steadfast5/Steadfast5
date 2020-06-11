@@ -2,10 +2,13 @@
 
 namespace pocketmine\network\protocol;
 
+use pocketmine\network\protocol\v120\PlaySoundPacket;
+use pocketmine\network\protocol\v120\StopSoundPacket;
+
 interface NetworkSession {
 
     public function handleDataPacket(PEPacket $packet);
-    public function handlePlaySound(\pocketmine\network\protocol\v120\PlaySoundPacket $packet) : bool;
-    public function handleStopSound(\pocketmine\network\protocol\v120\StopSoundPacket $packet) : bool;
+    public function handlePlaySound(PlaySoundPacket $packet) : bool;
+    public function handleStopSound(StopSoundPacket $packet) : bool;
 
 }

@@ -365,7 +365,8 @@ class BinaryStream {
 			$byte = $this->getByte();
 			$result |= ($byte & 0x7f) << $shift;
 			$shift += 7;
-		} while ($byte > 0x7f);
+		}
+		while ($byte > 0x7f);
 		return $result;
 	}
 
@@ -472,7 +473,7 @@ class BinaryStream {
 			$uniqId = $skinId . $skinGeomtryName . "-" . microtime(true);
 			$this->putString($uniqId); // Full Skin ID	
 		}
-		if ($playerProtocol == Info::PROTOCOL_390) {		
+		if ($playerProtocol == Info::PROTOCOL_390) {
 			$this->putString($additionalSkinData['ArmSize']??''); //ArmSize
 			$this->putString($additionalSkinData['SkinColor']??''); //SkinColor			
 			$this->putLInt(isset($additionalSkinData['PersonaPieces'])?count($additionalSkinData['PersonaPieces']):0);   //Persona Pieces -> more info to come
