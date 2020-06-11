@@ -2,11 +2,13 @@
 
 # Steadfast5 Minecraft: Bedrock Edition Server Software
 
+| ![Download icon](https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_file_download_black_18px.svg) Latest Release | License |
+| :---: | :---: |
+| [![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest/download/Steadfast5.phar) | [![License](https://img.shields.io/badge/license-LGNU%20v3-blue.svg?style=flat-square)](https://github.com/Steadfast5/Steadfast5/blob/master/LICENSE) |
+
 Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other repository.
 
-Click [here](https://github.com/Steadfast5/Steadfast5/releases/latest/download/Steadfast5.phar) to download the latest release.
-
-[![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5) [![License](https://img.shields.io/badge/license-LGNU%20v3-blue.svg?style=flat-square)](https://github.com/Steadfast5/Steadfast5/blob/master/LICENSE) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Steadfast5/Steadfast5) [![GitHub release](https://img.shields.io/github/release/Steadfast5/Steadfast5.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest)
+[![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Steadfast5/Steadfast5) [![GitHub release](https://img.shields.io/github/release/Steadfast5/Steadfast5.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest)
 
 # Credits
 
@@ -19,6 +21,12 @@ Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes t
 ## Known bugs
 
 - Players don't fall out of the world naturally, you'll want to handle PlayerMoveEvent as needed to kill them.
+
+## TODO
+- [ ] Improve EntityAI
+- [ ] Improve redstone
+- [ ] Improve level generation
+- [ ] Add level formats
 
 ## Installation
 
@@ -41,3 +49,20 @@ This is only for Windows 10. If you don't know how to do any of the steps above,
 This is only the Steadfast5 source installer. Click [here](https://github.com/IceCruelStuff/Steadfast5/releases/download/v1.1/installer.cmd) to download the [`installer.cmd`](https://gist.github.com/IceCruelStuff/f52d1071c1d93b707ead302f96c9f248).
 
 If you don't have git installed or you are running Windows 8 and below, it will be very hard to use scripts provided in this repository. You can click [here](https://git-scm.com/downloads) to go to download page for Git.
+
+### License
+
+```
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```

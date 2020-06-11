@@ -22,14 +22,17 @@
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\level\Explosion;
+use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
-use pocketmine\Player;
-use pocketmine\utils\TextFormat;
-use pocketmine\tile\Tile;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\tile\Tile;
+use pocketmine\utils\TextFormat;
+use pocketmine\Player;
+
 
 class Bed extends Transparent{
 	
@@ -68,7 +71,7 @@ class Bed extends Transparent{
 
 	public function onActivate(Item $item, Player $player = null){
 		$dimension = $this->getLevel()->getDimension();
-		if($dimension == Level::DIMENSION_NETHER){
+		if ($dimension == Level::DIMENSION_NETHER) {
 			$explosion = new Explosion($this, 6, $this);
 			$explosion->explodeA();
 			return true;

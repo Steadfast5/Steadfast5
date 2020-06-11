@@ -115,6 +115,7 @@ use pocketmine\tile\EnderChest;
 use pocketmine\tile\FlowerPot;
 use pocketmine\tile\Furnace;
 use pocketmine\tile\PistonArm;
+use pocketmine\tile\ShulkerBox;
 use pocketmine\tile\ItemFrame;
 use pocketmine\tile\Sign;
 use pocketmine\tile\Skull;
@@ -196,6 +197,8 @@ class Server{
 	/** @var PluginManager */
 	private $pluginManager = null;
 
+	private $profilingTickRate = 20;
+
 	/** @var ServerScheduler */
 	private $scheduler = null;
 
@@ -208,6 +211,16 @@ class Server{
 	private $nextTick = 0;
 	private $tickAverage = [20, 20, 20, 20, 20];
 	private $useAverage = [20, 20, 20, 20, 20];
+
+	private $currentTPS = 20;
+
+	private $currentUse = 0;
+
+	private $startTime;
+
+	private $doTitleTick = true;
+
+	private $sendUsageTicker = 0;
 
 	/** @var \AttachableThreadedLogger */
 	private $logger;
@@ -1248,32 +1261,32 @@ class Server{
 		return $this->properties->exists($variable) ? $this->properties->get($variable) : $defaultValue;
 	}
 
-	/**
-	 * @param string $variable
-	 * @param mixed  $defaultValue
-	 *
-	 * @return mixed
-	 */
-	public function getAdvancedProperty($variable, $defaultValue = null){
-	    $vars = explode(".", $variable);
-	    $base = array_shift($vars);
-	    if($this->softConfig->exists($base)){
-	        $base = $this->softConfig->get($base);
-	    } else {
-	        return $defaultValue;
-	    }
+    /**
+     * @param string $variable
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function getAdvancedProperty($variable, $defaultValue = null) {
+        $vars = explode(".", $variable);
+        $base = array_shift($vars);
+        if ($this->softConfig->exists($base)) {
+            $base = $this->softConfig->get($base);
+        } else {
+            return $defaultValue;
+        }
 
-	    while(count($vars) > 0){
-	        $baseKey = array_shift($vars);
-	        if(is_array($base) and isset($base[$baseKey])){
-	            $base = $base[$baseKey];
-	        } else {
-	            return $defaultValue;
-	        }
-	    }
+        while (count($vars) > 0) {
+            $baseKey = array_shift($vars);
+            if (is_array($base) && isset($base[$baseKey])) {
+                $base = $base[$baseKey];
+            } else {
+                return $defaultValue;
+            }
+        }
 
-		return $base;
-	}
+    	return $base;
+    }
 
 
 	/**
@@ -1569,8 +1582,7 @@ class Server{
 			"auto-generate" => true,
 			"save-player-data" => true,
 			"time-update" => true,
-			"use-encrypt" => false,
-			"online-mode" => true
+			"use-encrypt" => false
 		]);
 
 		ServerScheduler::$WORKERS = 4;
@@ -1607,7 +1619,6 @@ class Server{
 		$this->useMonster = $this->getConfigBoolean("spawn-mobs", true);
 		$this->monsterLimit = $this->getConfigInt("mobs-limit", 0);
 		$this->isUseEncrypt = $this->getConfigBoolean("use-encrypt", false);
-		$this->onlineMode = $this->getConfigBoolean("online-mode", true);
 
 		if(($memory = str_replace("B", "", strtoupper($this->getConfigString("memory-limit", "256M")))) !== false){
 			$value = ["M" => 1, "G" => 1024];

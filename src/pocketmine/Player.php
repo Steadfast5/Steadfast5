@@ -71,6 +71,7 @@ use pocketmine\event\player\PlayerRespawnAfterEvent;
 use pocketmine\event\player\PlayerToggleSneakEvent;
 use pocketmine\event\player\PlayerToggleSprintEvent;
 use pocketmine\event\server\DataPacketSendEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\event\TextContainer;
 use pocketmine\event\Timings;
 use pocketmine\form\Form;
@@ -144,7 +145,6 @@ use pocketmine\network\protocol\UpdateBlockPacket;
 use pocketmine\network\protocol\ChunkRadiusUpdatePacket;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\network\protocol\ResourcePackChunkDataPacket;
-use pocketmine\network\protocol\LoginPacket;
 use pocketmine\network\SourceInterface;
 use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
@@ -155,7 +155,6 @@ use pocketmine\tile\Sign;
 use pocketmine\tile\Spawnable;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
-use pocketmine\utils\Utils;
 use pocketmine\network\protocol\SetPlayerGameTypePacket;
 use pocketmine\block\Liquid;
 use pocketmine\network\protocol\SetCommandsEnabledPacket;
@@ -201,7 +200,7 @@ use function random_int;
  */
 class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
-	use PlayerSettingsTrait;
+    use PlayerSettingsTrait;
 
     const OS_ANDROID = 1;
     const OS_IOS = 2;
@@ -215,6 +214,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
     const OS_TVOS = 10;
     const OS_ORBIS = 11;
     const OS_NX = 12;
+    const OS_XBOX = 13;
+    const OS_WINDOWS_PHONE = 14;
     const OS_UNKNOWN = -1;
 
     const INVENTORY_CLASSIC = 0;
@@ -350,22 +351,22 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 	private $elytraIsActivated = false;
 
-    /** @IMPORTANT don't change the scope */
-    private $inventoryType = self::INVENTORY_CLASSIC;
+	/** @IMPORTANT don't change the scope */
+	private $inventoryType = self::INVENTORY_CLASSIC;
 	private $languageCode = false;
 
-    /** @IMPORTANT don't change the scope */
-    private $deviceType = self::OS_UNKNOWN;
+	/** @IMPORTANT don't change the scope */
+	private $deviceType = self::OS_UNKNOWN;
 
 	private $messageQueue = [];
 
 	private $noteSoundQueue = [];
 
-    private $xuid = '';
+	private $xuid = '';
 
 	private $ping = 0;
 
-    protected $xblName = '';
+	protected $xblName = '';
 
 	protected $viewRadius = 3;
 
@@ -387,7 +388,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected $lastShowModalTick = 0;
 
 	/** @var int */
-   protected $formIdCounter = 0;
+	protected $formIdCounter = 0;
 	/** @var Form[] */
 	protected $forms = [];
 
@@ -404,16 +405,17 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	/** @var float */
 	private $saturation = 5.0;
 
-    /** @var float */
-    private $absorption = 0.0;
+	/** @var float */
+	private $absorption = 0.0;
 
 	public function setSaturation(float $saturation) {
-	    $this->saturation = $saturation;
-    }
+		$this->saturation = $saturation;
+	}
 
-    public function getSaturarion(): float {
-	    return $this->saturation;
-    }
+	public function getSaturarion(): float {
+		return $this->saturation;
+	}
+
 	/** @var float */
 	private $exhaustion = 0.0;
 	/** @var integer */
@@ -480,9 +482,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	public function sendForm(Form $form) : void {
 		$id = $this->formIdCounter++;
 		$pk = new ShowModalFormPacket();
-    	$pk->formId = $id;
+		$pk->formId = $id;
 		$pk->data = json_encode($form);
-		if($pk->data === false){
+		if ($pk->data === false) {
 
 			throw new \InvalidArgumentException("Failed to encode form JSON: " . json_last_error_msg());
 
@@ -1016,6 +1018,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->status = PlayStatusPacket::PLAYER_SPAWN;
 			$this->dataPacket($pk);
 
+			$this->setImmobile(false);
 			$this->noDamageTicks = 60;
 			$this->spawned = true;
 			$chunkX = $chunkZ = null;
@@ -1875,6 +1878,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 * @param DataPacket $packet
 	 */
 	public function handleDataPacket(DataPacket $packet){
+		$this->server->getPluginManager()->callEvent(new DataPacketReceiveEvent($this, $packet));
 		if($this->connected === false){
 			return;
 		}
@@ -2342,7 +2346,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 				$this->craftingType = self::CRAFTING_DEFAULT;
 				$this->currentTransaction = null;
-				// @todo добавить обычный инвентарь и броню
+				// TODO: add regular inventory and armor
 				if ($packet->windowid === $this->currentWindowId && $this->currentWindow != null) {
 					$this->server->getPluginManager()->callEvent(new InventoryCloseEvent($this->currentWindow, $this));
 					$this->removeWindow($this->currentWindow);
@@ -3116,10 +3120,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 
 //		if($this->getFood()-$amount <= 6 && !($this->getFood() <= 6)) {
-////			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, false);
+//			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, false);
 //			$this->removeEffect(Effect::SLOWNESS);
 //		} elseif($this->getFood()-$amount < 6 && !($this->getFood() > 6)) {
-////			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, true);
+//			$this->setDataProperty(self::DATA_FLAG_SPRINTING, self::DATA_TYPE_BYTE, true);
 //			$effect = Effect::getEffect(Effect::SLOWNESS);
 //			$effect->setDuration(0x7fffffff);
 //			$effect->setAmplifier(2);
@@ -3140,7 +3144,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->dataPacket($pk);
 	}
 
-    public function getAbsorption() {
+	public function getAbsorption() {
 		return $this->absorption;
 	}
 
@@ -3242,7 +3246,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			if (!is_null($this->currentWindow)) {
 				$this->removeWindow($this->currentWindow);
 			}
-			$this->sendPosition($this, $this->pitch, $this->yaw, MovePlayerPacket::MODE_RESET);
+			$this->sendPosition($this, $this->yaw, $this->pitch, MovePlayerPacket::MODE_RESET);
 
 			$this->resetFallDistance();
 			$this->nextChunkOrderRun = 0;
@@ -3581,6 +3585,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		if($this->getHealth() <= 0){
 			$this->dead = true;
 		}
+
+		$this->setImmobile();
 
 		$this->server->getLogger()->info(TextFormat::AQUA . $this->username . TextFormat::WHITE . "/" . TextFormat::AQUA . $this->ip . " connected");
 

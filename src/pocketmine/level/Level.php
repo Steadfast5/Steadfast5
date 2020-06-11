@@ -89,7 +89,7 @@ use pocketmine\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
 use pocketmine\tile\Chest;
-use pocketmine\tile\Tile;;
+use pocketmine\tile\Tile;
 use pocketmine\utils\LevelException;
 use pocketmine\utils\MainLogger;
 use pocketmine\utils\ReversePriorityQueue;
@@ -110,6 +110,9 @@ class Level implements ChunkManager, Metadatable{
 	private static $levelIdCounter = 1;
 	public static $COMPRESSION_LEVEL = 8;
 
+	const DIMENSION_NORMAL = 1;
+	const DIMENSION_NETHER = 1;
+	const DIMENSION_END = 2;
 
 	const BLOCK_UPDATE_NORMAL = 1;
 	const BLOCK_UPDATE_RANDOM = 2;
@@ -225,19 +228,21 @@ class Level implements ChunkManager, Metadatable{
 
 	/** @var LevelTimings */
 	public $timings;
-		
-		 private $isFrozen = false;
-		 
+
+	private $isFrozen = false;
+
 	protected static $isMemoryLeakHappend = false;
-	
+
 	public $chunkMaker = null;
-	
+
 	private $closed = false;
-	
+
 	protected $yMask;
 	protected $maxY;
 	protected $chunkCache = [];
 	protected $generator = null;
+
+	private $dimension = self::DIMENSION_NORMAL;
 
 	/**
 	 * Returns the chunk unique hash/key
@@ -326,8 +331,30 @@ class Level implements ChunkManager, Metadatable{
 		if ($this->server->getAutoGenerate()) {
 			$this->generator = Generator::getGenerator($this->provider->getGenerator());
 		}
+
+		$this->setDimension(self::DIMENSION_NORMAL);
+
+		if ($this->server->netherEnabled && $this->server->netherName == $this->folderName) {
+			$this->setDimension(self::DIMENSION_NETHER);
+		} elseif ($this->server->enderEnabled && $this->server->enderName == $this->folderName) {
+			$this->setDimension(self::DIMENSION_END);
+		}
+
+		if ($this->getDimension() == self::DIMENSION_NORMAL) {
+
+		} else {
+
+		}
 	}
-	
+
+	public function setDimension($dimension) {
+		$this->dimension = $dimension;
+	}
+
+	public function getDimension() {
+		return $this->dimension;
+	}
+
 	public function initLevel(){
 		if (!is_null($this->generator)) {
 			$generator = $this->generator;

@@ -16,7 +16,7 @@ class CommandOutputPacket extends PEPacket {
 	public $messages = [];
 	public $unknownString;
 
-	protected function encode($playerProtocol) {
+	public function encode($playerProtocol) {
 		$this->putCommandOriginData($this->originData);
 		$this->putByte($this->outputType);
 		$this->putUnsignedVarInt($this->successCount);
@@ -29,7 +29,7 @@ class CommandOutputPacket extends PEPacket {
 		}
 	}
 
-	protected function decode($playerProtocol) {
+	public function decode($playerProtocol) {
 		$this->originData = $this->getCommandOriginData();
 		$this->outputType = $this->getByte();
 		$this->successCount = $this->getUnsignedVarInt();

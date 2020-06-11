@@ -26,10 +26,11 @@ use pocketmine\block\Transparent;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\tile\Container;
-use pocketmine\tile\ShulkerBox as ShulkeTile
+use pocketmine\tile\ShulkerBox as ShulkerTile;
 use pocketmine\tile\Tile;
+use pocketmine\Player;
 
-class ShulkerBox extends Solid{
+class ShulkerBox extends Solid {
 
 	protected $id = self::SHULKER_BOX;
 
@@ -51,7 +52,7 @@ class ShulkerBox extends Solid{
 
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$this->getLevel()->setBlock($block, $this, true, true);
-		$nbt = ShulkeTile::createNBT($this, $face, $item, $player);
+		$nbt = ShulkerTile::createNBT($this, $face, $item, $player);
 		$items = $item->getNamedTag()->getTag(Container::TAG_ITEMS);
 		if ($items !== null) {
 			$nbt->setTag($items);
@@ -63,7 +64,7 @@ class ShulkerBox extends Solid{
 
 	public function onBreak(Item $item, Player $player = null) {
 		$t = $this->getLevel()->getTile($this);
-		if ($t instanceof ShulkeTile) {
+		if ($t instanceof ShulkerTile) {
 			$item = ItemFactory::get($this->id, $this->id != self::UNDYED_SHULKER_BOX ? $this->meta : 0, 1);
 			$itemNBT = clone $item->getNamedTag();
 			$itemNBT->setTag($t->getCleanedNBT()->getTag(Container::TAG_ITEMS));
@@ -78,8 +79,8 @@ class ShulkerBox extends Solid{
 	public function onActivate(Item $item, Player $player = null) {
 		if ($player instanceof Player) {
 			$t = $this->getLevel()->getTile($this);
-			if (!($t instanceof ShulkeTile)) {
-				$t = Tile::createTile(Tile::SHULKER_BOX, $this->getLevel(), ShulkeTile::createNBT($this));
+			if (!($t instanceof ShulkerTile)) {
+				$t = Tile::createTile(Tile::SHULKER_BOX, $this->getLevel(), ShulkerTile::createNBT($this));
 			}
 			$player->addWindow($t->getInventory());
 		}

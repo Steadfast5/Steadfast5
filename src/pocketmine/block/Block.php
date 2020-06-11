@@ -103,9 +103,9 @@ class Block extends Position implements Metadatable {
 	const GOLD_ORE = 14;
 	const IRON_ORE = 15;
 	const COAL_ORE = 16;
+	const LOG = 17;
 	const WOOD = 17;
 	const TRUNK = 17;
-	const LOG = 17;
 	const LEAVES = 18;
 	const LEAVE = 18;
 	const SPONGE = 19;

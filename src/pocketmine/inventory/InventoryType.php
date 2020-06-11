@@ -38,6 +38,7 @@ class InventoryType{
 	const DISPENSER = 10;
 	const DROPPER = 11;
 	const HOPPER = 12;
+	const SHULKER_BOX = 13;
 	
 	const TYPE_NONE = -9;
 	const TYPE_INVENTORY = -1;
@@ -99,8 +100,9 @@ class InventoryType{
  		static::$default[static::DISPENSER] = new InventoryType(9, "Dispenser", self::TYPE_DISPENSER); //9 INPUT
 		static::$default[static::DROPPER] = new InventoryType(9, "Dropper", self::TYPE_DROPPER); //9 INPUT
 		static::$default[static::HOPPER] = new InventoryType(5, "Hopper", self::TYPE_HOPPER); //5 INPUT
+		static::$default[static::SHULKER_BOX] = new InventoryType(27, "Shulker", self::TYPE_CONTAINER);
 	}
-	
+
 	public static function registerInventoryType($id, $size, $name, $typeId) {
 		static::$default[$id] = new InventoryType($size, $name, $typeId);
 	}
@@ -136,4 +138,5 @@ class InventoryType{
 	public function getNetworkType(){
 		return $this->typeId;
 	}
+
 }

@@ -23,7 +23,7 @@ class ShulkerInventory extends ContainerInventory {
 	}
 
 	public function getHolder() {
-		return $this->getHolder;
+		return $this->holder;
 	}
 
 	public function getSize() {
@@ -38,7 +38,7 @@ class ShulkerInventory extends ContainerInventory {
 		}
 	}
 
-	protected function broadcastBlockEventPacket($fx, $fy, $fz, $isOpen){
+	protected function broadcastBlockEventPacket($fx, $fy, $fz, $isOpen) {
 		$pk = new BlockEventPacket();
 		$pk->x = (int)$fx;
 		$pk->y = (int)$fy;
@@ -55,4 +55,5 @@ class ShulkerInventory extends ContainerInventory {
 		}
 		parent::onClose($who);
 	}
+
 }
