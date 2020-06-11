@@ -340,12 +340,6 @@ class Level implements ChunkManager, Metadatable{
 			$this->generator = Generator::getGenerator($this->provider->getGenerator());
 		}
 		$this->weather = new Weather($this, 0);
-		if ($this->server->weatherEnabled) {
-			WeatherManager::registerLevel($this);
-			$this->weather->setCanCalculate(true);
-		} else {
-			$this->weather->setCanCalculate(false);
-		}
 
 		$this->setDimension(self::DIMENSION_NORMAL);
 
@@ -355,10 +349,11 @@ class Level implements ChunkManager, Metadatable{
 			$this->setDimension(self::DIMENSION_END);
 		}
 
-		if ($this->getDimension() == self::DIMENSION_NORMAL) {
-
+		if ($this->server->weatherEnabled && $this->getDimension() == self::DIMENSION_NORMAL) {
+			WeatherManager::registerLevel($this);
+			$this->weather->setCanCalculate(true);
 		} else {
-
+			$this->weather->setCanCalculate(false);
 		}
 	}
 
