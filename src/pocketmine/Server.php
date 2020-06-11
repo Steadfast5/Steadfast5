@@ -240,6 +240,8 @@ class Server{
 	/** @var int */
 	private $maxPlayers;
 
+	private $onlineMode = true;
+
 	/** @var bool */
 	private $autoSave;
 
@@ -416,6 +418,14 @@ class Server{
 	 */
 	public function getMaxPlayers(){
 		return $this->maxPlayers;
+	}
+
+	public function getOnlineMode() {
+		return $this->onlineMode;
+	}
+
+	public function requiresAuthentication() {
+		return $this->getOnlineMode();
 	}
 
 	/**

@@ -3361,6 +3361,30 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		return true;
 	}
 
+	public function onVerifyComplete(LoginPacket $packet, $isValid, $signed) {
+		if ($this->closed) {
+			return;
+		}
+		$xuid = $packet->xuid;
+		if (!$signed && $xuid !== "") {
+			$this->server->getLogger()->warning($this->getName() . "has an XUID, but their login keychain is not signed by Mojang");
+			$xuid = "";
+		}
+		if ($xuid === "" || !is_string($xuid)) {
+			if ($signed) {
+				$this->server->getLogger()->error($this->getName() . "should have an XUID, but none found");
+			}
+			if ($this->server->requiresAuthentication() && $this->kick("disconnectedScreen.notAuthenticated", false)) {
+				return;
+			}
+			$this->server->getLogger()->debug($this->getName() . " is not logged into Xbox Live");
+		} else {
+			$this->server->getLogger->debug($this->getName() . " is logged into Xbox Live");
+			$this->xuid = $xuid;
+		}
+		$this->processLogin();
+	}
+
 	public function processLogin() {
 		if ($this->server->isUseEncrypt() && $this->needEncrypt()) {
 			$privateKey = $this->server->getServerPrivateKey();
@@ -3899,6 +3923,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		} else {
 			$this->sendMessage(TextFormat::RED . "Connection: Bad ({$this->ping}ms)");
 		}
+	}
+
+	public function isAuthenticated() {
+		return $this->xuid !== "";
 	}
 
 	public function getXUID() {
