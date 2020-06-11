@@ -51,4 +51,30 @@ class DeadBush extends Flowable{
 		return false;
 	}
 
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
+		$down = $this->getSide(0); 
+		if (
+			$down->getId() === self::SAND ||
+			$down->getId() === self::HARDENED_CLAY ||
+			$down->getId() === self::STAINED_HARDENED_CLAY ||
+			$down->getId() === self::PODZOL
+		) {
+			$this->getLevel()->setBlock($block, $this, true, true);
+			return true;
+		}
+		return false;
+	}
+
+	public function getDrops(Item $item) {
+		if ($item->isShears()) { 
+			return [
+				[Item::DEAD_BUSH, 0, 1],
+			];
+		} else {
+			return [
+				[Item::STICK, 0, mt_rand(0, 3)],
+			];
+		}
+	}
+
 }

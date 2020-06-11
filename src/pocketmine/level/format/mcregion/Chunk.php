@@ -128,6 +128,15 @@ class Chunk extends BaseFullChunk{
 		}
 	}
 
+	public function isLightPopulated() {
+		return $this->nbt["LightPopulated"] > 0;
+	}
+
+	public function setLightPopulated($value = 1) {
+		$this->nbt->LightPopulated = new ByteTag("LightPopulated", $value ? 1 : 0);
+		$this->hasChanged = true;
+	}
+
 	public function setBlockData($x, $y, $z, $data){
 		$i = ($x << 10) | ($z << 6) | ($y >> 1);
 		$old_m = ord($this->data{$i});
@@ -190,6 +199,46 @@ class Chunk extends BaseFullChunk{
 		return $changed;
 	}
 
+	public function getBlockSkyLight($x, $y, $z) {
+		$sl = ord($this->skyLight{($x << 10) | ($z << 6) | ($y >> 1)});
+		if (($y & 1) === 0) {
+			return $sl & 0x0f;
+		} else {
+			return $sl >> 4;
+		}
+	}
+
+	public function setBlockSkyLight($x, $y, $z, $level) {
+		$i = ($x << 10) | ($z << 6) | ($y >> 1);
+		$old_sl = ord($this->skyLight{$i});
+		if (($y & 1) === 0) {
+			$this->skyLight{$i} = chr(($old_sl & 0xf0) | ($level & 0x0f));
+		} else {
+			$this->skyLight{$i} = chr((($level & 0x0f) << 4) | ($old_sl & 0x0f));
+		}
+		$this->hasChanged = true;
+	}
+
+	public function getBlockLight($x, $y, $z) {
+		$l = ord($this->blockLight{($x << 10) | ($z << 6) | ($y >> 1)});
+		if (($y & 1) === 0) {
+			return $l & 0x0f;
+		} else {
+			return $l >> 4;
+		}
+	}
+
+	public function setBlockLight($x, $y, $z, $level) {
+		$i = ($x << 10) | ($z << 6) | ($y >> 1);
+		$old_l = ord($this->blockLight{$i});
+		if (($y & 1) === 0) {
+			$this->blockLight{$i} = chr(($old_l & 0xf0) | ($level & 0x0f));
+		} else {
+			$this->blockLight{$i} = chr((($level & 0x0f) << 4) | ($old_l & 0x0f));
+		}
+		$this->hasChanged = true;
+	}
+
 	public function getBlockIdColumn($x, $z){
 		return substr($this->blocks, ($x << 11) + ($z << 7), 128);
 	}
@@ -212,6 +261,14 @@ class Chunk extends BaseFullChunk{
 		}
 		$this->data = substr_replace($this->data, $column, ($x << 10) + ($z << 6), 64);
 		return true;
+	}
+
+	public function getBlockSkyLightColumn($x, $z) {
+		return substr($this->skyLight, ($x << 10) + ($z << 6), 64);
+	}
+
+	public function getBlockLightColumn($x, $z) {
+		return substr($this->blockLight, ($x << 10) + ($z << 6), 64);
 	}
 
 	/**

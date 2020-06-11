@@ -25,9 +25,9 @@ use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 
-class PingCommand extends VanillaCommand{
+class PingCommand extends VanillaCommand {
 
-	public function __construct($name){
+	public function __construct($name) {
 		parent::__construct(
 			$name,
 			"Return player ping",
@@ -36,17 +36,18 @@ class PingCommand extends VanillaCommand{
 		$this->setPermission("pocketmine.command.ping");
 	}
 
-	public function execute(CommandSender $sender, $currentAlias, array $args){
-		if(!$this->testPermission($sender)){
+	public function execute(CommandSender $sender, $currentAlias, array $args) {
+		if (!$this->testPermission($sender)) {
 			return true;
 		}
 		
 
-		if(!($sender instanceof Player)){
+		if (!($sender instanceof Player)) {
 			$sender->sendMessage(TextFormat::RED . "Only for players");
 			return true;
-		}		
+		}
 		$sender->sendPing();
 		return true;
 	}
+
 }

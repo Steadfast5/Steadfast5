@@ -34,6 +34,7 @@ use pocketmine\inventory\Fuel;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\Enum;
+use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\IntTag;
@@ -97,6 +98,7 @@ class Item implements ItemIds {
 		21 => "Lapis Ore",
 		22 => "Lapis Block",
 		24 => "Sandstone",
+		25 => "Note block",
 		26 => "Bed",
 		30 => "Cobweb",
 		31 => "Tall Grass",
@@ -719,7 +721,7 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::BRICK_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::STONE_BRICK_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::NETHER_BRICKS_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
-		self::addCreativeItem(Item::get(Item::SANDSTONE_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);       
+		self::addCreativeItem(Item::get(Item::SANDSTONE_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::QUARTZ_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		self::addCreativeItem(Item::get(Item::RED_SANDSTONE_STAIRS, 0), self::CREATIVE_GROUP_STAIRS);
 		
@@ -1042,6 +1044,8 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::REDSTONE_BLOCK, 0));
 		self::addCreativeItem(Item::get(Item::HOPPER, 0));
 		self::addCreativeItem(Item::get(Item::TNT, 0));
+		self::addCreativeItem(Item::get(Item::NOTE_BLOCK, 0));
+		self::addCreativeItem(Item::get(Item::DROPPER, 0));
 		
 	}
 	
@@ -1632,6 +1636,57 @@ class Item implements ItemIds {
     final public function __toString(){
         return "Item " . $this->name . " (" . $this->id . ":" . ($this->meta === null ? "?" : $this->meta) . ")x" . $this->count . ($this->hasCompound() ? " tags:0x".bin2hex($this->getCompound()) : "");
     }
+
+	public function nbtSerialize($slot = -1, $tagName = "") {
+		$result = new Compound($tagName, [
+			new ShortTag("id", $this->id),
+			new ByteTag("Count", Binary::signByte($this->count)),
+			new ShortTag("Damage", $this->meta)
+		]);
+
+		if ($this->hasCompound()) {
+			$itemNBT = clone $this->getNamedTag();
+			$itemNBT->setName("tag");
+			$result->setTagType($itemNBT);
+		}
+
+		if ($slot !== -1) {
+			$result->setByte("Slot", $slot);
+		}
+		return $result;
+	}
+
+	public static function nbtDeserialize(Compound $tag) {
+		if (!$tag->hasTag("id") || !$tag->hasTag("Count")) {
+			return self::get(0);
+		}
+
+		$count = Binary::unsignByte($tag->getByte("Count"));
+		$meta = $tag->getShort("Damage", 0);
+
+		$idTag = $tag->getTag("id");
+		if ($idTag instanceof ShortTag) {
+			$item = self::get($idTag->getValue(), $meta, $count);
+		} elseif ($idTag instanceof StringTag) {
+			try {
+				$item = self::fromString($idTag->getValue());
+			} catch (\InvalidArgumentException $e) {
+				return self::get(Item::AIR, 0, 0);
+			}
+			$item->setDamage($meta);
+			$item->setCount($count);
+		} else {
+			throw new \InvalidArgumentException("Item Compound ID must be an instance of StringTag or ShortTag, " . get_class($idTag) . " given");
+		}
+
+		$itemNBT = $tag->getCompound("tag");
+		if ($itemNBT instanceof Compound) {
+			$t = clone $itemNBT;
+			$t->setName("");
+			$item->setNamedTag($t);
+		}
+		return $item;
+	}
 
     public function getDestroySpeed(Block $block, Player $player){
         return 1;
