@@ -23,6 +23,7 @@ namespace pocketmine\block;
 
 use pocketmine\item\Tool;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
 
 class Ice extends Transparent{
 
@@ -45,6 +46,10 @@ class Ice extends Transparent{
 	}
 	
 	public function onBreak(Item $item, Player $player = null) {
+		if ($this->getLevel->getDimension == Level::DIMENSION_NETHER) {
+			return;
+		}
+
 		if (($player === null || $player->isSurvival()) && !$item->hasEnchantment(Enchantment::SILK_TOUCH)) {
 			return $this->getLevel()->setBlock($this, Block::get(Block::WATER), true);
 		}
