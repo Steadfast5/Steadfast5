@@ -3799,6 +3799,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	protected function addTransaction($transaction) {
 		$newItem = $transaction->getTargetItem();
 		$oldItem = $transaction->getSourceItem();
+
 		// if decreasing transaction drop down
 		if ($newItem->getId() === Item::AIR || ($oldItem->deepEquals($newItem) && $oldItem->count > $newItem->count)) {
 
@@ -3811,6 +3812,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		if (is_null($this->currentWindow) || $this->currentWindow === $transaction->getInventory()) {
 			$inventory = $this->inventory;
 		}
+
 		// get item difference
 		if ($oldItem->deepEquals($newItem)) {
 			$newItem->count -= $oldItem->count;
@@ -3936,8 +3938,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 						unset($this->transactionGroupQueue[$key]);
 					}
 				}
-			}
-			catch (\Exception $ex) {
+			} catch (\Exception $ex) {
 				$group->sendInventories();
 				unset($this->transactionGroupQueue[$key]);
 			}
