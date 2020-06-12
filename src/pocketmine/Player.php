@@ -145,6 +145,7 @@ use pocketmine\network\protocol\UpdateBlockPacket;
 use pocketmine\network\protocol\ChunkRadiusUpdatePacket;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\network\protocol\ResourcePackChunkDataPacket;
+use pocketmine\network\protocol\LoginPacket;
 use pocketmine\network\SourceInterface;
 use pocketmine\permission\PermissibleBase;
 use pocketmine\permission\PermissionAttachment;
@@ -155,6 +156,7 @@ use pocketmine\tile\Sign;
 use pocketmine\tile\Spawnable;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use pocketmine\utils\Utils;
 use pocketmine\network\protocol\SetPlayerGameTypePacket;
 use pocketmine\block\Liquid;
 use pocketmine\network\protocol\SetCommandsEnabledPacket;
@@ -3374,7 +3376,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			if ($signed) {
 				$this->server->getLogger()->error($this->getName() . "should have an XUID, but none found");
 			}
-			if ($this->server->requiresAuthentication() && $this->kick("disconnectedScreen.notAuthenticated", false)) {
+			if ($this->server->requiresAuthentication() && $this->kick("Invalid Identify Public Key", false)) {
 				return;
 			}
 			$this->server->getLogger()->debug($this->getName() . " is not logged into Xbox Live");
