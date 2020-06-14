@@ -1251,32 +1251,32 @@ class Server{
 		return $this->properties->exists($variable) ? $this->properties->get($variable) : $defaultValue;
 	}
 
-	/**
-	 * @param string $variable
-	 * @param mixed  $defaultValue
-	 *
-	 * @return mixed
-	 */
-	public function getAdvancedProperty($variable, $defaultValue = null){
-	    $vars = explode(".", $variable);
-	    $base = array_shift($vars);
-	    if($this->softConfig->exists($base)){
-	        $base = $this->softConfig->get($base);
-	    } else {
-	        return $defaultValue;
-	    }
+    /**
+     * @param string $variable
+     * @param mixed  $defaultValue
+     *
+     * @return mixed
+     */
+    public function getAdvancedProperty($variable, $defaultValue = null) {
+        $vars = explode(".", $variable);
+        $base = array_shift($vars);
+        if ($this->softConfig->exists($base)) {
+            $base = $this->softConfig->get($base);
+        } else {
+            return $defaultValue;
+        }
 
-	    while(count($vars) > 0){
-	        $baseKey = array_shift($vars);
-	        if(is_array($base) and isset($base[$baseKey])){
-	            $base = $base[$baseKey];
-	        } else {
-	            return $defaultValue;
-	        }
-	    }
+        while (count($vars) > 0) {
+            $baseKey = array_shift($vars);
+            if (is_array($base) && isset($base[$baseKey])) {
+                $base = $base[$baseKey];
+            } else {
+                return $defaultValue;
+            }
+        }
 
-		return $base;
-	}
+    	return $base;
+    }
 
 
 	/**
