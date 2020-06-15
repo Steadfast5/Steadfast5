@@ -69,7 +69,7 @@ class ShulkerBox extends Solid {
 			$itemNBT = clone $item->getNamedTag();
 			$itemNBT->setTag($t->getCleanedNBT()->getTag(Container::TAG_ITEMS));
 			$item->setNamedTag($itemNBT);
-			$this->getLevel()->dropItem($this->add(0.5,0.5,0.5), $item);
+			$this->getLevel()->dropItem($this->add(0.5, 0.5, 0.5), $item);
 			$t->getInventory()->clearAll();
 		}
 		$this->getLevel()->setBlock($this, Block::get(Block::AIR), true, true);
