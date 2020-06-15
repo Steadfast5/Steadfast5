@@ -249,7 +249,7 @@ class SessionManager{
 				$buffer = chr(RakLib::PACKET_ENCAPSULATED) . chr(strlen($id)) . $id . $buf;
 				$this->server->pushThreadToMainPacket($buffer);
 			}
-			if ($count > 250) {		
+			if ($count > 250) {
 				$this->blockAddress($source, 30);
 				$this->streamKick($session, "Hack mods are not permitted.");
 			}

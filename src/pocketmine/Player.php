@@ -2138,7 +2138,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 							$breakTime = ceil($this->getBreakTime($block) * 20);
 							$fireBlock = $block->getSide($packet->face);
 							if ($fireBlock->getId() === Block::FIRE) {
-								$fireBlock->onUpdate(Level::BLOCK_UPDATE_TOUCH);
+								$fireBlock->onUpdate(Level::BLOCK_UPDATE_TOUCH, 0);
 							}
 							if ($breakTime > 0) {
 								$pk = new LevelEventPacket();
@@ -5415,7 +5415,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				"Rotation" => new Enum("Rotation", [
 					new FloatTag("", $this->yaw),
 					new FloatTag("", $this->pitch)
-						]),
+				]),
 			]);
 			$hook = Entity::createEntity("FishingHook", $this->chunk, $nbt, $this);
 			if (!is_null($hook)) {
@@ -5634,6 +5634,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	}
 	
 	public function move($dx, $dy, $dz) {
+		$this->blocksAround = null;
 		if ($dx == 0 && $dz == 0 && $dy == 0) {
 			return true;
 		}
