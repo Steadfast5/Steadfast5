@@ -5604,6 +5604,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	}
 	
 	public function move($dx, $dy, $dz) {
+		$this->blocksAround = null;
 		if ($dx == 0 && $dz == 0 && $dy == 0) {
 			return true;
 		}
