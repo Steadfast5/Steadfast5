@@ -88,4 +88,5 @@ class PlayerSkinPacket extends PEPacket {
 			$this->putString($this->oldSkinName);
 		}
 	}
+
 }
