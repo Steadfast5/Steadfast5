@@ -882,11 +882,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		return $this->offhandInventory;
 	}
 
-	public function saveNBT() {
-		parent::saveNBT();
-		$this->namedtag->setTag($this->offhandInventory->getItemInOffHand()->nbtSerialize(-1, "offHand"));
-	}
-
 	public function handleMobEquipment(MobEquipmentPacket $packet) {
 		if ($packet->windowId === Protocol120::CONTAINER_ID_OFFHAND) {
 			$item = $this->offhandInventory->getItem($packet->hotbarSlot);
@@ -3067,6 +3062,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 
 		parent::saveNBT();
+		$this->namedtag->setTag($this->offhandInventory->getItemInOffHand()->nbtSerialize(-1, "offHand"));
 		if($this->level instanceof Level){
 			$this->namedtag->Level = new StringTag("Level", $this->level->getName());
 			if($this->spawnPosition instanceof Position and $this->spawnPosition->getLevel() instanceof Level){
