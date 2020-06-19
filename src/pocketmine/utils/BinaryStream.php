@@ -52,17 +52,18 @@ class BinaryStream {
 	
 	public function __construct($buffer = "", $offset = 0) {
 		$this->setBuffer($buffer, $offset);
+		$this->offset = $offset;
 	}
 
 	public function reset() {
-        $this->buffer = "";
-        $this->offset = 0;
-    }
+		$this->buffer = "";
+		$this->offset = 0;
+	}
 
-    public function rewind()
-    {
-        $this->offset = 0;
-    }
+	public function rewind()
+	{
+		$this->offset = 0;
+	}
 
 	public function setBuffer($buffer = "", $offset = 0) {
 		$this->buffer = $buffer;
