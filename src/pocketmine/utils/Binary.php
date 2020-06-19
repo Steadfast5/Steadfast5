@@ -69,7 +69,11 @@ class Binary {
 
     public static function signShort($value)
     {
-        return $value << 48 >> 48;
+        if (PHP_INT_SIZE === 8) {
+            return $value << 48 >> 48;
+        } else {
+            return $value << 16 >> 16;
+        }
     }
 
     public static function unsignShort($value)
@@ -80,9 +84,9 @@ class Binary {
     public static function signInt($value)
     {
         if (PHP_INT_SIZE === 8) {
-            return $value << 48 >> 48;
+            return $value << 32 >> 32;
         } else {
-            return $value << 16 >> 16;
+            return $value;
         }
     }
 
@@ -547,7 +551,7 @@ class Binary {
             return unpack("J", $x)[1];
         }
         if(PHP_INT_SIZE === 8) {
-            $int = @unpack("N*", $x);
+            $int = unpack("N*", $x);
             return ($int[1] << 32) | $int[2];
         } else {
             $value = "0";
@@ -587,17 +591,38 @@ class Binary {
     }
 
     public static function readLLong($str) {
-        if (is_string($str)) {
+        if (PHP_INT_SIZE === 8) {
             return unpack("P", $str)[1];
+        } else {
+            self::readLong(strrev($str));
         }
-        return self::readLong(strrev($str));
     }
 
     public static function writeLLong($value) {
-        if (is_int($value)) {
+        if (PHP_INT_SIZE === 8) {
             return pack("P", $value);
+        } else {
+            strrev(self::writeLong($value));
         }
-        return strrev(self::writeLong($value));
+    }
+
+    public static function readSignedVarInt($stream) {
+        $raw = self::readVarInt($stream);
+        $temp = ((($raw << 63) >> 63) ^ $raw) >> 1;
+        return $temp ^ ($raw & (1 << 63));
+    }
+
+    public static function readVarInt($stream) {
+        $value = 0;
+        for ($i = 0; $i <= 63; $i += 7) {
+            $b = $stream->getByte();
+            $value |= (($b & 0x7f) << $i);
+
+            if (($b & 0x80) === 0) {
+                return $value;
+            }
+        }
+        throw new BinaryDataException("VarInt did not terminate after 5 bytes!");
     }
 
     public static function writeSignedVarInt($v) {
