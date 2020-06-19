@@ -55,7 +55,11 @@ class Binary {
 
     public static function signByte($value)
     {
-        return $value << 56 >> 56;
+        if (PHP_INT_SIZE === 8) {
+            return $value << 56 >> 56;
+        } else {
+            return $value << 24 >> 24;
+        }
     }
 
     public static function unsignByte($value)
@@ -75,7 +79,11 @@ class Binary {
 
     public static function signInt($value)
     {
-        return $value << 32 >> 32;
+        if (PHP_INT_SIZE === 8) {
+            return $value << 48 >> 48;
+        } else {
+            return $value << 16 >> 16;
+        }
     }
 
     public static function unsignInt($value)
