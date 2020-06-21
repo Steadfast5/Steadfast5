@@ -100,7 +100,7 @@ abstract class Achievement {
 		if (!isset(Achievement::$list[$achievementId])) {
 			Achievement::$list[$achievementId] = [
 				"name" => $achievementName,
-				"requires" => $requires,
+				"requires" => $requires
 			];
 			return true;
 		}
