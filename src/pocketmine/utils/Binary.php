@@ -435,6 +435,22 @@ class Binary {
         return pack("v", $value);
     }
 
+    public static function readTriad($str) {
+        return unpack("N", "\x00" . $str)[1];
+    }
+
+    public static function writeTriad($value) {
+        return substr(pack("N", $value), 1);
+    }
+
+    public static function readLTriad($str) {
+        return unpack("V", $str . "\x00")[1];
+    }
+
+    public static function writeLTriad($value) {
+        return substr(pack("V", $value), 0, -1);
+    }
+
     public static function readInt($str) {
         self::checkLength($str, 4);
         if (PHP_INT_SIZE === 8) {
