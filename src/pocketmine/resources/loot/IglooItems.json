@@ -1,83 +1,83 @@
 {
-	"max": 27,
-	"GoldenApple":
-	{
-		"percentage": 100,
-		"minCount": 1,
-		"maxCount": 1,
-		"id": 322,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"Coal":
-	{
-		"percentage": 70.4,
-		"minCount": 1,
-		"maxCount": 4,
-		"id": 263,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"Apple":
-	{
-		"percentage": 70.4,
-		"minCount": 1,
-		"maxCount": 3,
-		"id": 260,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"Wheat":
-	{
-		"percentage": 55.3,
-		"minCount": 2,
-		"maxCount": 3,
-		"id": 296,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"GoldNugget":
-	{
-		"percentage": 55.3,
-		"minCount": 1,
-		"maxCount": 3,
-		"id": 371,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"RottenFlesh":
-	{
-		"percentage": 55.3,
-		"minCount": 1,
-		"maxCount": 1,
-		"id": 367,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"StoneAxe":
-	{
-		"percentage": 14.7,
-		"minCount": 1,
-		"maxCount": 1,
-		"id": 275,
-		"data": 9,
-		"minStacks": 1,
-		"maxStacks": 1
-	},
-	"Emerald":
-	{
-		"percentage": 7.6,
-		"minCount": 1,
-		"maxCount": 1,
-		"id": 388,
-		"data": 0,
-		"minStacks": 1,
-		"maxStacks": 1
-	}
+    "max": 27,
+    "GoldenApple":
+    {
+        "percentage": 100,
+        "minCount": 1,
+        "maxCount": 1,
+        "id": 322,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "Coal":
+    {
+        "percentage": 70.4,
+        "minCount": 1,
+        "maxCount": 4,
+        "id": 263,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "Apple":
+    {
+        "percentage": 70.4,
+        "minCount": 1,
+        "maxCount": 3,
+        "id": 260,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "Wheat":
+    {
+        "percentage": 55.3,
+        "minCount": 2,
+        "maxCount": 3,
+        "id": 296,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "GoldNugget":
+    {
+        "percentage": 55.3,
+        "minCount": 1,
+        "maxCount": 3,
+        "id": 371,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "RottenFlesh":
+    {
+        "percentage": 55.3,
+        "minCount": 1,
+        "maxCount": 1,
+        "id": 367,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "StoneAxe":
+    {
+        "percentage": 14.7,
+        "minCount": 1,
+        "maxCount": 1,
+        "id": 275,
+        "data": 9,
+        "minStacks": 1,
+        "maxStacks": 1
+    },
+    "Emerald":
+    {
+        "percentage": 7.6,
+        "minCount": 1,
+        "maxCount": 1,
+        "id": 388,
+        "data": 0,
+        "minStacks": 1,
+        "maxStacks": 1
+    }
 }
