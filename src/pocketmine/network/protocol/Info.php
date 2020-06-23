@@ -94,7 +94,7 @@ interface Info {
 	const PROTOCOL_404 = 404; // 1.16.0.60
 	const PROTOCOL_405 = 405; // 1.16.0.61
 	const PROTOCOL_406 = 406; // 1.16.0.63
-	const PROTOCOL_407 = 407; // 1.16.0.64, 1.16.0.66, 1.16.0.67
+	const PROTOCOL_407 = 407; // 1.16.0.64, 1.16.0.66, 1.16.0.67, 1.16.0.68
 
 	/** OUTDATED (supporting will be removed with next release, may didn't work properly)*/
 	const PROTOCOL_120 = 120; // 1.2.0.xx (beta)
