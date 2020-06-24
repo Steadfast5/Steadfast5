@@ -1105,7 +1105,7 @@ class Item implements ItemIds {
         return Item::$creative;
     }
 	
-	public static function getCreativeGroups(){
+    public static function getCreativeGroups(){
         return Item::$creativeGroupData;
     }
 	
