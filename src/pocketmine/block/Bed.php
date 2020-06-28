@@ -29,6 +29,7 @@ use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\tile\Bed as TileBed;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
@@ -86,13 +87,13 @@ class Bed extends Transparent {
 			return true;
 		}
 
-		$blockNorth = $this->getSide(2); //Gets the blocks around them
+		$blockNorth = $this->getSide(2); // Gets the blocks around them
 		$blockSouth = $this->getSide(3);
 		$blockEast = $this->getSide(5);
 		$blockWest = $this->getSide(4);
-		if (($this->meta & 0x08) === 0x08) { //This is the Top part of bed
+		if (($this->meta & 0x08) === 0x08) { // This is the Top part of bed
 			$b = $this;
-		} else { //Bottom Part of Bed
+		} else { // Bottom Part of Bed
 			if ($blockNorth->getId() === $this->id && ($blockNorth->meta & 0x08) === 0x08) {
 				$b = $blockNorth;
 			} else if ($blockSouth->getId() === $this->id && ($blockSouth->meta & 0x08) === 0x08) {
@@ -139,7 +140,7 @@ class Bed extends Transparent {
 					new IntTag("x", (int) $this->x),
 					new IntTag("y", (int) $this->y),
 					new IntTag("z", (int) $this->z),
-					new ByteTag("color", (int) 14),
+					new ByteTag("color", $item->getDamage() & 0x0f),
 					new ByteTag("isMovable", (int) 1)
 				]);
 				Tile::createTile("Bed", $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), $nbt);
@@ -149,7 +150,7 @@ class Bed extends Transparent {
 					new IntTag("x", (int) $next->x),
 					new IntTag("y", (int) $next->y),
 					new IntTag("z", (int) $next->z),
-					new ByteTag("color", (int) 14),
+					new ByteTag("color", $item->getDamage() & 0x0f),
 					new ByteTag("isMovable", (int) 1)
 				]);
 				Tile::createTile("Bed", $this->getLevel()->getChunk($next->x >> 4, $next->z >> 4), $nbtNext);
@@ -162,13 +163,13 @@ class Bed extends Transparent {
 	}
 
 	public function onBreak(Item $item) {
-		$blockNorth = $this->getSide(2); //Gets the blocks around them
+		$blockNorth = $this->getSide(2); // Gets the blocks around them
 		$blockSouth = $this->getSide(3);
 		$blockEast = $this->getSide(5);
 		$blockWest = $this->getSide(4);
 
-		if (($this->meta & 0x08) === 0x08) { //This is the Top part of bed
-			if ($blockNorth->getId() === $this->id && $blockNorth->meta !== 0x08) { //Checks if the block ID and meta are right
+		if (($this->meta & 0x08) === 0x08) { // This is the Top part of bed
+			if ($blockNorth->getId() === $this->id && $blockNorth->meta !== 0x08) { // Checks if the block ID and meta are right
 				$this->getLevel()->setBlock($blockNorth, new Air(), true, true);
 			} else if ($blockSouth->getId() === $this->id && $blockSouth->meta !== 0x08) {
 				$this->getLevel()->setBlock($blockSouth, new Air(), true, true);
@@ -177,7 +178,7 @@ class Bed extends Transparent {
 			} else if ($blockWest->getId() === $this->id && $blockWest->meta !== 0x08) {
 				$this->getLevel()->setBlock($blockWest, new Air(), true, true);
 			}
-		} else { //Bottom Part of Bed
+		} else { // Bottom Part of Bed
 			if ($blockNorth->getId() === $this->id && ($blockNorth->meta & 0x08) === 0x08) {
 				$this->getLevel()->setBlock($blockNorth, new Air(), true, true);
 			} else if ($blockSouth->getId() === $this->id && ($blockSouth->meta & 0x08) === 0x08) {
@@ -194,9 +195,16 @@ class Bed extends Transparent {
 	}
 
 	public function getDrops(Item $item) {
-		return [
-			[Item::BED, 0, 1],
-		];
+		$tile = $this->getLevel()->getTile($this);
+		if ($tile instanceof TileBed) {
+			return [
+				[Item::BED, $tile->getColor(), 1],
+			];
+		} else {
+			return [
+				[Item::BED, 14, 1], // red
+			];
+		}
 	}
 
 }
