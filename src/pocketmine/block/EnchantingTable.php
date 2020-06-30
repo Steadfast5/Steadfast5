@@ -39,6 +39,10 @@ class EnchantingTable extends Transparent {
 		
 	}
 
+	public function getLightLevel() {
+		return 12;
+	}
+
 	public function getBoundingBox() {
 		return new AxisAlignedBB(
 			$this->x,
