@@ -1,52 +1,32 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
- *
-*/
-
 namespace pocketmine\level\generator\hell;
 
 use pocketmine\block\Block;
-use pocketmine\block\CoalOre;
-use pocketmine\block\DiamondOre;
-use pocketmine\block\Dirt;
-use pocketmine\block\GoldOre;
 use pocketmine\block\Gravel;
-use pocketmine\block\IronOre;
-use pocketmine\block\LapisOre;
-use pocketmine\block\RedstoneOre;
+use pocketmine\block\NetherQuartzOre as QuartzOre;
+use pocketmine\block\Lava;
+use pocketmine\block\SoulSand;
 use pocketmine\level\ChunkManager;
+use pocketmine\level\Level;
+use pocketmine\level\format\anvil\Anvil;
+use pocketmine\level\format\anvil\Chunk;
+use pocketmine\level\format\FullChunk;
+use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\biome\BiomeSelector;
 use pocketmine\level\generator\Generator;
-
 use pocketmine\level\generator\noise\Simplex;
-
 use pocketmine\level\generator\object\OreType;
-use pocketmine\level\generator\populator\GroundCover;
+use pocketmine\level\populator\GroundFire;
+use pocketmine\level\populator\NetherGlowStone;
+use pocketmine\level\generator\populator\NetherLava;
 use pocketmine\level\generator\populator\Ore;
 use pocketmine\level\generator\populator\Populator;
-
-
-use pocketmine\math\Vector3 as Vector3;
+use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 
-class Nether extends Generator{
+class Nether extends Generator {
 
 	/** @var Populator[] */
 	private $populators = [];
@@ -71,13 +51,13 @@ class Nether extends Generator{
 	private static $GAUSSIAN_KERNEL = null;
 	private static $SMOOTH_SIZE = 2;
 
-	public function __construct(array $options = []){
+	public function __construct(array $options = []) {
 		if(self::$GAUSSIAN_KERNEL === null){
 			self::generateKernel();
 		}
 	}
 
-	private static function generateKernel(){
+	private static function generateKernel() {
 		self::$GAUSSIAN_KERNEL = [];
 
 		$bellSize = 1 / self::$SMOOTH_SIZE;
@@ -94,39 +74,53 @@ class Nether extends Generator{
 		}
 	}
 
-	public function getName(){
-		return "normal";
+	public function getDimension() {
+		return 1;
 	}
 
-	public function getSettings(){
+	public function getName() {
+		return "nether";
+	}
+
+	public function getWaterHeight() {
+		return $this->waterHeight;
+	}
+
+	public function getSettings() {
 		return [];
 	}
 
-	public function init(ChunkManager $level, Random $random){
+	public function init(ChunkManager $level, Random $random) {
 		$this->level = $level;
 		$this->random = $random;
 		$this->random->setSeed($this->level->getSeed());
 		$this->noiseBase = new Simplex($this->random, 4, 1 / 4, 1 / 64);
 		$this->random->setSeed($this->level->getSeed());
 
-		/*$ores = new Ore();
+		$ores = new Ore();
 		$ores->setOreTypes([
-			new OreType(new CoalOre(), 20, 16, 0, 128),
-			new OreType(New IronOre(), 20, 8, 0, 64),
-			new OreType(new RedstoneOre(), 8, 7, 0, 16),
-			new OreType(new LapisOre(), 1, 6, 0, 32),
-			new OreType(new GoldOre(), 2, 8, 0, 32),
-			new OreType(new DiamondOre(), 1, 7, 0, 16),
-			new OreType(new Dirt(), 20, 32, 0, 128),
-			new OreType(new Gravel(), 10, 16, 0, 128)
+			new OreType(New QuartzOre(), 20, 8, 0, 64),
+			new OreType(new SoulSand(), 5, 64, 0, 127),
+			new OreType(new Gravel(), 8, 33, 0, 127),
+			new OreType(New Lava(), 1, 1, 0, 128),
 		]);
-		$this->populators[] = $ores;*/
+		$this->populators[] = $ores;
+		$this->populators[] = new NetherGlowStone();
+		$groundFire = new GroundFire();
+		$groundFire->setBaseAmount(1);
+		$groundFire->setRandomAmount(1);
+		$this->populators[] = $groundFire;
+		$lava = new NetherLava();
+		$lava->setBaseAmount(0);
+		$lava->setRandomAmount(0);
+		$this->populators[] = $lava;
 	}
 
-	public function generateChunk($chunkX, $chunkZ){
+	public function generateChunk($chunkX, $chunkZ) {
+		$level = $this->level;
 		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
 
-		$noise = Generator::getFastNoise3D($this->noiseBase, 16, $this->level->getMaxY(), 16, 4, 8, 4, $chunkX * 16, 0, $chunkZ * 16);
+		$noise = Generator::getFastNoise3D($this->noiseBase, 16, 128, 16, 4, 8, 4, $chunkX * 16, 0, $chunkZ * 16);
 
 		$chunk = $this->level->getChunk($chunkX, $chunkZ);
 
@@ -143,8 +137,8 @@ class Nether extends Generator{
 
 				$chunk->setBiomeColor($x, $z, $color[0], $color[1], $color[2]);
 
-				for($y = 0; $y < $this->level->getMaxY(); ++$y){
-					if($y === 0 or $y === $this->level->getMaxY() - 1){
+				for($y = 0; $y < 128; ++$y){
+					if($y === 0 || $y === 127){
 						$chunk->setBlockId($x, $y, $z, Block::BEDROCK);
 						continue;
 					}
@@ -165,7 +159,7 @@ class Nether extends Generator{
 		}
 	}
 
-	public function populateChunk($chunkX, $chunkZ){
+	public function populateChunk($chunkX, $chunkZ) {
 		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
 		foreach($this->populators as $populator){
 			$populator->populate($this->level, $chunkX, $chunkZ, $this->random);
@@ -177,7 +171,7 @@ class Nether extends Generator{
 	}
 
 	public function getSpawn(){
-		return new Vector3(127.5, $this->level->getMaxY(), 127.5);
+		return new Vector3(127.5, 128, 127.5);
 	}
 
 }

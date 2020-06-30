@@ -23,7 +23,8 @@ namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
 
-class StartGamePacket extends PEPacket{
+class StartGamePacket extends PEPacket {
+
 	const NETWORK_ID = Info::START_GAME_PACKET;
 	const PACKET_NAME = "START_GAME_PACKET";
 	
@@ -112,13 +113,16 @@ class StartGamePacket extends PEPacket{
 			$this->putByte(0); // Are education features enabled?
 		}
 
+		$server = Server::getInstance();
+
 		if ($playerProtocol >= Info::PROTOCOL_406) {
 			$this->putString(''); //edu product id
 		}
 
 		$this->putLFloat(0); //rain level
 
-		$this->putLFloat(0); //lightning level
+		$this->putLFloat($server->getConfigFloat("rain-level", 0)); //rain level
+		$this->putLFloat($server->getConfigFloat("lightning-level", 0)); //lightning level
 
 		if ($playerProtocol >= Info::PROTOCOL_332) {
 			$this->putByte(0); // has confirmed platform Locked Content

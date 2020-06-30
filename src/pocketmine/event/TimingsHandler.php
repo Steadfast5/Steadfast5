@@ -36,6 +36,7 @@ class TimingsHandler{
 	private $parent = null;
 
 	private $count = 0;
+	private $curCount = 0;
 	private $start = 0;
 	private $timingDepth = 0;
 	private $totalTime = 0;
@@ -48,7 +49,7 @@ class TimingsHandler{
 	 */
 	public function __construct($name, TimingsHandler $parent = null){
 		$this->name = $name;
-		if($parent instanceof TimingsHandler){
+		if ($parent !== null) {
 			$this->parent = $parent;
 		}
 
@@ -56,8 +57,9 @@ class TimingsHandler{
 	}
 
 	public static function printTimings($fp){
-//		fwrite($fp, "Minecraft" . PHP_EOL);
+		fwrite($fp, "Minecraft" . PHP_EOL);
 		$log = "----------------------------------------------------------------". PHP_EOL;
+
 		foreach(self::$HANDLERS as $timings){
 			$time = $timings->totalTime;
 			$count = $timings->count;
@@ -65,7 +67,7 @@ class TimingsHandler{
 				continue;
 			}
 			if($timings->violations > 0) {
-			//	$avg = $time / $count;
+				$avg = $time / $count;
 				if($count == 1){
 					$log .= "    " . $timings->name . " Time: " . ($time) . PHP_EOL;
 				} else {
@@ -73,11 +75,11 @@ class TimingsHandler{
 					$log .= "    " . $timings->name . " Time: " . ($time) . " Count: " . $count . " Avg: " . ($avg) . PHP_EOL;
 				}
 			}
-			//fwrite($fp, "    " . $timings->name . " Time: " . ($time) . " Count: " . $count . " Avg: " . ($avg) . " Violations: " . $timings->violations . PHP_EOL);
+			fwrite($fp, "    " . $timings->name . " Time: " . round($time * 1000000000) . " Count: " . $count . " Avg: " . round($avg * 1000000000) . " Violations: " . $timings->violations . PHP_EOL);
 		}
 
-//		fwrite($fp, "# Version " . Server::getInstance()->getVersion() . PHP_EOL);
-//		fwrite($fp, "# " . Server::getInstance()->getName() . " " . Server::getInstance()->getPocketMineVersion() . PHP_EOL);
+		fwrite($fp, "# Version " . Server::getInstance()->getVersion() . PHP_EOL);
+		fwrite($fp, "# " . Server::getInstance()->getName() . " " . Server::getInstance()->getPocketMineVersion() . PHP_EOL);
 
 		$entities = 0;
 		$livingEntities = 0;
@@ -92,8 +94,8 @@ class TimingsHandler{
 		$log .= "# Entities " . $entities . PHP_EOL;
 		$log .= "# LivingEntities " . $livingEntities . PHP_EOL;
 		file_put_contents($fp, $log, FILE_APPEND | LOCK_EX);
-//		fwrite($fp, "# Entities " . $entities . PHP_EOL);
-//		fwrite($fp, "# LivingEntities " . $livingEntities . PHP_EOL);
+		fwrite($fp, "# Entities " . $entities . PHP_EOL);
+		fwrite($fp, "# LivingEntities " . $livingEntities . PHP_EOL);
 	}
 
 	public static function reload(){
@@ -105,46 +107,60 @@ class TimingsHandler{
 		}
 	}
 
-	public static function tick(){
+	public static function tick($measure = true){
 		if(PluginManager::$useTimings){
-			foreach(self::$HANDLERS as $timings){
-				if($timings->curTickTotal > 0.01){
-					$timings->violations ++;//= round($timings->curTickTotal / 0.05);
+			if ($measure) {
+				foreach (self::$HANDLERS as $timings) {
+					if ($timings->curTickTotal > 0.05) {
+						$timings->violations += round($timings->curTickTotal / 0.05);
+					}
+					$timings->curTickTotal = 0;
+					$timings->curCount = 0;
+					$timings->timingDepth = 0;
 				}
-				$timings->curTickTotal = 0;
-				$timings->timingDepth = 0;
+			} else {
+				foreach (self::$HANDLERS as $timings) {
+					$timings->totalTime -= $timings->curTickTotal;
+					$timings->count -= $timings->curCount;
+
+					$timings->curTickTotal = 0;
+					$timings->curCount = 0;
+					$timings->timingDepth = 0;
+				}
 			}
 		}
 	}
 
-	public function startTiming(){
-//		if(PluginManager::$useTimings and ++$this->timingDepth === 1){
-//			$this->start = microtime(true);
-//			if($this->parent instanceof TimingsHandler and ++$this->parent->timingDepth === 1){
-//				$this->parent->start = $this->start;
-//			}
-//		}
+	public function startTiming() {
+		if (PluginManager::$useTimings && ++$this->timingDepth === 1) {
+			$this->start = microtime(true);
+			if ($this->parent !== null && ++$this->parent->timingDepth === 1) {
+				$this->parent->start = $this->start;
+			}
+		}
 	}
 
-	public function stopTiming(){
-//		if(PluginManager::$useTimings){
-//			if(--$this->timingDepth !== 0 or $this->start === 0){
-//				return;
-//			}
-//
-//			$diff = microtime(true) - $this->start;
-//			$this->totalTime += $diff;
-//			$this->curTickTotal += $diff;
-//			$this->count++;
-//			$this->start = 0;
-//			if($this->parent instanceof TimingsHandler){
-//				$this->parent->stopTiming();
-//			}
-//		}
+	public function stopTiming() {
+		if (PluginManager::$useTimings) {
+			if (--$this->timingDepth !== 0 || $this->start === 0) {
+				return;
+			}
+
+			$diff = microtime(true) - $this->start;
+			$this->totalTime += $diff;
+			$this->curTickTotal += $diff;
+			++$this->curCount;
+			++$this->count;
+			$this->start = 0;
+			if ($this->parent !== null) {
+				$this->parent->stopTiming();
+			}
+		}
 	}
 
-	public function reset(){
+	public function reset() {
 		$this->count = 0;
+		$this->curCount = 0;
 		$this->violations = 0;
 		$this->curTickTotal = 0;
 		$this->totalTime = 0;
