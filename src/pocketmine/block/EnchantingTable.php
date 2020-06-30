@@ -38,6 +38,21 @@ class EnchantingTable extends Transparent {
 		
 	}
 
+	public function getLightLevel() {
+		return 12;
+	}
+
+	public function getBoundingBox() {
+		return new AxisAlignedBB(
+			$this->x,
+			$this->y,
+			$this->z,
+			$this->x + 1,
+			$this->y + 0.75,
+			$this->z + 1
+		);
+	}
+
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$this->getLevel()->setBlock($block, $this, true, true);
 		$nbt = new Compound("", [
