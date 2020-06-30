@@ -78,10 +78,10 @@ class Bed extends Transparent {
 			return true;
 		}
 
-		return false;
 		$time = $this->getLevel()->getTime() % self::FULL_DAY;
 
 		$isNight = ($time >= self::NIGHT_START && $time < self::NIGHT_END);
+
 		if ($player instanceof Player && !$isNight) {
 			$player->sendMessage(TextFormat::GRAY . "You can only sleep at night");
 			return true;
@@ -189,6 +189,7 @@ class Bed extends Transparent {
 				$this->getLevel()->setBlock($blockWest, new Air(), true, true);
 			}
 		}
+
 		$this->getLevel()->setBlock($this, new Air(), true, true);
 
 		return true;
