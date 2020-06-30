@@ -21,10 +21,25 @@
 
 namespace pocketmine\level\generator\normal\biome;
 
-class SwampBiome extends GrassyBiome{
+class SwampBiome extends GrassyBiome {
 
-	public function __construct(){
+use pocketmine\block\Block;
+use pocketmine\block\Flower as FlowerBlock;
+use pocketmine\level\generator\populator\Flower;
+use pocketmine\level\generator\populator\LilyPad;
+
+	public function __construct() {
 		parent::__construct();
+
+		$flower = new Flower();
+		$flower->setBaseAmount(8);
+		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_BLUE_ORCHID]);
+
+		$this->addPopulator($flower);
+
+		$lilypad = new LilyPad();
+		$lilypad->setBaseAmount(4);
+		$this->addPopulator($lilypad);
 
 		$this->setElevation(62, 63);
 
@@ -32,11 +47,12 @@ class SwampBiome extends GrassyBiome{
 		$this->rainfall = 0.9;
 	}
 
-	public function getName(){
+	public function getName() {
 		return "Swamp";
 	}
 
-	public function getColor(){
+	public function getColor() {
 		return 0x6a7039;
 	}
+
 }

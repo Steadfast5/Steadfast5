@@ -21,15 +21,21 @@
 
 namespace pocketmine\level\generator\normal\biome;
 
+use pocketmine\block\Block;
+use pocketmine\level\generator\biome\Biome;
+use pocketmine\level\generator\normal\Normal;
+use pocketmine\level\generator\populator\Igloo;
 use pocketmine\level\generator\populator\TallGrass;
 
-class IcePlainsBiome extends SnowyBiome{
+class IcePlainsBiome extends SnowyBiome implements Mountainable {
 
-	public function __construct(){
+	public function __construct() {
 		parent::__construct();
 
 		$tallGrass = new TallGrass();
 		$tallGrass->setBaseAmount(5);
+
+		$igloo = new Igloo();
 
 		$this->addPopulator($tallGrass);
 
@@ -37,9 +43,17 @@ class IcePlainsBiome extends SnowyBiome{
 
 		$this->temperature = 0.05;
 		$this->rainfall = 0.8;
+		$this->setGroundCover([
+			Block::get(Block::SNOW, 0),
+			Block::get(Block::GRASS, 0),
+			Block::get(Block::DIRT, 0),
+			Block::get(Block::DIRT, 0),
+			Block::get(Block::DIRT, 0),
+		]);
 	}
 
-	public function getName(){
+	public function getName() {
 		return "Ice Plains";
 	}
+
 }

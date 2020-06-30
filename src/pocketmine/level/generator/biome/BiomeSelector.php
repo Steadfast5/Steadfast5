@@ -66,8 +66,16 @@ class BiomeSelector{
 		return ($this->temperature->noise2D($x, $z, true) + 1) / 2;
 	}
 
+	public function setTemperature($value) {
+		$this->temperature = $value;
+	}
+
 	public function getRainfall($x, $z){
 		return ($this->rainfall->noise2D($x, $z, true) + 1) / 2;
+	}
+
+	public function setRainfall($value) {
+		$this->rainfall = $value;
 	}
 
 	/**
@@ -81,6 +89,7 @@ class BiomeSelector{
 		$rainfall = (int) ($this->getRainfall($x, $z) * 63);
 
 		$biomeId = $this->map[$temperature + ($rainfall << 6)];
-		return isset($this->biomes[$biomeId]) ? $this->biomes[$biomeId] : $this->fallback;
+		return $this->biomes[$biomeId] ?? $this->fallback;
 	}
+
 }

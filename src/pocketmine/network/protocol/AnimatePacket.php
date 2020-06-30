@@ -38,6 +38,7 @@ class AnimatePacket extends PEPacket{
 	
 	public $action;
 	public $eid;
+	public $data;
 
 	public function decode($playerProtocol){
 		$this->getHeader($playerProtocol);
