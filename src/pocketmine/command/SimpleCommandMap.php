@@ -24,6 +24,7 @@ namespace pocketmine\command;
 use pocketmine\command\defaults\BanCommand;
 use pocketmine\command\defaults\BanIpCommand;
 use pocketmine\command\defaults\BanListCommand;
+use pocketmine\command\defaults\ClearCommand;
 use pocketmine\command\defaults\DefaultGamemodeCommand;
 use pocketmine\command\defaults\DeopCommand;
 use pocketmine\command\defaults\DifficultyCommand;
@@ -124,6 +125,7 @@ class SimpleCommandMap implements CommandMap {
 		$this->register("pocketmine", new SetBlockCommand("setblock"));
 		$this->register("pocketmine", new EnchantCommand("enchant"));
 		$this->register("pocketmine", new ExpCommand("xp"));
+		$this->register("pocketmine", new ClearCommand("clear"));
 
 		if($this->server->getProperty("debug.commands", false) === true){
 			$this->register("pocketmine", new StatusCommand("status"));
