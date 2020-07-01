@@ -24,6 +24,8 @@ namespace pocketmine\block;
 
 use pocketmine\item\Tool;
 use pocketmine\item\Item;
+use pocketmine\network\protocol\TileEventPacket;
+use pocketmine\network\protocol\UpdateBlockPacket;
 
 class NoteBlock extends Solid {
 
@@ -69,7 +71,7 @@ class NoteBlock extends Solid {
 				return false;
 			}
 		}
-		$pk = new BlockEventPacket();
+		$pk = new TileEventPacket();
 		$pk->x = $pos->x;
 		$pk->y = $pos->y;
 		$pk->z = $pos->z;
