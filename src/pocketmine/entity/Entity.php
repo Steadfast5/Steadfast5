@@ -1019,7 +1019,7 @@ abstract class Entity extends Location implements Metadatable{
 		return 300;
 	}
 
-	public function travelToDimension(int $dimensionId) {
+	public function travelToDimension($dimensionId) {
 		if ($dimensionId === ChangeDimensionPacket::NETHER) {
 			$targetLevel = $this->server->getNetherLevel();
 		} elseif ($dimensionId === ChangeDimensionPacket::THE_END) {
