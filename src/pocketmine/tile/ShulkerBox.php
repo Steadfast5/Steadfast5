@@ -23,8 +23,8 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 		parent::__construct($chunk, $nbt);
 		$this->inventory = new ShulkerInventory($this);
 		if (!isset($this->namedtag->Items) || !($this->namedtag->Items instanceof Enum)) {
-			$this->namedtag->Items = new Enum("Items", []);
-			$this->namedtag->Items->setTagType(NBT::TAG_Compound);
+			//$this->namedtag->Items = new Enum("Items", []);
+			//$this->namedtag->Items->setTagType(NBT::TAG_Compound);
 		}
 		for ($i = 0; $i < $this->getSize(); ++$i) {
 			$this->inventory->setItem($i, $this->getItem($i), false);
