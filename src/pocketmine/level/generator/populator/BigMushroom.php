@@ -23,7 +23,7 @@ class BigMushroom extends VariableAmountPopulator {
 		$z = $chunkZ * 16;
 		$y = $this->getHighestWorkableBlock($x, $z);
 		if (!$this->canMushroomStay($x, $y, $z) || $y == -1) {
-            return;
+			return;
 		}
 		if ($random->nextBoolean()) {
 			for ($i = 0; $i < $random->nextRange(5, 6); $i++) {
