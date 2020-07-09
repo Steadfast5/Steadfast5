@@ -3,6 +3,7 @@
 namespace pocketmine\network\protocol;
 
 interface Info331 {
+
 	const LOGIN_PACKET = 0x01;
 	const PLAY_STATUS_PACKET = 0x02;
 	const SERVER_TO_CLIENT_HANDSHAKE_PACKET = 0x03;
@@ -124,4 +125,6 @@ interface Info331 {
 	const BIOME_DEFINITION_LIST_PACKET = 0x7a;
 	const LEVEL_SOUND_EVENT_PACKET = 0x7b;
 	const CREATIVE_ITEMS_LIST_PACKET = 0x91;
+	const PLAYER_ENCHANT_OPTIONS_PACKET = 0x92;
+
 }

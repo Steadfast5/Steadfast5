@@ -471,9 +471,9 @@ class BinaryStream {
 			$this->putString($additionalSkinData['FullSkinId']); // Full Skin ID	
 		} else {
 			$uniqId = $skinId . $skinGeomtryName . "-" . microtime(true);
-			$this->putString($uniqId); // Full Skin ID	
+			$this->putString($uniqId); // Full Skin ID
 		}
-		if ($playerProtocol == Info::PROTOCOL_390) {
+		if ($playerProtocol == Info::PROTOCOL_390 || $playerProtocol >= Info::PROTOCOL_406) {
 			$this->putString($additionalSkinData['ArmSize']??''); //ArmSize
 			$this->putString($additionalSkinData['SkinColor']??''); //SkinColor			
 			$this->putLInt(isset($additionalSkinData['PersonaPieces'])?count($additionalSkinData['PersonaPieces']):0);   //Persona Pieces -> more info to come
@@ -500,11 +500,11 @@ class BinaryStream {
 		$additionalSkinData['SkinResourcePatch'] = $this->getString();
 		$geometryData = json_decode($additionalSkinData['SkinResourcePatch'], true);
 		$skinGeomtryName = isset($geometryData['geometry']['default']) ? $geometryData['geometry']['default'] : '';
-		
+
 		$additionalSkinData['SkinImageWidth'] = $this->getLInt();
 		$additionalSkinData['SkinImageHeight'] = $this->getLInt();
 		$skinData = $this->getString();
-		
+
 		$animationCount = $this->getLInt();
 		$additionalSkinData['AnimatedImageData'] = [];
 		for ($i = 0; $i < $animationCount; $i++) {
@@ -516,11 +516,11 @@ class BinaryStream {
 				'Frames' => $this->getLFloat(),
 			];
 		}
-		
+
 		$additionalSkinData['CapeImageWidth'] = $this->getLInt();
 		$additionalSkinData['CapeImageHeight'] = $this->getLInt();
 		$capeData = $this->getString();
-		
+
 		$skinGeomtryData = $this->getString();
 		if (strpos($skinGeomtryData, 'null') === 0) {
 			$skinGeomtryData = '';
@@ -530,11 +530,10 @@ class BinaryStream {
 		$additionalSkinData['PremiumSkin'] = $this->getByte();
 		$additionalSkinData['PersonaSkin'] = $this->getByte();
 		$additionalSkinData['CapeOnClassicSkin'] = $this->getByte();
-		
-		$additionalSkinData['CapeId'] = $this->getString();
-		$additionalSkinData['FullSkinId'] = $this->getString(); // Full Skin ID	
-		if ($playerProtocol == Info::PROTOCOL_390) {
 
+		$additionalSkinData['CapeId'] = $this->getString();
+		$additionalSkinData['FullSkinId'] = $this->getString(); // Full Skin ID
+		if ($playerProtocol == Info::PROTOCOL_390 || $playerProtocol >= Info::PROTOCOL_406) {
 			$additionalSkinData['ArmSize'] = $this->getString();
 			$additionalSkinData['SkinColor'] = $this->getString();
 			$personaPieceCount = $this->getLInt();

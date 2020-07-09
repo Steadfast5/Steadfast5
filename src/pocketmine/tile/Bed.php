@@ -9,6 +9,10 @@ use pocketmine\nbt\tag\ByteTag;
 
 class Bed extends Spawnable {
 
+	public function getColor() {
+		return (int) $this->namedtag["color"];
+	}
+
 	public function getSpawnCompound() {
 		return new Compound("", [
 			new StringTag("id", Tile::BED),

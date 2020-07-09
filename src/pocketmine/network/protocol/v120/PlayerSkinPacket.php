@@ -21,7 +21,8 @@ class PlayerSkinPacket extends PEPacket {
 	public $newSkinGeometryData;
 	public $isPremiumSkin = false;
 	public $additionalSkinData = [];
-	
+	public $isTrustedSkin;
+
 
 	public function decode($playerProtocol) {
 		$this->getHeader($playerProtocol);
@@ -53,7 +54,10 @@ class PlayerSkinPacket extends PEPacket {
 				$this->isPremiumSkin = true;
 			}
 			$this->newSkinName = $this->getString();
-			$this->oldSkinName = $this->getString(); 
+			$this->oldSkinName = $this->getString();
+			if ($playerProtocol >= Info::PROTOCOL_406) {
+				$this->isTrustedSkin = $this->getByte(); // whether skin trusted marketplace content
+			}
 		}
 		$this->checkSkinData($this->newSkinByteData, $this->newSkinGeometryName, $this->newSkinGeometryData, $this->additionalSkinData);
 	}
@@ -86,6 +90,9 @@ class PlayerSkinPacket extends PEPacket {
 			$this->putSerializedSkin($playerProtocol, $this->newSkinId, $this->newSkinByteData, $this->newSkinGeometryName, $this->newSkinGeometryData, $this->newCapeByteData, $this->additionalSkinData);
 			$this->putString($this->newSkinName);
 			$this->putString($this->oldSkinName);
+			if ($playerProtocol >= Info::PROTOCOL_406) {
+				$this->putByte($this->isTrustedSkin); // is trusted skin
+			}
 		}
 	}
 }

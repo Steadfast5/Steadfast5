@@ -265,7 +265,12 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 			$pk = new EncapsulatedPacket();
 			$pk->buffer = $buffer;
 			$pk->reliability = 3;
-			$this->interface->sendEncapsulated($player->getIdentifier(), $pk,  RakLib::PRIORITY_NORMAL | RakLib::FLAG_NEED_ZLIB);
+			if ($player->getOriginalProtocol() >= Info::PROTOCOL_406) {
+				$flag = RakLib::FLAG_NEED_ZLIB_RAW;
+			} else {
+				$flag = RakLib::FLAG_NEED_ZLIB;
+			}
+			$this->interface->sendEncapsulated($player->getIdentifier(), $pk,  RakLib::PRIORITY_NORMAL | $flag);
 		}
 	}
 
