@@ -109,15 +109,24 @@ class Cave extends Populator {
 			if ((($xOffset * $xOffset + $zOffset * $zOffset) - $nodesLeft * $nodesLeft) > ($offsetHorizontalScale * $offsetHorizontalScale)) {
 				return;
 			}
-			if ($target->getX() < ($middle->getX() - 16 - $horizontalSize * 2)
-				|| $target->getZ() < ($middle->getZ() - 16 - $horizontalSize * 2)
-				|| $target->getX() > ($middle->getX() + 16 + $horizontalSize * 2)
-				|| $target->getZ() > ($middle->getZ() + 16 + $horizontalSize * 2)
+			if (
+				$target->getX() < ($middle->getX() - 16 - $horizontalSize * 2) ||
+				$target->getZ() < ($middle->getZ() - 16 - $horizontalSize * 2) || 
+				$target->getX() > ($middle->getX() + 16 + $horizontalSize * 2) || 
+				$target->getZ() > ($middle->getZ() + 16 + $horizontalSize * 2)
 			) {
 				continue;
 			}
-			$start = new Vector3(floor($target->getX() - $horizontalSize) - $chunk->getX() - 1, floor($target->getY() - $verticalSize) - 1, floor($target->getZ() - $horizontalSize) - $chunk->getZ() - 1);
-			$end = new Vector3(floor($target->getX() + $horizontalSize) - $chunk->getX() + 1, floor($target->getY() + $verticalSize) + 1, floor($target->getZ() + $horizontalSize) - $chunk->getZ() + 1);
+			$start = new Vector3(
+				floor($target->getX() - $horizontalSize) - $chunk->getX() - 1,
+				floor($target->getY() - $verticalSize) - 1,
+				floor($target->getZ() - $horizontalSize) - $chunk->getZ() - 1
+			);
+			$end = new Vector3(
+				floor($target->getX() + $horizontalSize) - $chunk->getX() + 1,
+				floor($target->getY() + $verticalSize) + 1,
+				floor($target->getZ() + $horizontalSize) - $chunk->getZ() + 1
+			);
 			$node = new CaveNode($level, $chunk, $start, $end, $target, $verticalSize, $horizontalSize);
 			if ($node->canPlace()) {
 				$node->place();
@@ -175,7 +184,13 @@ class CaveNode {
 					if ($blockId == Block::WATER || $blockId == Block::STILL_WATER) {
 						return false;
 					}
-					if ($y != ($this->start->getFloorY() - 1) && $x != ($this->start->getFloorX()) && $x != ($this->end->getFloorX() - 1) && $z != ($this->start->getFloorZ()) && $z != ($this->end->getFloorZ() - 1)) {
+					if (
+						$y != ($this->start->getFloorY() - 1) &&
+						$x != ($this->start->getFloorX()) &&
+						$x != ($this->end->getFloorX() - 1) &&
+						$z != ($this->start->getFloorZ()) &&
+						$z != ($this->end->getFloorZ() - 1)
+					) {
 						$y = $this->start->getFloorY();
 					}
 				}
