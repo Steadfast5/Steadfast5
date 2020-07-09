@@ -12,7 +12,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 
 class ShulkerInventory extends ContainerInventory {
-
+/*
 	protected $holder;
 
 	public function __construct(ShulkerBox $tile) {
@@ -103,5 +103,5 @@ class ShulkerInventory extends ContainerInventory {
 		}
 		return false;
 	}
-
+*/
 }
