@@ -28,8 +28,10 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\network\protocol\Info;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
+use pocketmine\utils\TextFormat;
 
 class EnchantingTable extends Transparent {
 
