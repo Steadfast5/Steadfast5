@@ -49,7 +49,7 @@ class ShulkerBox extends Solid {
 	public function getHardness(){
 		return 5;
 	}
-
+/*
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$this->getLevel()->setBlock($block, $this, true, true);
 		$nbt = ShulkerTile::createNBT($this, $face, $item, $player);
@@ -86,7 +86,7 @@ class ShulkerBox extends Solid {
 		}
 		return true;
 	}
-
+*/
 	public function getDrops(Item $item){
 		return [
 			
