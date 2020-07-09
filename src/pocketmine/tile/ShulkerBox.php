@@ -16,7 +16,7 @@ use pocketmine\tile\Nameable;
 use pocketmine\tile\Spawnable;
 
 abstract class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
-
+/*
 	protected $inventory = null;
 
 	public function __construct(FullChunk $chunk, Compound $nbt) {
@@ -128,5 +128,5 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 
 		return $compound;
 	}
-
+*/
 }
