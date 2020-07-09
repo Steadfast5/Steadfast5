@@ -41,6 +41,7 @@ use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\MapInfoRequestPacket;
 use pocketmine\network\protocol\SetEntityLinkPacket;
 use pocketmine\network\protocol\PlaySoundPacket;
+//use pocketmine\network\protocol\SimpleEventPacket;
 use pocketmine\network\protocol\SpawnExperienceOrbPacket;
 use pocketmine\network\protocol\StopSoundPacket;
 use pocketmine\network\protocol\TileEntityDataPacket;
@@ -90,6 +91,7 @@ use pocketmine\network\protocol\ResourcePackDataInfoPacket;
 use pocketmine\network\protocol\ResourcePacksInfoPacket;
 use pocketmine\network\protocol\ClientToServerHandshakePacket;
 use pocketmine\network\protocol\ResourcePackClientResponsePacket;
+//use pocketmine\network\protocol\v120\CommandOutputPacket;
 use pocketmine\network\protocol\v120\CommandRequestPacket;
 use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v120\InventoryTransactionPacket;
@@ -387,6 +389,7 @@ class Network {
 		$this->registerPacket120(ProtocolInfo120::LEVEL_SOUND_EVENT_PACKET, LevelSoundEventPacket::class);
 		$this->registerPacket120(ProtocolInfo120::TILE_EVENT_PACKET, TileEventPacket::class);
 		$this->registerPacket120(ProtocolInfo120::ENTITY_EVENT_PACKET, EntityEventPacket::class);
+//		$this->registerPacket120(ProtocolInfo120::SIMPLE_EVENT_PACKET, SimpleEventPacket::class);
 		$this->registerPacket120(ProtocolInfo120::MOB_EQUIPMENT_PACKET, MobEquipmentPacket::class);
 
 		$this->registerPacket120(ProtocolInfo120::MOB_ARMOR_EQUIPMENT_PACKET, MobArmorEquipmentPacket::class);
@@ -427,6 +430,7 @@ class Network {
 		$this->registerPacket120(ProtocolInfo120::INVENTORY_TRANSACTION_PACKET, InventoryTransactionPacket::class);
 		$this->registerPacket120(ProtocolInfo120::INVENTORY_CONTENT_PACKET, InventoryContentPacket::class);
 		$this->registerPacket120(ProtocolInfo120::PLAYER_HOTBAR_PACKET, PlayerHotbarPacket::class);
+//		$this->registerPacket120(ProtocolInfo120::COMMAND_OUTPUT_PACKET, CommandOutputPacket::class);
 		$this->registerPacket120(ProtocolInfo120::COMMAND_REQUEST_PACKET, CommandRequestPacket::class);
 		$this->registerPacket120(ProtocolInfo120::PLAYER_SKIN_PACKET, PlayerSkinPacket::class);
 		$this->registerPacket120(ProtocolInfo120::MODAL_FORM_RESPONSE_PACKET, ModalFormResponsePacket::class);
@@ -458,6 +462,7 @@ class Network {
 		$this->registerPacket310(ProtocolInfo310::LEVEL_EVENT_PACKET, LevelEventPacket::class);
 		$this->registerPacket310(ProtocolInfo310::TILE_EVENT_PACKET, TileEventPacket::class);
 		$this->registerPacket310(ProtocolInfo310::ENTITY_EVENT_PACKET, EntityEventPacket::class);
+//		$this->registerPacket310(ProtocolInfo310::SIMPLE_EVENT_PACKET, SimpleEventPacket::class);
 		$this->registerPacket310(ProtocolInfo310::MOB_EQUIPMENT_PACKET, MobEquipmentPacket::class);
 		$this->registerPacket310(ProtocolInfo310::MOB_ARMOR_EQUIPMENT_PACKET, MobArmorEquipmentPacket::class);
 		$this->registerPacket310(ProtocolInfo310::INTERACT_PACKET, InteractPacket::class);
@@ -505,10 +510,10 @@ class Network {
 		$this->registerPacket310(ProtocolInfo310::NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET, NetworkChunkPublisherUpdatePacket::class);	
 		$this->registerPacket310(ProtocolInfo310::SPAWN_PARTICLE_EFFECT_PACKET, SpawnParticleEffectPacket::class);
 		$this->registerPacket310(ProtocolInfo310::SPAWN_EXPERIENCE_ORB_PACKET, SpawnExperienceOrbPacket::class);
-        $this->registerPacket310(ProtocolInfo310::ITEM_FRAME_DROP_ITEM_PACKET, ItemFrameDropItemPacket::class);
-        $this->registerPacket310(ProtocolInfo310::SCRIPT_CUSTOM_EVENT_PACKET, ScriptCustomEventPacket::class);
-        $this->registerPacket310(ProtocolInfo310::PLAY_SOUND_PACKET, PlaySoundPacket::class);
-        $this->registerPacket310(ProtocolInfo310::STOP_SOUND_PACKET, StopSoundPacket::class);
+		$this->registerPacket310(ProtocolInfo310::ITEM_FRAME_DROP_ITEM_PACKET, ItemFrameDropItemPacket::class);
+		$this->registerPacket310(ProtocolInfo310::SCRIPT_CUSTOM_EVENT_PACKET, ScriptCustomEventPacket::class);
+		$this->registerPacket310(ProtocolInfo310::PLAY_SOUND_PACKET, PlaySoundPacket::class);
+		$this->registerPacket310(ProtocolInfo310::STOP_SOUND_PACKET, StopSoundPacket::class);
 	}
 	
 	private function registerPackets331() {
@@ -532,6 +537,7 @@ class Network {
 		$this->registerPacket331(ProtocolInfo331::LEVEL_EVENT_PACKET, LevelEventPacket::class);
 		$this->registerPacket331(ProtocolInfo331::TILE_EVENT_PACKET, TileEventPacket::class);
 		$this->registerPacket331(ProtocolInfo331::ENTITY_EVENT_PACKET, EntityEventPacket::class);
+//		$this->registerPacket331(ProtocolInfo331::SIMPLE_EVENT_PACKET, SimpleEventPacket::class);
 		$this->registerPacket331(ProtocolInfo331::MOB_EQUIPMENT_PACKET, MobEquipmentPacket::class);
 		$this->registerPacket331(ProtocolInfo331::MOB_ARMOR_EQUIPMENT_PACKET, MobArmorEquipmentPacket::class);
 		$this->registerPacket331(ProtocolInfo331::INTERACT_PACKET, InteractPacket::class);
