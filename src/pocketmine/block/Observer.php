@@ -13,7 +13,7 @@ use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\Player;
 
 class Observer extends Solid {
-/*
+
 	protected $id = self::OBSERVER;
 	protected $currentStatus = self::STATUS_IS_DEACTIVATED;
 
@@ -47,7 +47,7 @@ class Observer extends Solid {
 		return false;
 	}
 
-	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz,Player $player = null) {
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$this->meta = Vector3::getOppositeSide($face);
 		$this->getLevel()->setBlock($block, $this, true, true);
 		return true;
@@ -70,5 +70,16 @@ class Observer extends Solid {
 			}
 		}
 	}
-*/
+
+	private function onUpdateRecieve($type = null, $data = null) {
+		if ($type === self::TYPE_BLOCK_HASH && ($data != $this->getWatchBlock()->getHash())) {
+			return;
+		}
+		if ($type === self::TYPE_BLOCK_OBJECT && ([$data->x, $data->y, $data->z] != [$this->getWatchBlock()->x, $this->getWatchBlock()->y, $this->getWatchBlock()->z])) {
+			return;
+		}
+		$this->currentStatus = self::STATUS_IS_ACTIVATED;
+		$this->getLevel()->scheduleUpdate($this, 1);
+	}
+
 }

@@ -365,7 +365,8 @@ class BinaryStream {
 			$byte = $this->getByte();
 			$result |= ($byte & 0x7f) << $shift;
 			$shift += 7;
-		} while ($byte > 0x7f);
+		}
+		while ($byte > 0x7f);
 		return $result;
 	}
 

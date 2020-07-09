@@ -50,4 +50,5 @@ class Ice extends Transparent{
 		}
 		return parent::onBreak($item, $player);
 	}
+
 }
