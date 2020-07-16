@@ -338,7 +338,9 @@ class Chunk extends BaseFullChunk {
 			$this->getBlockLightArray() .
 			$heightmap .
 			$biomeColors . chr(
-				($this->isLightPopulated() ? 0x04 : 0) | ($this->isPopulated() ? 0x02 : 0) | ($this->isGenerated() ? 0x01 : 0)
+				($this->isLightPopulated() ? 0x04 : 0) |
+				($this->isPopulated() ? 0x02 : 0) |
+				($this->isGenerated() ? 0x01 : 0)
 			);
 	}
 
@@ -354,8 +356,7 @@ class Chunk extends BaseFullChunk {
 			$chunk = new Chunk($provider instanceof LevelProvider ? $provider : LevelDB::class, $chunkX, $chunkZ, str_repeat("\x00", self::DATA_LENGTH));
 			$chunk->skyLight = str_repeat("\xff", 16384);
 			return $chunk;
-		}
-		catch(\Exception $e) {
+		} catch(\Exception $e) {
 			return null;
 		}
 	}
