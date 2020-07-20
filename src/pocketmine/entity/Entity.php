@@ -878,6 +878,10 @@ abstract class Entity extends Location implements Metadatable{
 		return !$this->justCreated && $entity !== $this;
 	}
 
+	public function canBeCollidedWith() {
+		return $this->isAlive();
+	}
+
 	protected function checkObstruction($x, $y, $z) {
 		$i = Math::floorFloat($x);
 		$j = Math::floorFloat($y);
