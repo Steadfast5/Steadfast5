@@ -21,23 +21,24 @@
 
 namespace pocketmine\network\protocol;
 
-class UpdateAttributesPacket extends PEPacket{
+class UpdateAttributesPacket extends PEPacket {
+
 	const NETWORK_ID = Info::UPDATE_ATTRIBUTES_PACKET;
 	const PACKET_NAME = "UPDATE_ATTRIBUTES_PACKET";
 
-    const HEALTH = "minecraft:health";
-    const HUNGER = "minecraft:player.hunger";
-    const EXPERIENCE = "minecraft:player.experience";
-    const EXPERIENCE_LEVEL = "minecraft:player.level";
+	const HEALTH = "minecraft:health";
+	const HUNGER = "minecraft:player.hunger";
+	const EXPERIENCE = "minecraft:player.experience";
+	const EXPERIENCE_LEVEL = "minecraft:player.level";
 	const SPEED = "minecraft:movement";
-    const ABSORPTION = "minecraft:absorption";
+	const ABSORPTION = "minecraft:absorption";
 
-    public $entityId;
+	public $entityId;
 
-    public $minValue;
-    public $maxValue;
-    public $value;
-    public $name;
+	public $minValue;
+	public $maxValue;
+	public $value;
+	public $name;
 	public $defaultValue;
 	public $attributes = [];
 
