@@ -99,10 +99,10 @@ class Nether extends Generator {
 
 		$ores = new Ore();
 		$ores->setOreTypes([
-			new OreType(New QuartzOre(), 20, 8, 0, 64),
-			new OreType(new SoulSand(), 5, 64, 0, 127),
-			new OreType(new Gravel(), 8, 33, 0, 127),
-			new OreType(New Lava(), 1, 1, 0, 128),
+			new OreType(New QuartzOre(), 20, 8, 0, 128),
+			new OreType(new SoulSand(), 5, 64, 0, 128),
+			new OreType(new Gravel(), 5, 64, 0, 128),
+			new OreType(New Lava(), 1, 16, 0, (int) $this->waterHeight),
 		]);
 		$this->populators[] = $ores;
 		$this->populators[] = new NetherGlowStone();

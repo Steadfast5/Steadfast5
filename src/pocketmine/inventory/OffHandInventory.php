@@ -31,16 +31,28 @@ class OffHandInventory extends BaseInventory {
 
 	public function setItemInOffHand(Item $item) {
 		$this->setItem(0, $item);
+
+		$this->broadcastMobEquipmentPacket();
+
 		$pk = new InventorySlotPacket();
 		$pk->windowId = Protocol120::CONTAINER_ID_OFFHAND;
 		$pk->inventorySlot = 0;
 		$pk->item = $this->getItemInOffHand();
-		$this->holder->getServer()->broadcastPacket($this->holder->getViewers(), $pk);
-		$this->holder->sendDataPacket($pk);
+		$this->holder->getServer()->batchPackets($this->holder->getLevel()->getPlayers(), [$pk]);
+
+		$this->getPlayer()->namedtag->setTag($item->nbtSerialize(-1, "OffHand"), true);
 	}
 
 	public function getItemInOffHand() {
 		return $this->getItem(0);
+	}
+
+	public function broadcastMobEquipmentPacket() {
+		$pk = new MobEquipmentPacket();
+		$pk->windowId = $this->getPlayer()->getWindowId($this);
+		$pk->item = $this->getItemInOffHand();
+		$pk->eid = $this->getPlayer()->getId();
+		$this->holder->getServer()->batchPackets($this->holder->getLevel()->getPlayers(), [$pk]);
 	}
 
 }

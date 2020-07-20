@@ -33,6 +33,7 @@ use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\command\SimpleCommandMap;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Effect;
+use pocketmine\entity\EnderCrystal;
 use pocketmine\entity\Entity;
 use pocketmine\entity\ExperienceOrb;
 use pocketmine\entity\FallingSand;
@@ -1272,32 +1273,32 @@ class Server{
 		return $this->properties->exists($variable) ? $this->properties->get($variable) : $defaultValue;
 	}
 
-    /**
-     * @param string $variable
-     * @param mixed  $defaultValue
-     *
-     * @return mixed
-     */
-    public function getAdvancedProperty($variable, $defaultValue = null) {
-        $vars = explode(".", $variable);
-        $base = array_shift($vars);
-        if ($this->softConfig->exists($base)) {
-            $base = $this->softConfig->get($base);
-        } else {
-            return $defaultValue;
-        }
+	/**
+	 * @param string $variable
+	 * @param mixed  $defaultValue
+	 *
+	 * @return mixed
+	 */
+	public function getAdvancedProperty($variable, $defaultValue = null) {
+		$vars = explode(".", $variable);
+		$base = array_shift($vars);
+		if ($this->softConfig->exists($base)) {
+			$base = $this->softConfig->get($base);
+		} else {
+			return $defaultValue;
+		}
 
-        while (count($vars) > 0) {
-            $baseKey = array_shift($vars);
-            if (is_array($base) && isset($base[$baseKey])) {
-                $base = $base[$baseKey];
-            } else {
-                return $defaultValue;
-            }
-        }
+		while (count($vars) > 0) {
+			$baseKey = array_shift($vars);
+			if (is_array($base) && isset($base[$baseKey])) {
+				$base = $base[$baseKey];
+			} else {
+				return $defaultValue;
+			}
+		}
 
-    	return $base;
-    }
+		return $base;
+	}
 
 
 	/**
@@ -1544,7 +1545,7 @@ class Server{
 	 * @param string          $dataPath
 	 * @param string          $pluginPath
 	 */
-	public function __construct(\ClassLoader $autoloader, \ThreadedLogger $logger, $filePath, $dataPath, $pluginPath){	
+	public function __construct(\ClassLoader $autoloader, \ThreadedLogger $logger, $filePath, $dataPath, $pluginPath){
 		self::$instance = $this;
 		self::$serverId =  mt_rand(0, PHP_INT_MAX);
 
@@ -2026,47 +2027,50 @@ class Server{
 		}
 	}
 
-    /**
-     * Broadcasts a list of packets in a batch to a list of players
-     *
-     * @param Player[]     $players
-     * @param DataPacket[] $packets
-     * @param bool         $forceSync
-     * @param bool         $immediate
-     */
-    public function batchPacket(array $players, array $packets, bool $immediate = false){
-        if(empty($packets)){
-            throw new \InvalidArgumentException("Cannot send empty batch");
-        }
+	/**
+	 * Broadcasts a list of packets in a batch to a list of players
+	 *
+	 * @param Player[]     $players
+	 * @param DataPacket[] $packets
+	 * @param bool         $forceSync
+	 * @param bool         $immediate
+	 */
+	public function batchPacket(array $players, array $packets, bool $immediate = false) {
+		if (empty($packets)) {
+			throw new \InvalidArgumentException("Cannot send empty batch");
+		}
 
-        Timings::$playerNetworkTimer->startTiming();
-        $targets = array_filter($players, function(Player $player) : bool{ return $player->isConnected(); });
+		Timings::$playerNetworkTimer->startTiming();
+		$targets = array_filter($players, function(Player $player) : bool {
+			return $player->isConnected(); 
+		});
 
-        if(!empty($targets)){
-            $pk = new BatchPacket();
-            foreach($packets as $p){
-                $pk->addPacket($p);
-            }
+		if (!empty($targets)) {
+			$pk = new BatchPacket();
+			foreach ($packets as $p) {
+				$pk->addPacket($p);
+			}
 
-            if(Network::$BATCH_THRESHOLD >= 0 and strlen($pk->payload) >= Network::$BATCH_THRESHOLD){
-                $pk->setCompressionLevel($this->networkCompressionLevel);
-            } else {
-                $pk->setCompressionLevel(0); //Do not compress packets under the threshold
-            }
+			if(Network::$BATCH_THRESHOLD >= 0 && strlen($pk->payload) >= Network::$BATCH_THRESHOLD){
+				$pk->setCompressionLevel($this->networkCompressionLevel);
+			} else {
+				$pk->setCompressionLevel(0); //Do not compress packets under the threshold
+			}
 
-            $this->broadcastPacketsCallback($pk, $targets, $immediate);
-        }
-        Timings::$playerNetworkTimer->stopTiming();
-    }
-    /**
-     * @param BatchPacket $pk
-     * @param Player[]    $players
-     */
-    public function broadcastPacketsCallback(BatchPacket $pk, array $players){
-        foreach ($players as $i) {
-            $i->dataPacket($pk);
-        }
-    }
+			$this->broadcastPacketsCallback($pk, $targets, $immediate);
+		}
+		Timings::$playerNetworkTimer->stopTiming();
+	}
+
+	/**
+	 * @param BatchPacket $pk
+	 * @param Player[]    $players
+	 */
+	public function broadcastPacketsCallback(BatchPacket $pk, array $players) {
+		foreach ($players as $i) {
+			$i->dataPacket($pk);
+		}
+	}
 
 	/**
 	 * @param int $type
@@ -2465,7 +2469,7 @@ class Server{
 				$pk->setDeviceId($p->getDeviceOS());
 				$pk->encode($protocol, $p->getSubClientId());
 				$batch = new BatchPacket();
-				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), ZLIB_ENCODING_DEFLATE, 7);
+				$batch->payload = zlib_encode(Binary::writeVarInt(strlen($pk->getBuffer())) . $pk->getBuffer(), Player::getCompressAlg($protocol), 7);
 				$readyPackets[$protocol] = $batch;
 			}
 			$p->dataPacket($readyPackets[$protocol]);
@@ -2510,7 +2514,7 @@ class Server{
 			$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
 			$bpk = new BatchPacket();
 			$buffer = $pk->getBuffer();
-			$bpk->payload = zlib_encode(Binary::writeVarInt(strlen($buffer)) . $buffer, ZLIB_ENCODING_DEFLATE, 7);
+			$bpk->payload = zlib_encode(Binary::writeVarInt(strlen($buffer)) . $buffer, Player::getCompressAlg($p->getPlayerProtocol()), 7);
 			$bpk->encode($p->getPlayerProtocol());
 			$this->craftList[$p->getPlayerProtocol()] = $bpk->getBuffer();
 		}
@@ -2727,6 +2731,7 @@ class Server{
 		Entity::registerEntity(FireBall::class);
 		Entity::registerEntity(BottleOEnchanting::class);
 		Entity::registerEntity(ExperienceOrb::class);
+		Entity::registerEntity(EnderCrystal::class);
 
 		Entity::registerEntity(Painting::class);
 	}

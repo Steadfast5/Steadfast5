@@ -20,17 +20,21 @@ class CreativeItemsListPacket extends PEPacket {
 
 	public function encode($playerProtocol) {
 		$this->reset($playerProtocol);
-		$this->putVarInt(count($this->groups));
-		foreach ($this->groups as $groupData) {
-			$this->putString($groupData['name']);
-			$this->putLInt($groupData['item']);
-			$this->putVarInt(0); // nbt count
+		if ($playerProtocol < Info::PROTOCOL_406) {
+			$this->putVarInt(count($this->groups));
+			foreach ($this->groups as $groupData) {
+				$this->putString($groupData['name']);
+				$this->putLInt($groupData['item']);
+				$this->putVarInt(0); // nbt count
+			}
 		}
 		$this->putVarInt(count($this->items));
 		$index = 1;
 		foreach ($this->items as $itemData) {
 			$this->putVarInt($index++);
-			$this->putVarInt($itemData['group']);
+			if ($playerProtocol < Info::PROTOCOL_406) {
+				$this->putVarInt($itemData['group']);
+			}
 			$this->putSlot($itemData['item'], $playerProtocol);
 		}
 	}

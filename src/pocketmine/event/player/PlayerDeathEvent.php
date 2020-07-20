@@ -25,7 +25,8 @@ use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
-class PlayerDeathEvent extends EntityDeathEvent{
+class PlayerDeathEvent extends EntityDeathEvent {
+
 	public static $handlerList = null;
 
 	private $deathMessage;
@@ -62,6 +63,10 @@ class PlayerDeathEvent extends EntityDeathEvent{
 
 	public function setKeepInventory($keepInventory){
 		$this->keepInventory = (bool) $keepInventory;
+	}
+
+	public function setDrops($drops) {
+		$this->drops = $drops;
 	}
 
 }

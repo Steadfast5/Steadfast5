@@ -1539,8 +1539,29 @@ class Item implements ItemIds {
         $this->count = (int) $count;
     }
 
+    public function pop($count = 1) {
+        if ($count > $this->count) {
+            throw new \InvalidArgumentException("Cannot pop $count items from a stack of $this->count");
+        }
+
+        $item = clone $this;
+        $item->count = $count;
+
+        $this->count -= $count;
+
+        return $item;
+    }
+
+    public function isNull() {
+        return $this->count <= 0 || $this->id === Item::AIR;
+    }
+
     final public function getName(){
         return $this->hasCustomName() ? $this->getCustomName() : $this->name;
+    }
+
+    public function getVanillaName() {
+        return $this->name;
     }
 
     final public function canBePlaced(){

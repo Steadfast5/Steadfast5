@@ -28,8 +28,10 @@ use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\network\protocol\Info;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
+use pocketmine\utils\TextFormat;
 
 class EnchantingTable extends Transparent {
 
@@ -37,6 +39,10 @@ class EnchantingTable extends Transparent {
 
 	public function __construct() {
 		
+	}
+
+	public function getLightLevel() {
+		return 12;
 	}
 
 	public function getBoundingBox() {
@@ -96,6 +102,10 @@ class EnchantingTable extends Transparent {
 
 	public function onActivate(Item $item, Player $player = null) {
 		if ($player instanceof Player) {
+			if ($player->getPlayerProtocol >= Info::PROTOCOL_407) {
+				$player->sendMessage(TextFormat::RED . 'Enchantments are temporarily not available for your version of the game!');
+				return;
+			}
 			if ($player->isCreative()) {
 				return true;
 			}

@@ -174,7 +174,7 @@ class Loot {
 			$c++;
 			$xyz = explode(":", $pos);
 			if ($xyz[3] != "c") {
-			continue;
+				continue;
 			}
 			$v = new Vector3($xyz[0], $xyz[1], $xyz[2]);
 			$level->setBlockIdAt($xyz[0], $xyz[1], $xyz[2], Block::AIR);
@@ -187,7 +187,7 @@ class Loot {
 				new IntTag("x", $v->x),
 				new IntTag("y", $v->y),
 				new IntTag("z", $v->z),
-            ]);
+			]);
 			$nbt->Items->setTagType(NBT::TAG_Compound);
 			Tile::createTile("Chest", $level->getChunk($v->x >> 4, $v->z >> 4), $nbt);
 			echo "Created tile {$c}" . PHP_EOL;
