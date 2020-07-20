@@ -33,6 +33,7 @@ use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\command\SimpleCommandMap;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Effect;
+use pocketmine\entity\EnderCrystal;
 use pocketmine\entity\Entity;
 use pocketmine\entity\ExperienceOrb;
 use pocketmine\entity\FallingSand;
@@ -2730,6 +2731,7 @@ class Server{
 		Entity::registerEntity(FireBall::class);
 		Entity::registerEntity(BottleOEnchanting::class);
 		Entity::registerEntity(ExperienceOrb::class);
+		Entity::registerEntity(EnderCrystal::class);
 
 		Entity::registerEntity(Painting::class);
 	}
