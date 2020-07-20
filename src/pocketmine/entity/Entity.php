@@ -103,7 +103,7 @@ abstract class Entity extends Location implements Metadatable{
 	const DATA_ENDERMAN_BLOCK_META = 24; // type:short
 	const DATA_PLAYER_FLAGS = 27;
 	const DATA_PLAYER_BED_POSITION = 29;
-    const DATA_POTION_AUX_VALUE = 36; //short
+	const DATA_POTION_AUX_VALUE = 36; //short
 	const DATA_LEAD_HOLDER = 38; // type: long
 	const DATA_SCALE = 39; // type: float
 	const DATA_BUTTON_TEXT = 40; // type: string !IMPORTANT! Send to player
@@ -408,33 +408,33 @@ abstract class Entity extends Location implements Metadatable{
 		return $this->ridingEid !== null ? $this->server->findEntity($this->ridingEid) : null;
 	}
 
-    /**
-     * @param bool $value
-     */
-    public function setImmobile($value = true){
-        $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IMMOBILE, $value ? true : false);
-    }
+	/**
+	 * @param bool $value
+	 */
+	public function setImmobile($value = true){
+		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IMMOBILE, $value ? true : false);
+	}
 
-    /**
-     * @return bool
-     */
-    public function isImmobile(): bool {
-        return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_IMMOBILE);
-    }
+	/**
+	 * @return bool
+	 */
+	public function isImmobile(): bool {
+		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_IMMOBILE);
+	}
 
-    /**
-     * @param bool $value
-     */
-    public function setInvisible($value = true){
-        $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, $value ? true : false);
-    }
+	/**
+	 * @param bool $value
+	 */
+	public function setInvisible($value = true){
+		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, $value ? true : false);
+	}
 
-    /**
-     * @return bool
-     */
-    public function isInvisible(): bool {
-        return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_INVISIBLE);
-    }
+	/**
+	 * @return bool
+	 */
+	public function isInvisible(): bool {
+		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_INVISIBLE);
+	}
 
 	public function isSneaking(){
 		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SNEAKING);
