@@ -3490,11 +3490,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->server->getPlayerMetadata()->removeMetadata($this, $metadataKey, $plugin);
 	}
 
-	public function handlePlaySound(network\protocol\v120\PlaySoundPacket $packet) : bool{
+	public function handlePlaySound(PlaySoundPacket $packet) : bool {
 		return false;
 	}
 
-	public function handleStopSound(StopSoundPacket $packet) : bool{
+	public function handleStopSound(StopSoundPacket $packet) : bool {
 		return false;
 	}
 
