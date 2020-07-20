@@ -745,11 +745,13 @@ abstract class Entity extends Location implements Metadatable{
 	 */
 	public function attack($damage, EntityDamageEvent $source) {
 		$cause = $source->getCause();
-		if ($this->hasEffect(Effect::FIRE_RESISTANCE) && (
+		if (
+			$this->hasEffect(Effect::FIRE_RESISTANCE) && (
 				$cause === EntityDamageEvent::CAUSE_FIRE || 
 				$cause === EntityDamageEvent::CAUSE_FIRE_TICK || 
-				$cause === EntityDamageEvent::CAUSE_LAVA)) {
-			
+				$cause === EntityDamageEvent::CAUSE_LAVA
+			)
+		) {
 			$source->setCancelled();
 		}
 		
