@@ -1031,11 +1031,11 @@ abstract class Entity extends Location implements Metadatable{
 		$this->teleport($targetLevel->getSafeSpawn());
 	}
 
-	protected function updateMovement(){
-		$this->setImmobile($this->motion->x == 0 and $this->motion->y == 0 and $this->motion->z == 0);
+	protected function updateMovement() {
+		$this->setImmobile($this->motion->x == 0 && $this->motion->y == 0 && $this->motion->z == 0);
 		$diffPosition = ($this->x - $this->lastX) ** 2 + ($this->y - $this->lastY) ** 2 + ($this->z - $this->lastZ) ** 2;
 		$diffRotation = ($this->yaw - $this->lastYaw) ** 2 + ($this->pitch - $this->lastPitch) ** 2;
-		if($diffPosition > 0.04 || $diffRotation > 2.25){ 
+		if ($diffPosition > 0.04 || $diffRotation > 2.25) { 
 			$this->lastX = $this->x;
 			$this->lastY = $this->y;
 			$this->lastZ = $this->z;
