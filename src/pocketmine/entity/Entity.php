@@ -282,6 +282,8 @@ abstract class Entity extends Location implements Metadatable{
 
 	public $closed = false;
 
+	private $needsDespawn = false;
+
 	/** @var \pocketmine\event\TimingsHandler */
 	protected $timings;
 	
@@ -1482,6 +1484,19 @@ abstract class Entity extends Location implements Metadatable{
 		foreach($this->hasSpawned as $player){
 			$this->despawnFrom($player);
 		}
+	}
+
+	public function flagForDespawn() {
+		$this->needsDespawn = true;
+		$this->scheduleUpdate();
+	}
+
+	public function isFlaggedForDespawn() {
+		return $this->needsDespawn;
+	}
+
+	public function isClosed() {
+		return $this->closed;
 	}
 
 	public function close(){
