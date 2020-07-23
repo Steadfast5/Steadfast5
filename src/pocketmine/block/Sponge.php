@@ -26,7 +26,7 @@ use pocketmine\math\Vector3;
 use pocketmine\item\Item;
 use pocketmine\Server;
 
-class Sponge extends Solid{
+class Sponge extends Solid {
 
 	protected $id = self::SPONGE;
 	protected $absorbRange = 6;
@@ -37,6 +37,51 @@ class Sponge extends Solid{
 
 	public function getHardness(){
 		return 0.6;
+	}
+
+	public function absorbWater() {
+		$range = $this->absorbRange / 2;
+		for ($xx = -$range; $xx <= $range; $xx++) {
+			for ($yy = -$range; $yy <= $range; $yy++) {
+				for ($zz = -$range; $zz <= $range; $zz++) {
+					$block = $this->getLevel()->getBlock(new Vector3($this->x + $xx, $this->y + $yy, $this->z + $zz));
+					if ($block->getId() === Block::WATER) {
+						$this->getLevel()->setBlock($block, Block::get(Block::AIR), true, true);
+					}
+					if ($block->getIds() === Block::STILL_WATER) {
+						$this->getLevel()->setBlock($block, Block::get(Block::AIR), true, true);
+					}
+				}
+			}
+		}
+	}
+
+	public function onUpdate($type) {
+		if ($this->meta == 0) {
+			if ($type === Level::BLOCK_UPDATE_NORMAL) {
+				$blockAbove = $this->getSide(Vector3::SIDE_UP)->getId();
+				$blockBeneath = $this->getSide(Vector3::SIDE_DOWN)->getId();
+				$blockNorth = $this->getSide(Vector3::SIDE_NORTH)->getId();
+				$blockSouth = $this->getSide(Vector3::SIDE_SOUTH)->getId();
+				$blockEast = $this->getSide(Vector3::SIDE_EAST)->getId();
+				$blockWest = $this->getSide(Vector3::SIDE_WEST)->getId();
+
+				if (
+					$blockAbove === Block::WATER ||
+					$blockBeneath === Block::WATER ||
+					$blockNorth === Block::WATER ||
+					$blockSouth === Block::WATER ||
+					$blockEast === Block::WATER ||
+					$blockWest === Block::WATER
+				) {
+					$this->absorbWater();
+					$this->getLevel()->setBlock($this, Block::get(Block::SPONGE, 1), true, true);
+					return Level::BLOCK_UPDATE_NORMAL;
+				}
+			}
+			return false;
+		}
+		return true;
 	}
 
 	public function getName(){
