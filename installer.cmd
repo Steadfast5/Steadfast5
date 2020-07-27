@@ -22,8 +22,6 @@ cd /d %~dp0
 
 cd /d %~dp0 goto PMSTART
 
-where git >nul 2>nul || (powershell -command "& { iwr https://github.com/git-for-windows/git/releases/download/v2.20.1.windows.1/Git-2.20.1-64-bit.exe -OutFile Git-2.20.1-64-bit.exe }" & start Git-2.20.1-64-bit.exe & pause)
-
 mkdir Steadfast5
 
 
@@ -36,35 +34,8 @@ powershell -command "Expand-Archive -Path PHP-7.3-Windows-x64.zip -DestinationPa
 
 powershell -command "& { iwr https://raw.githubusercontent.com/Steadfast5/Installer-scripts/master/installer/start.cmd -OutFile start.cmd }"
 
-if exist bin\php\php.exe (
-	set PHPRC=""
-	set PHP_BINARY=bin\php\php.exe
-) else (
-	set PHP_BINARY=php
-)
+del PHP-7.3-Windows-x64.zip
 
-if exist Steadfast5.phar (
-	set POCKETMINE_FILE=Steadfast5.phar
-) else (
-	if exist PocketMine-MP.phar (
-		set POCKETMINE_FILE=PocketMine-MP.phar
-	) else (
-		if exist src\pocketmine\PocketMine.php (
-			set POCKETMINE_FILE=src\pocketmine\PocketMine.php
-		) else (
-			echo "Couldn't find a valid Steadfast5 installation"
-			pause
-			exit 1
-		)
-	)
-)
-
-REM if exist bin\php\php_wxwidgets.dll (
-REM 	%PHP_BINARY% %POCKETMINE_FILE% --enable-gui %*
-REM ) else (
-	if exist bin\mintty.exe (
-		start "" bin\mintty.exe -o Columns=88 -o Rows=32 -o AllowBlinking=0 -o FontQuality=3 -o Font="DejaVu Sans Mono" -o FontHeight=10 -o CursorType=0 -o CursorBlinks=1 -h error -t "PocketMine-MP" -i bin/pocketmine.ico -w max %PHP_BINARY% %POCKETMINE_FILE% --enable-ansi %*
-	) else (
-		%PHP_BINARY% -c bin\php %POCKETMINE_FILE% %*
-	)
-REM )
+echo Steadfast5 has been installed. To start your server, run the start.cmd file. You can now safely close this window.
+pause
+exit 1
