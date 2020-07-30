@@ -1,10 +1,12 @@
 @echo off
 
 ::
-::   ___ _____  ___  __ _ ___  ___  __ _  ___ _____   ____
-::  / __|__ __|/ _ \/ _` |   \|  _|/ _` |/ __|__ __| |  __|
-::  \__ \ | | |  __/ | | | | ||  _| | | |\__ \ | |   |__  \
-::  |___/ |_|  \___|\__,_|___/|_|  \__,_/|___/ |_|   |____/
+::   _____ _                 _  __          _   _____ 
+::  / ____| |               | |/ _|        | | | ____|
+:: | (___ | |_ ___  __ _  __| | |_ __ _ ___| |_| |__  
+::  \___ \| __/ _ \/ _` |/ _` |  _/ _` / __| __|___ \ 
+::  ____) | ||  __/ (_| | (_| | || (_| \__ \ |_ ___) |
+:: |_____/ \__\___|\__,_|\__,_|_| \__,_|___/\__|____/ 
 ::
 :: This program is free software: you can redistribute it and/or modify
 :: it under the terms of the GNU Lesser General Public License as published by
@@ -83,11 +85,11 @@ if exist Steadfast5.phar (
 	)
 )
 
-if exist bin\php\php_wxwidgets.dll (
+rem if exist bin\php\php_wxwidgets.dll (
 
-    %PHP_BINARY% %POCKETMINE_FILE% --enable-gui %*
+rem     %PHP_BINARY% %POCKETMINE_FILE% --enable-gui %*
 
-) else (
+rem ) else (
 
     if exist bin\mintty.exe (
 
@@ -99,6 +101,6 @@ if exist bin\php\php_wxwidgets.dll (
 
     )
 
-)
+rem )
 
 goto :loop

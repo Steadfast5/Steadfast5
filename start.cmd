@@ -1,10 +1,12 @@
 @echo off
 
 ::
-::   ___ _____  ___  __ _ ___  ___  __ _  ___ _____   ____
-::  / __|__ __|/ _ \/ _` |   \|  _|/ _` |/ __|__ __| |  __|
-::  \__ \ | | |  __/ | | | | ||  _| | | |\__ \ | |   |__  \
-::  |___/ |_|  \___|\__,_|___/|_|  \__,_/|___/ |_|   |____/
+::   _____ _                 _  __          _   _____ 
+::  / ____| |               | |/ _|        | | | ____|
+:: | (___ | |_ ___  __ _  __| | |_ __ _ ___| |_| |__  
+::  \___ \| __/ _ \/ _` |/ _` |  _/ _` / __| __|___ \ 
+::  ____) | ||  __/ (_| | (_| | || (_| \__ \ |_ ___) |
+:: |_____/ \__\___|\__,_|\__,_|_| \__,_|___/\__|____/ 
 ::
 :: This program is free software: you can redistribute it and/or modify
 :: it under the terms of the GNU Lesser General Public License as published by
@@ -16,13 +18,13 @@
 ::
 
 TITLE Steadfast5 server software for Minecraft: Bedrock Edition
-cd /d %~dp0
 
 cd /d %~dp0 goto PMSTART
 
 where git >nul 2>nul || (powershell -command "& { iwr https://github.com/git-for-windows/git/releases/download/v2.20.1.windows.1/Git-2.20.1-64-bit.exe -OutFile Git-2.20.1-64-bit.exe }" & start Git-2.20.1-64-bit.exe & pause)
 
-git clone https://github.com/IceCruelStuff/bin.git --recursive
+powershell -command "& { iwr https://jenkins.pmmp.io/job/PHP-7.3-Aggregate/lastSuccessfulBuild/artifact/PHP-7.3-Windows-x64.zip -OutFile PHP-7.3-Windows-x64.zip }"
+powershell -command "Expand-Archive -Path PHP-7.3-Windows-x64.zip -DestinationPath ."
 
 if exist bin\php\php.exe (
 	set PHPRC=""
