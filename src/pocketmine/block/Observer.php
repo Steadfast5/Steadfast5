@@ -13,7 +13,7 @@ use pocketmine\event\block\BlockUpdateEvent;
 use pocketmine\Player;
 
 class Observer extends Solid {
-
+/*
 	protected $id = self::OBSERVER;
 	protected $currentStatus = self::STATUS_IS_DEACTIVATED;
 
@@ -70,4 +70,5 @@ class Observer extends Solid {
 			}
 		}
 	}
+*/
 }

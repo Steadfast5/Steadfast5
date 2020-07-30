@@ -28,7 +28,8 @@ use pocketmine\Server;
 /**
  * Called when a player chats something
  */
-class PlayerChatEvent extends PlayerEvent implements Cancellable{
+class PlayerChatEvent extends PlayerEvent implements Cancellable {
+
 	public static $handlerList = null;
 
 	/** @var string */
@@ -42,22 +43,22 @@ class PlayerChatEvent extends PlayerEvent implements Cancellable{
 	 */
 	protected $recipients = [];
 
-	public function __construct(Player $player, $message, $format = "<%s> %s", array $recipients = null){
+	public function __construct(Player $player, $message, $format = "<%s> %s", array $recipients = null) {
 		$this->player = $player;
 		$this->message = $message;
 		$this->format = $format;
-		if($recipients === null){
+		if ($recipients === null) {
 			$this->recipients = Server::getInstance()->getPluginManager()->getPermissionSubscriptions(Server::BROADCAST_CHANNEL_USERS);
-		}else{
+		} else {
 			$this->recipients = $recipients;
 		}
 	}
 
-	public function getMessage(){
+	public function getMessage() {
 		return $this->message;
 	}
 
-	public function setMessage($message){
+	public function setMessage($message) {
 		$this->message = $message;
 	}
 
@@ -66,35 +67,40 @@ class PlayerChatEvent extends PlayerEvent implements Cancellable{
 	 *
 	 * @param Player $player
 	 */
-	public function setPlayer(Player $player){
-		if($player instanceof Player){
+	public function setPlayer(Player $player) {
+		if ($player instanceof Player) {
 			$this->player = $player;
 		}
 	}
 
-    public function getFormat(){
-        $format = $this->format;
+	public function getFormat() {
+		$format = $this->format;
 
-        $index = stripos($format, '%s');
+		$index = stripos($format, '%s');
 
-        if ($index !== false) $format = substr_replace($format, $this->getPlayer()->getName(), $index, $index + 1);
+		if ($index !== false) {
+			$format = substr_replace($format, $this->getPlayer()->getName(), $index, $index + 1);
+		}
 
-        $index = stripos($format, '%s');
+		$index = stripos($format, '%s');
 
-        if ($index !== false) $format = substr_replace($format, $this->getMessage(), $index, $index + 1);
+		if ($index !== false) {
+			$format = substr_replace($format, $this->getMessage(), $index, $index + 1);
+		}
 
-        return $format;
-    }
+		return $format;
+	}
 
-	public function setFormat($format){
+	public function setFormat($format) {
 		$this->format = $format;
 	}
 
-	public function getRecipients(){
+	public function getRecipients() {
 		return $this->recipients;
 	}
 
-	public function setRecipients(array $recipients){
+	public function setRecipients(array $recipients) {
 		$this->recipients = $recipients;
 	}
+
 }

@@ -27,4 +27,5 @@ class InvisibleBedrock extends Transparent {
 	public function isBreakable(Item $item){
 		return false;
 	}
+
 }

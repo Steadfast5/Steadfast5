@@ -28,16 +28,16 @@ class Boat extends Item {
 				new DoubleTag("", $block->getX()),
 				new DoubleTag("", $block->getY()),
 				new DoubleTag("", $block->getZ())
-					]),
+			]),
 			"Motion" => new Enum("Motion", [
 				new DoubleTag("", 0),
 				new DoubleTag("", 0),
 				new DoubleTag("", 0)
-					]),
+			]),
 			"Rotation" => new Enum("Rotation", [
 				new FloatTag("", 180),
 				new FloatTag("", 0)
-					]),
+			]),
 		]));
 		$boat->spawnToAll();
 		if ($player->isSurvival()) {

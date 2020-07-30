@@ -34,7 +34,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 
 
-class Bed extends Transparent{
+class Bed extends Transparent {
 	
 	const NIGHT_START = 16000;
 	const NIGHT_END = 29000;
@@ -76,11 +76,11 @@ class Bed extends Transparent{
 			$explosion->explodeA();
 			return true;
 		}
-		
-		return false;
+
 		$time = $this->getLevel()->getTime() % self::FULL_DAY;
 
 		$isNight = ($time >= self::NIGHT_START and $time < self::NIGHT_END);
+
 		if($player instanceof Player and !$isNight){
 			$player->sendMessage(TextFormat::GRAY . "You can only sleep at night");
 			return true;
@@ -188,6 +188,7 @@ class Bed extends Transparent{
 				$this->getLevel()->setBlock($blockWest, new Air(), true, true);
 			}
 		}
+
 		$this->getLevel()->setBlock($this, new Air(), true, true);
 
 		return true;
