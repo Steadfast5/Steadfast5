@@ -212,4 +212,5 @@ class Chest extends Transparent{
 			}
 		}
 	}
+
 }
