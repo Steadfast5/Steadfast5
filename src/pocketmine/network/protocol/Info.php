@@ -95,7 +95,7 @@ interface Info {
 	const PROTOCOL_405 = 405; // 1.16.0.61
 	const PROTOCOL_406 = 406; // 1.16.0.63
 	const PROTOCOL_407 = 407; // 1.16.0, 1.16.0.64, 1.16.0.66, 1.16.0.67, 1.16.0.68, 1.16.1, 1.16.1.03, 1.16.20.50, 1.16.20.52
-	const PROTOCOL_408 = 408; // 1.16.20.53, 1.16.20.54
+	const PROTOCOL_408 = 408; // 1.16.20.53, 1.16.20.54, 1.16.20
 	const PROTOCOL_409 = 409; // 1.16.100.50
 
 	/** OUTDATED (supporting will be removed with next release, may didn't work properly)*/
