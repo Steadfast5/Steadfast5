@@ -36,11 +36,13 @@ class MesaPlainsBiome extends SandyBiome {
 		$this->addPopulator($deadBush);
 		$this->addPopulator($cactus);
 		$this->addPopulator($sugarCane);
+		$this->addPopulator($ores);
 
 		$this->setElevation(63, 81);
 
 		$this->temperature = 2;
 		$this->rainfall = 0.8;
+
 		$this->setGroundCover([
 			Block::get(Block::SAND, 1),
 			Block::get(Block::SAND, 1),

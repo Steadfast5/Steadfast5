@@ -41,7 +41,9 @@ class MesaBiome extends SandyBiome {
 
         $this->addPopulator($cactus);
         $this->addPopulator($deadBush);
-		$this->addPopulator($sugarCane);
+        $this->addPopulator($sugarCane);
+        $this->addPopulator($trees);
+        $this->addPopulator($ores);
 
         $this->setElevation(63, 81);
 

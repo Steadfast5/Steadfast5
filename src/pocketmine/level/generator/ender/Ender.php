@@ -34,7 +34,7 @@ class Ender extends Generator {
 	private static $GAUSSIAN_KERNEL = null;
 	private static $SMOOTH_SIZE = 2;
 
-	public function __construct(array $options = []){
+	public function __construct(array $options = []) {
 		if (self::$GAUSSIAN_KERNEL === null) {
 			self::generateKernel();
 		}
@@ -62,11 +62,11 @@ class Ender extends Generator {
 		return $this->waterHeight;
 	}
 
-	public function getSettings(){
+	public function getSettings() {
 		return [];
 	}
 
-	public function init(ChunkManager $level, Random $random){
+	public function init(ChunkManager $level, Random $random) {
 		$this->level = $level;
 		$this->random = $random;
 		$this->random->setSeed($this->level->getSeed());
@@ -78,7 +78,7 @@ class Ender extends Generator {
 		$this->populators[] = $pilar;
 	}
 
-	public function generateChunk($chunkX, $chunkZ){
+	public function generateChunk($chunkX, $chunkZ) {
 		$this->random->setSeed(0xa6fe78dc ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
 		$noise = Generator::getFastNoise3D($this->noiseBase, 16, 128, 16, 4, 8, 4, $chunkX * 16, 0, $chunkZ * 16);
 		$chunk = $this->level->getChunk($chunkX, $chunkZ);
@@ -99,7 +99,7 @@ class Ender extends Generator {
 					$noiseValue -= 1 - $this->density;
 					$distance = new Vector3(0, 64, 0);
 					$distance = $distance->distance(new Vector3($chunkX * 16 + $x, ($y / 1.3), $chunkZ * 16 + $z));
-					if ($noiseValue < 0 && $distance < 100 or $noiseValue < -0.2 && $distance > 400) {
+					if ($noiseValue < 0 && $distance < 100 || $noiseValue < -0.2 && $distance > 400) {
 						$chunk->setBlockId($x, $y, $z, Block::END_STONE);
 					}
 				}
@@ -110,7 +110,7 @@ class Ender extends Generator {
 		}
 	}
 
-	public function populateChunk($chunkX, $chunkZ){
+	public function populateChunk($chunkX, $chunkZ) {
 		$this->random->setSeed(0xa6fe78dc ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
 		foreach ($this->populators as $populator) {
 			$populator->populate($this->level, $chunkX, $chunkZ, $this->random);
@@ -120,7 +120,7 @@ class Ender extends Generator {
 		$biome->populateChunk($this->level, $chunkX, $chunkZ, $this->random);
 	}
 
-	public function getSpawn(){
+	public function getSpawn() {
 		return new Vector3(48, 128, 48);
 	}
 

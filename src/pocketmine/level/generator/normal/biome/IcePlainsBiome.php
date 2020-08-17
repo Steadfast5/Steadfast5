@@ -38,6 +38,7 @@ class IcePlainsBiome extends SnowyBiome implements Mountainable {
 		$igloo = new Igloo();
 
 		$this->addPopulator($tallGrass);
+		$this->addPopulator($igloo);
 
 		$this->setElevation(63, 74);
 

@@ -26,6 +26,7 @@ use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\normal\Normal;
 use pocketmine\level\generator\populator\Cactus;
 use pocketmine\level\generator\populator\DeadBush;
+use pocketmine\level\generator\populator\Mushroom;
 use pocketmine\level\generator\populator\SugarCane;
 use pocketmine\level\generator\populator\Temple;
 use pocketmine\level\generator\populator\Well;
@@ -54,6 +55,8 @@ class DesertBiome extends SandyBiome implements Mountainable {
 		$this->addPopulator($deadBush);
 		$this->addPopulator($cactus);
 		$this->addPopulator($sugarCane);
+		$this->addPopulator($temple);
+		$this->addPopulator($well);
 
 		$this->setElevation(63, 74);
 
@@ -78,6 +81,61 @@ class DesertBiome extends SandyBiome implements Mountainable {
 			Block::get(Block::SANDSTONE, 0),
 			Block::get(Block::SANDSTONE, 0),
 		];
+		/*$deadBush = new DeadBush();
+		$deadBush->setBaseAmount(1);
+		$deadBush->setRandomAmount(4);
+
+		$sugarCane = new SugarCane();
+		$sugarCane->setRandomAmount(20);
+		$sugarCane->setBaseAmount(3);
+
+		$mushroom = new Mushroom();
+
+		$this->addPopulator($mushroom);
+		$this->addPopulator($deadBush);
+		$this->addPopulator($sugarCane);
+
+		$this->setElevation(63, 74);
+
+		$this->temperature = 2;
+		$this->rainfall = 0;
+		$this->setGroundCover([
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SAND, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+			Block::get(Block::SANDSTONE, 0),
+		]);*/
 	}
 
 	public function getName() {
