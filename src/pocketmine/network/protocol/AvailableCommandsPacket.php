@@ -94,6 +94,7 @@ class AvailableCommandsPacket extends PEPacket{
 			Info::PROTOCOL_409 => new BinaryStream(),
 			Info::PROTOCOL_410 => new BinaryStream(),
 			Info::PROTOCOL_411 => new BinaryStream(),
+			Info::PROTOCOL_412 => new BinaryStream(),
 		];
 		
 		foreach ($commands as $commandName => &$commandData) { // Replace &$commandData with $commandData when alises fix for 1.2 won't be needed anymore
