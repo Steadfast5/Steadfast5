@@ -24,6 +24,7 @@ namespace pocketmine\entity;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\inventory\PlayerInventory;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\TotemOfUndying;
 use pocketmine\network\protocol\PlayerListPacket;
 use pocketmine\utils\UUID;
 use pocketmine\nbt\NBT;
@@ -34,9 +35,14 @@ use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\Network;
 use pocketmine\network\protocol\AddPlayerPacket;
+use pocketmine\network\protocol\EntityEventPacket;
+use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\network\protocol\RemoveEntityPacket;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\Player;
+use pocketmine\Server;
 use pocketmine\level\Level;
+use pocketmine\entity\Effect;
 
 class Human extends Creature implements ProjectileSource, InventoryHolder{
 
@@ -175,6 +181,42 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 
 	public function getName(){
 		return $this->getNameTag();
+	}
+
+	public function applyDamageModifiers(EntityDamageEvent $source) {
+		parent::applyDamageModifiers($source);
+
+		$type = $source->getCause();
+		if ($type !== EntityDamageEvent::CAUSE_SUICIDE && $type !== EntityDamageEvent::CAUSE_VOID && $this->inventory->getItemInHand() instanceof TotemOfUndying) {
+			$compensation = $this->getHealth() - $source->getFinalDamage() - 1;
+			if ($compensation < 0) {
+				$source->setModifier($compensation, EntityDamageEvent::MODIFIER_TOTEM);
+			}
+		}
+	}
+
+	protected function applyPostDamageEffects(EntityDamageEvent $source) {
+		parent::applyPostDamageEffects($source);
+
+		$totemModifier = $source->getModifier(EntityDamageEvent::MODIFIER_TOTEM);
+		if ($totemModifier < 0) { // totem prevented death
+			$this->removeAllEffects();
+
+			$this->addEffect(Effect::getEffect(Effect::REGENERATION)->setAmplifier(1)->setDuration(40));
+			$this->addEffect(Effect::getEffect(Effect::FIRE_RESISTANCE)->setAmplifier(1)->setDuration(40));
+			$this->addEffect(Effect::getEffect(Effect::ABSORPTION)->setAmplifier(1)->setDuration(5));
+
+			$this->broadcastEntityEvent(EntityEventPacket::CONSUME_TOTEM);
+
+			$pk = new LevelEventPacket();
+			$pk->evid = LevelEventPacket::EVENT_SOUND_TOTEM;
+
+			$hand = $this->inventory->getItemInHand();
+			if ($hand instanceof TotemOfUndying) {
+				$hand->pop();
+				$this->inventory->setItemInHand($hand);
+			}
+		}
 	}
 
 	public function getDrops(){

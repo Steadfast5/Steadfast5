@@ -47,8 +47,9 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	const MODIFIER_EFFECT_PROJECTILE_PROTECTION = 12;
 	const MODIFIER_EFFECT_FALL_PROTECTION = 13;
 	const MODIFIER_CRITICAL = 14;
+	const MODIFIER_TOTEM = 15;
 
-	
+
 	const CAUSE_ENTITY_ATTACK = 1;
 	const CAUSE_PROJECTILE = 2;
 	const CAUSE_SUFFOCATION = 3;
@@ -206,6 +207,26 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 		}
 
 		return max($damage, 0);
+	}
+
+	public function getOriginalModifiers() {
+		return $this->originals;
+	}
+
+	public function getOriginalModifier($type) {
+		return $this->originals[$type] ?? 0.0;
+	}
+
+	public function getModifiers() {
+		return $this->modifiers;
+	}
+
+	public function getModifier($type) {
+		return $this->modifiers[$type] ?? 0.0;
+	}
+
+	public function setModifier($damage, $type) {
+		$this->modifiers[$type] = $damage;
 	}
 
 }

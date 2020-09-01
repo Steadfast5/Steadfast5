@@ -54,6 +54,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\network\protocol\MobEffectPacket;
 use pocketmine\network\protocol\PlaySoundPacket;
 use pocketmine\network\protocol\StopSoundPacket;
@@ -746,6 +747,14 @@ abstract class Entity extends Location implements Metadatable{
 		$pk->eid = $this->id;
 		$pk->metadata = $data === null ? $this->dataProperties : $data;
 		Server::broadcastPacket($player, $pk);
+	}
+
+	public function broadcastEntityEvent($eventId, $eventData = null, $players = null) {
+		$pk = new EntityEventPacket();
+		$pk->eid = $this->getId();
+		$pk->event = $eventId;
+		$pk->theThing = $eventData ?? 0;
+		Server::broadcastPacket($players ?? $this->getViewers(), $pk);
 	}
 
 	/**
