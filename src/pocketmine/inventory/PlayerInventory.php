@@ -505,7 +505,7 @@ class PlayerInventory extends BaseInventory{
 		}
 		parent::removeItem($searchItem);
 	}
-	
+
 	public function openSelfInventory() {
 		$pk = new ContainerOpenPacket();
 		$pk->windowid = Protocol120::CONTAINER_ID_INVENTORY;
@@ -516,11 +516,11 @@ class PlayerInventory extends BaseInventory{
 		$pk->z = $this->getHolder()->getZ();
 		$this->getHolder()->dataPacket($pk);
 	}
-	
+
 	public function forceSetSlot($index, Item $item) {
 		$this->slots[$index] = clone $item;
 	}
-	
+
 	public function getItem($index) {
 		if ($index < 0) {
 			switch ($index) {
@@ -551,7 +551,7 @@ class PlayerInventory extends BaseInventory{
 			return parent::getItem($index);
 		}
 	}
-	
+
 	public function sendCursor() {
 		$pk = new InventorySlotPacket();
 		$pk->containerId = Protocol120::CONTAINER_ID_CURSOR_SELECTED;
@@ -559,7 +559,11 @@ class PlayerInventory extends BaseInventory{
 		$pk->item = $this->cursor;
 		$this->holder->dataPacket($pk);
 	}
-	
+
+	public function getCursor() {
+		return $this->cursor;
+	}
+
 	/**
 	 * 
 	 * @return Item[]
@@ -567,7 +571,7 @@ class PlayerInventory extends BaseInventory{
 	public function getCraftContents() {
 		return $this->craftSlots;
 	}
-	
+
 	/**
 	 * 
 	 * @param integer $slotIndex
