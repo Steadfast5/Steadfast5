@@ -6,23 +6,28 @@ use pocketmine\inventory\BaseTransaction;
 use pocketmine\inventory\PlayerInventory;
 use pocketmine\inventory\EnchantInventory;
 use pocketmine\item\Item;
+use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v120\InventoryTransactionPacket;
 use pocketmine\network\protocol\v120\Protocol120;
 use pocketmine\Player;
 
 class SimpleTransactionData {
-	
+
 	const ACTION_CRAFT_PUT_SLOT = 3;
 	const ACTION_CRAFT_GET_SLOT = 5;
 	const ACTION_CRAFT_GET_RESULT = 7;
 	const ACTION_CRAFT_USE = 9;
-	
+
 	const ACTION_ENCH_ITEM = 29;
 	const ACTION_ENCH_LAPIS = 31;
 	const ACTION_ENCH_RESULT = 33;
-	
+
 	const ACTION_DROP = 199;
-	
+
+	const SOURCE_TYPE_CRAFTING_RESULT = -4;
+	const SOURCE_TYPE_CRAFTING_USE_INGREDIENT = -5;
+	const CREATED_ITEM_OUTPUT = 50;
+
 	/** @var integer */
 	/** @important for InventoryTransactionPacket */
 	public $sourceType = 0;
@@ -38,12 +43,12 @@ class SimpleTransactionData {
 	public $action = -1;
 	/** @var integer */
 	public $flags = 0;
-	
+
 	public function __construct() {
 		$this->oldItem = Item::get(Item::AIR);
 		$this->newItem = Item::get(Item::AIR);
 	}
-	
+
 	public function __toString() {
 		return 'Source type: ' . $this->sourceType . PHP_EOL .
 				'Inv.ID: ' . $this->inventoryId . PHP_EOL .
@@ -53,12 +58,12 @@ class SimpleTransactionData {
 				'Old item: ' . $this->oldItem . PHP_EOL .
 				'New item: ' . $this->newItem . PHP_EOL;
 	}
-	
+
 	public function isDropItemTransaction() {
 		return $this->sourceType == InventoryTransactionPacket::INV_SOURCE_TYPE_WORLD_INTERACTION && 
 				$this->inventoryId == Protocol120::CONTAINER_ID_NONE;
 	}
-	
+
 	public function isCompleteEnchantTransaction() {
 		return $this->action == self::ACTION_ENCH_RESULT || $this->sourceType == InventoryTransactionPacket::INV_SOURCE_TYPE_CRAFT && $this->action == self::ACTION_ENCH_LAPIS;
 	}
@@ -66,7 +71,11 @@ class SimpleTransactionData {
 	public function isUpdateEnchantSlotTransaction() {
 		return $this->sourceType != InventoryTransactionPacket::INV_SOURCE_TYPE_CRAFT && ($this->action == self::ACTION_ENCH_ITEM || $this->action == self::ACTION_ENCH_LAPIS || ($this->inventoryId == Protocol120::CONTAINER_ID_CURSOR_SELECTED && ($this->slot == 14 || $this->slot == 15));
 	}
-	
+
+	public function isCraftPart(Player $player) {
+		return $this->sourceType == InventoryTransactionPacket::INV_SOURCE_TYPE_CRAFT && ($this->inventoryId === self::SOURCE_TYPE_CRAFTING_RESULT || $this->inventoryId === self::SOURCE_TYPE_CRAFTING_RESULT) || ($player->craftingTransaction !== null && $this->sourceType == InventoryTransactionPacket::INV_SOURCE_TYPE_CONTAINER && $this->inventoryId == 124 || $this->slot == 50);
+	}
+
 	/**
 	 * source - old
 	 * target - new
@@ -175,8 +184,9 @@ class SimpleTransactionData {
 		}
 		return new BaseTransaction($inventory, $slot, $this->oldItem, $this->newItem);
 	}
-	
+
 	public function isCraftResultTransaction() {
 		return $this->inventoryId == Protocol120::CONTAINER_ID_NONE && $this->action == self::ACTION_CRAFT_GET_RESULT || $this->inventoryId == Protocol120::CONTAINER_ID_CURSOR_SELECTED && $this->slot == 50;
 	}
+
 }

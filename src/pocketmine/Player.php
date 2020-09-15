@@ -188,6 +188,7 @@ use pocketmine\network\protocol\GameRulesChangedPacket;
 use pocketmine\player\PlayerSettingsTrait;
 use pocketmine\event\entity\EntityLevelChangeEvent;
 use pocketmine\event\inventory\InventoryCreationEvent;
+use pocketmine\inventory\CraftingTransactionGroup;
 use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v120\InventorySlotPacket;
 use pocketmine\network\protocol\v331\BiomeDefinitionListPacket;
@@ -464,6 +465,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 	/** @var SimpleTransactionGroup */
 	public $lastSuccesTransactionGroup;
+
+	/** @var SimpleTransactionGroup */
+	public $craftingTransaction = null;
 
 	public function getLeaveMessage(){
 		return "";
@@ -4379,6 +4383,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	private function normalTransactionLogic($packet) {
 		$trGroup = new SimpleTransactionGroup($this);
 		$isCraftResultTransaction = false;
+		$isCraftingPart = false;
+		$transactions = [];
 		foreach ($packet->transactions as $trData) {
 //			echo $trData . PHP_EOL;
 			if ($trData->isDropItemTransaction()) {
@@ -4399,7 +4405,24 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				$isCraftResultTransaction = true;
 			}
 //			echo " ---------- " . $transaction . PHP_EOL;
-			$trGroup->addTransaction($transaction);
+			if ($trData->isCraftPart($this)) {
+				$isCraftingPart = true;
+				$trGroup->addTransaction($transaction);
+			}
+			$transactions[] = $transaction;
+		}
+		if ($isCraftingPart) {
+			if ($this->craftingTransaction === null) {
+				$this->craftingTransaction = new CraftingTransactionGroup($trGroup);
+			} else {
+				foreach ($transactions as $transaction) {
+					$this->craftingTransaction->addTransaction($transaction);
+				}
+			}
+		} else {
+			foreach ($transactions as $transaction) {
+				$trGroup->addTransaction($transaction);
+			}
 		}
 		try {
 			usleep(rand(1, 5) * 100000);
@@ -4411,7 +4434,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					$this->addToLog($trGroup, 0);
 //					echo '[INFO] Transaction execute fail.'.PHP_EOL;
 //					$trGroup->attempts = 0;
-//					InventoryTransactionTask::$data[] = $trGroup;
+//					if (InventoryTransactionTask::checkCraftSlots($trGroup)) {
+//						InventoryTransactionTask::$data[] = $trGroup;
+//					}
 					$trGroup->sendInventories();
 					//sendSlot($item);
 				}
