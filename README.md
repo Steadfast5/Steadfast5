@@ -43,7 +43,7 @@ To install on Windows, please follow these instructions.
 ### Installing on Linux/MacOS
 
 To install on Linux/MacOS, please follow these instructions.
-1) Open command line and type in `git clone https://github.com/Steadfast5/Steadfast5.git`. Then navigate to `Steadfast5` directory using command line. You can also download the zip file from GitHub and extract it.
+1) Open command line and type in `git clone https://github.com/Steadfast5/Steadfast5.git`. Then navigate to `Steadfast5` directory using command line.
 2) Run command `./installer.sh`. If successful, this will create a `bin` folder with a special PHP build in it. After, run command `./start.sh` and the server should start up.
 
 ### License
