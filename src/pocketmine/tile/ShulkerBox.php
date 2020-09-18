@@ -15,7 +15,7 @@ use pocketmine\tile\Container;
 use pocketmine\tile\Nameable;
 use pocketmine\tile\Spawnable;
 
-abstract class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
+class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
 
 	protected $inventory = null;
 
@@ -44,10 +44,9 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 		}
 	}
 
-	public function getRealInventory() {
-		return $this->inventory;
-	}
-
+	/**
+	 * @return ShulkerInventory
+	 */
 	public function getInventory() {
 		return $this->inventory;
 	}
