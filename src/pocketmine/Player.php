@@ -192,6 +192,7 @@ use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v331\BiomeDefinitionListPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v392\CreativeItemsListPacket;
+use pocketmine\scheduler\InventoryTransactionTask;
 use function rand;
 use function random_int;
 
@@ -3329,11 +3330,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->server->getPlayerMetadata()->removeMetadata($this, $metadataKey, $plugin);
 	}
 
-	public function handlePlaySound(network\protocol\v120\PlaySoundPacket $packet) : bool{
+	public function handlePlaySound(PlaySoundPacket $packet) : bool {
 		return false;
 	}
 
-	public function handleStopSound(StopSoundPacket $packet) : bool{
+	public function handleStopSound(StopSoundPacket $packet) : bool {
 		return false;
 	}
 
@@ -3570,7 +3571,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk = new CreativeItemsListPacket();
 			$pk->groups = Item::getCreativeGroups();
 			$pk->items = Item::getCreativeItems();
-			$this->dataPacket($pk);			
+			$this->dataPacket($pk);
 		} else {
 			$slots = [];
 			foreach(Item::getCreativeItems() as $item){
@@ -3587,8 +3588,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->sendSelfData();
 		$this->updateSpeed($this->movementSpeed);
 		$this->sendFullPlayerList();
-//		$this->updateExperience(0, 100);
-//		$this->getInventory()->addItem(Item::get(Item::ENCHANTMENT_TABLE), Item::get(Item::DYE, 4, 64), Item::get(Item::IRON_AXE), Item::get(Item::IRON_SWORD));
 	}
 
 
@@ -4405,7 +4404,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 //					echo '[INFO] Transaction execute holded.'.PHP_EOL;
 				} else {
 //					echo '[INFO] Transaction execute fail.'.PHP_EOL;
-					$trGroup->sendInventories();
+					$trGroup->attempts = 0;
+					InventoryTransactionTask::$data[] = $trGroup;
+//					$trGroup->sendInventories();
 				}
 			} else {
 //				echo '[INFO] Transaction successfully executed.'.PHP_EOL;
@@ -5497,7 +5498,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$buffer .= Binary::writeVarInt(strlen($pkBuf)) . $pkBuf;
 		}
 		$pk = new BatchPacket();
-		$pk->payload = zlib_encode($buffer, ZLIB_ENCODING_DEFLATE, 7);
+		$pk->payload = zlib_encode($buffer, self::getCompressAlg($this->originalProtocol), 7);
 		$this->dataPacket($pk);
 	}
 
@@ -5624,6 +5625,13 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			return true;
 		}
 		return false;
+	}
+
+	public static function getCompressAlg($protocol) {
+		if ((int)$protocol >= 406) {
+			return ZLIB_ENCODING_RAW;
+		}
+		return ZLIB_ENCODING_DEFLATE;
 	}
 
 }
