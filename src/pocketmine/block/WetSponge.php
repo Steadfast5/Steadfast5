@@ -21,4 +21,5 @@ class WetSponge extends Solid {
 	public function getName(){
 		return "Wet Sponge";
 	}
+
 }
