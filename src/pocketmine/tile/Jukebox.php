@@ -7,7 +7,12 @@ use pocketmine\event\record\RecordStopEvent;
 use pocketmine\item\Item;
 use pocketmine\item\Record;
 use pocketmine\level\particle\GenericParticle;
+use pocketmine\level\format\FullChunk;
+use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\TextPacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
 use pocketmine\tile\Spawnable;
@@ -18,13 +23,18 @@ use mt_getrandmax;
 
 class Jukebox extends Spawnable {
 
-	public $hasRecord = false;
-	public $record = null;
+	private $record = null;
 
-	private static $instance = null;
+	public function __construct(FullChunk $chunk, Compound $nbt) {
+		parent::__construct($chunk, $nbt);
+	}
 
 	public function getName() {
 		return "Jukebox";
+	}
+
+	public function getRecord() {
+		return $this->record;
 	}
 
 	public function handleInteract(Item $item, Player $player = null) {
@@ -121,9 +131,23 @@ class Jukebox extends Spawnable {
 	}
 
 	protected function addAdditionalSpawnData(Compound $nbt) {
-
+		if ($record !== null) {
+			return new Compound
+		}
 	}
-
+/*
+	public function getSpawnCompound() {
+		if ($record !== null) {
+			return new Compound("", [
+				new StringTag("id", Tile::JUKEBOX),
+				new IntTag("x", (int) $this->x),
+				new IntTag("y", (int) $this->y),
+				new IntTag("z", (int) $this->z),
+				
+			]);
+		}
+	}
+*/
 	private function randomFloat($min = 0, $max = 1) {
 		return $min + mt_rand() / mt_getrandmax() * ($max - $min);
 	}
