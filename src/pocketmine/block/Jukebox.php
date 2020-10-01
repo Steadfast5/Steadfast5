@@ -28,14 +28,22 @@ use pocketmine\item\Record;
 use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
 use pocketmine\tile\Tile;
-use pocketmine\tile\Jukebox;
+use pocketmine\tile\JukeboxTile;
+use pocketmine\level\sound\RecordSound;
+use pocketmine\level\sound\RecordStopSound;
+use pocketmine\Player;
 
 class Jukebox extends Solid {
 
-	protected $id = self::JUKEBOX;
+	private $record = null;
 
-	public function __construct($id, $name = null){
-		parent::__construct($id, 0, $name, null);
+	public function __construct($meta = 0){
+		$this->id = self::JUKEBOX;
+		$this->meta = $meta;
+	}
+
+	public function getFuelTime() {
+		return 300;
 	}
 
 	public function getName(){
@@ -50,21 +58,43 @@ class Jukebox extends Solid {
 		return Tool::TYPE_AXE;
 	}
 
-	public function verifyTile(Item $item, Player $player) {
-		if ($this->getLevel()->getTile($this) === null) {
-			Tile::createTile("Jukebox", $this->getLevel(), Jukebox::createNBT($this, 0, $item, $player));
-			return 1;
-		}
-		return 0;
-	}
-
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
+		if ($player instanceof Player) {
+			if ($this->record !== null) {
+				$this->getLevel()->dropItem($block->add(0.5, 1, 0.5), $this->record); // eject record
+				$this->record = null;
+				$this->stopSound();
+			} elseif ($item instanceof Record) {
+				$player->sendJukeboxPopup("Now playing: ", [$item->getRecordType()->getTranslationKey()]);
+				$this->insertRecord($item->pop());
+			}
+		}
 		$this->getLevel()->setBlock($this, $this, true, true);
-		$this->verifyTile($item, $player);
 		return true;
 	}
 
-	public function onActivate(Item $item, Player $player = null) {
+	private function getRecord() {
+		return $this->record;
+	}
+
+	private function insertRecord(Record $record) {
+		if ($record === null) {
+			$this->record = $record;
+			$this->startSound();
+		}
+	}
+
+	private function startSound() {
+		if ($this->record !== null) {
+			$this->getLevel()->addSound(new RecordSound($this->record->getRecordType()));
+		}
+	}
+
+	private function stopSound() {
+		$this->getLevel()->addSound(new RecordStopSound());
+	}
+
+	/*public function onActivate(Item $item, Player $player = null) {
 		if (!$player instanceof Player) {
 			return false;
 		}
@@ -72,12 +102,10 @@ class Jukebox extends Solid {
 		$tile = $this->getLevel()->getTile($this);
 		$tile->handleInteract($item, $player);
 		return true;
-	}
+	}*/
 
 	public function onBreak(Item $item, Player $player = null) {
-		$this->verifyTile($item, $player);
-		$tile = $this->getLevel()->getTile($this);
-		$tile->handleBreak($item, $player);
+		$this->stopSound();
 		return parent::onBreak($item, $player);
 	}
 
@@ -86,5 +114,7 @@ class Jukebox extends Solid {
 			[Item::JUKEBOX, 0, 1]
 		];
 	}
+
+	// TODO: implement redstone effects
 
 }
