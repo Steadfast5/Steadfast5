@@ -549,6 +549,7 @@ class Item implements ItemIds {
 
             // update for 1.0
             self::$list[self::CHORUS_FRUIT] = ChorusFruit::class;
+            self::$list[self::POPPED_CHORUS_FRUIT] = PoppedChorusFruit::class;
             self::$list[self::REDSTONE_DUST] = Redstone::class;
             self::$list[self::TOTEM_OF_UNDYING] = TotemOfUndying::class;
         }
