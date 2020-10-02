@@ -494,7 +494,7 @@ class CraftingManager{
 		// wasting ore
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DIAMOND, 0, 1), Item::get(Item::DIAMOND_ORE, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DYE, 4, 1), Item::get(Item::LAPIS_ORE, 0, 1)));
-		// @todo redstone
+		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::REDSTONE_ORE, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::COAL, 1, 1), Item::get(Item::TRUNK, -1, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::EMERALD, 0, 1), Item::get(Item::EMERALD_ORE, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::NETHER_QUARTZ, 0, 1), Item::get(Item::NETHER_QUARTZ_ORE, 0, 1)));
