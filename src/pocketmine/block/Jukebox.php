@@ -110,9 +110,13 @@ class Jukebox extends Solid {
 	}
 
 	public function getDrops(Item $item){
-		return [
-			[Item::JUKEBOX, 0, 1]
-		];
+		$drops = [];
+		$drops[] = Item::get(Item::JUKEBOX, 0, 1);
+
+		$tile = $this->getLevel()->getTile($this);
+		if ($tile instanceof JukeboxTile) {
+//			$drops[] = $tile->getRecordItem(); // TODO: fix
+		}
 	}
 
 	// TODO: implement redstone effects
