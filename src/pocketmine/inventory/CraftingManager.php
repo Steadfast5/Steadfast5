@@ -511,8 +511,8 @@ class CraftingManager{
 		
 		// other
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DYE, 2, 1), Item::get(Item::CACTUS, 0, 1)));
-		// @todo sponge
-		// @todo popped chorus fruit
+		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::SPONGE, 0, 1), Item::get(Item::SPONGE, 1, 1)));
+		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::POPPED_CHORUS_FRUIT, 0, 1), Item::get(Item::CHORUS_FRUIT, 0, 1)));
 	}
 
 	protected function registerStonecutter(){	
