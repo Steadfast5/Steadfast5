@@ -91,8 +91,8 @@ abstract class Biome {
 	const SAVANNA_PLATEAU = 36;
 
 	const MESA = 37;
-    const MESA_PLATEAU_F = 38;
-    const MESA_PLATEAU = 39;
+	const MESA_PLATEAU_F = 38;
+	const MESA_PLATEAU = 39;
 
 	const VOID = 127;
 
