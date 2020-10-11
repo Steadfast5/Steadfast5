@@ -494,7 +494,7 @@ class CraftingManager{
 		// wasting ore
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DIAMOND, 0, 1), Item::get(Item::DIAMOND_ORE, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DYE, 4, 1), Item::get(Item::LAPIS_ORE, 0, 1)));
-		// @todo redstone
+		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::REDSTONE_ORE, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::COAL, 1, 1), Item::get(Item::TRUNK, -1, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::EMERALD, 0, 1), Item::get(Item::EMERALD_ORE, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::NETHER_QUARTZ, 0, 1), Item::get(Item::NETHER_QUARTZ_ORE, 0, 1)));
@@ -511,8 +511,8 @@ class CraftingManager{
 		
 		// other
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DYE, 2, 1), Item::get(Item::CACTUS, 0, 1)));
-		// @todo sponge
-		// @todo popped chorus fruit
+		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::SPONGE, 0, 1), Item::get(Item::SPONGE, 1, 1)));
+		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::POPPED_CHORUS_FRUIT, 0, 1), Item::get(Item::CHORUS_FRUIT, 0, 1)));
 	}
 
 	protected function registerStonecutter(){	
@@ -558,26 +558,26 @@ class CraftingManager{
 		$recipes = [
 			//RESULT_ITEM_ID            RESULT_META                 INGREDIENT_ITEMID           INGREDIENT_META     RECIPE_SHAPE        RESULT_AMOUNT
 			[Item::SLAB,                Slab::STONE,                Item::STONE,                Stone::NORMAL,      "slab",             6],
-			[Item::SLAB,                Slab::COBBLESTONE,          Item::COBBLESTONE,			0,                  "slab",             6],
+			[Item::SLAB,                Slab::COBBLESTONE,          Item::COBBLESTONE,          0,                  "slab",             6],
 			[Item::SLAB,                Slab::SANDSTONE,            Item::SANDSTONE,            0,                  "slab",             6],
 			[Item::SLAB,                Slab::BRICK,                Item::BRICK,                0,                  "slab",             6],
 			[Item::SLAB,                Slab::STONE_BRICK,          Item::STONE_BRICK,          StoneBricks::NORMAL,"slab",             6],
 			[Item::SLAB,                Slab::NETHER_BRICK,         Item::NETHER_BRICK_BLOCK,   0,                  "slab",             6],
 			[Item::SLAB,                Slab::QUARTZ,               Item::QUARTZ_BLOCK,         0,                  "slab",             6],	
 			[Item::STONE_SLAB2,         Slab2::RED_SANDSTONE,       Item::RED_SANDSTONE,        0,                  "slab",             6],
-			[Item::STONE_SLAB2,         Slab2::PURPUR,				Item::PURPUR_BLOCK,         0,                  "slab",             6],
-			[Item::STONE_SLAB2,         Slab2::PRISMARINE,		    Item::PRISMARINE,           0,                  "slab",             6],
+			[Item::STONE_SLAB2,         Slab2::PURPUR,              Item::PURPUR_BLOCK,         0,                  "slab",             6],
+			[Item::STONE_SLAB2,         Slab2::PRISMARINE,	        Item::PRISMARINE,           0,                  "slab",             6],
 			[Item::STONE_SLAB2,         Slab2::PRISMARINE_BRICK,    Item::PRISMARINE,           1,                  "slab",             6],
 			[Item::STONE_SLAB2,         Slab2::DARK_PRISMARINE,     Item::PRISMARINE,           2,                  "slab",             6],
 			[Item::STONE_SLAB2,         Slab2::MOSSY_COBBLESTONE,   Item::MOSSY_STONE,          0,                  "slab",             6],
 			[Item::STONE_SLAB2,         Slab2::SMOOTH_SANDSTONE,    Item::SANDSTONE,            Sandstone::SMOOTH,  "slab",             6],
 			[Item::STONE_SLAB2,         Slab2::RED_NETHER_BRICK,    Item::RED_NETHER_BRICK,     0,                  "slab",             6],
-			[Item::COBBLESTONE_STAIRS,  0,                          Item::COBBLESTONE,			0,                  "stairs",           4],
+			[Item::COBBLESTONE_STAIRS,  0,                          Item::COBBLESTONE,          0,                  "stairs",           4],
 			[Item::SANDSTONE_STAIRS,    0,                          Item::SANDSTONE,            0,                  "stairs",           4],
 			[Item::STONE_BRICK_STAIRS,  0,                          Item::STONE_BRICK,          StoneBricks::NORMAL,"stairs",           4],
 			[Item::BRICK_STAIRS,        0,                          Item::BRICKS_BLOCK,         0,                  "stairs",           4],
 			[Item::NETHER_BRICKS_STAIRS,0,                          Item::NETHER_BRICK_BLOCK,   0,                  "stairs",           4],
-			[Item::COBBLESTONE_WALL,    StoneWall::NONE_MOSSY_WALL, Item::COBBLESTONE,			0,                  "wall/fence",       6],
+			[Item::COBBLESTONE_WALL,    StoneWall::NONE_MOSSY_WALL, Item::COBBLESTONE,          0,                  "wall/fence",       6],
 			[Item::COBBLESTONE_WALL,    StoneWall::MOSSY_WALL,      Item::MOSSY_STONE,          0,                  "wall/fence",       6],
 			[Item::NETHER_BRICKS,       0,                          Item::NETHER_BRICK,         0,                  "blockrecipe1",     1],
 			[Item::SANDSTONE,           SandStone::NORMAL,          Item::SAND,                 0,                  "blockrecipe1",     1],
@@ -589,8 +589,8 @@ class CraftingManager{
 			[Item::STONE,               Stone::POLISHED_GRANITE,    Item::STONE,                Stone::GRANITE,     "blockrecipe1",     4],
 			[Item::STONE,               Stone::POLISHED_DIORITE,    Item::STONE,                Stone::DIORITE,     "blockrecipe1",     4],
 			[Item::STONE,               Stone::POLISHED_ANDESITE,   Item::STONE,                Stone::ANDESITE,    "blockrecipe1",     4],
-			[Item::QUARTZ_BLOCK,        Quartz::QUARTZ_NORMAL,      Item::QUARTZ,               0,					"blockrecipe1",     1],
-			[Item::MAGMA,               0,                          Item::MAGMA_CREAM,          0,					"blockrecipe1",     1],
+			[Item::QUARTZ_BLOCK,        Quartz::QUARTZ_NORMAL,      Item::QUARTZ,               0,	                "blockrecipe1",     1],
+			[Item::MAGMA,               0,                          Item::MAGMA_CREAM,          0,	                "blockrecipe1",     1],
 			[Item::QUARTZ_BLOCK,        Quartz::QUARTZ_CHISELED,    Item::SLAB,                 Slab::QUARTZ,       "blockrecipe2X1",   1],
 			[Item::SANDSTONE,           SandStone::CHISELED,        Item::SLAB,                 Slab::SANDSTONE,    "blockrecipe2X1",   1],
 			[Item::STONE_BRICK,         StoneBricks::CHISELED,      Item::SLAB,                 Slab::STONE_BRICK,  "blockrecipe2X1",   1],
@@ -647,7 +647,7 @@ class CraftingManager{
 //			$ingredientamount += substr_count($line, $ingredientname);
 		}
 		$recipe = null;
-		if ($height < 3){
+		if ($height < 3) {
 			// Process small recipe
 			$fullClassName = "pocketmine\\inventory\\"."ShapedRecipe";// $ShapeClass."ShapedRecipe";
 			$recipe = ((new $fullClassName(Item::get($resultitem, $resultitemmeta, $resultitemamound),

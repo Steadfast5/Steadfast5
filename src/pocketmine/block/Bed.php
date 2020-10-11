@@ -111,7 +111,7 @@ class Bed extends Transparent {
 			}
 		}
 
-		if ($player instanceof Player and $player->sleepOn($b) === false) {
+		if ($player instanceof Player && $player->sleepOn($b) === false) {
 			$player->sendMessage(TextFormat::GRAY . "This bed is occupied");
 		}
 

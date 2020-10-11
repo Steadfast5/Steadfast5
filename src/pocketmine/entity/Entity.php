@@ -54,6 +54,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
+use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\network\protocol\MobEffectPacket;
 use pocketmine\network\protocol\PlaySoundPacket;
 use pocketmine\network\protocol\StopSoundPacket;
@@ -566,6 +567,25 @@ abstract class Entity extends Location implements Metadatable{
 		return null;
 	}
 
+	public function createBaseNBT(Vector3 $pos, ?Vector3 $motion = null, $yaw = 0.0, $pitch = 0.0) {
+		return new Compound("", [
+			"Pos" => new Enum("Pos", [
+				new DoubleTag("", $pos->x),
+				new DoubleTag("", $pos->y),
+				new DoubleTag("", $pos->z)
+			]),
+			"Motion" => new Enum("Motion", [
+				new DoubleTag("", $motion !== null ? $motion->x : 0.0),
+				new DoubleTag("", $motion !== null ? $motion->y : 0.0),
+				new DoubleTag("", $motion !== null ? $motion->z : 0.0)
+			]),
+			"Rotation" => new Enum("Rotation", [
+				new FloatTag("", $yaw),
+				new FloatTag("", $pitch),
+			])
+		]);
+	}
+
 	public static function registerEntity($className, $force = false) {
 		$class = new \ReflectionClass($className);
 		if (is_a($className, Entity::class, true) && !$class->isAbstract()) {
@@ -727,6 +747,14 @@ abstract class Entity extends Location implements Metadatable{
 		$pk->eid = $this->id;
 		$pk->metadata = $data === null ? $this->dataProperties : $data;
 		Server::broadcastPacket($player, $pk);
+	}
+
+	public function broadcastEntityEvent($eventId, $eventData = null, $players = null) {
+		$pk = new EntityEventPacket();
+		$pk->eid = $this->getId();
+		$pk->event = $eventId;
+		$pk->theThing = $eventData ?? 0;
+		Server::broadcastPacket($players ?? $this->getViewers(), $pk);
 	}
 
 	/**

@@ -115,7 +115,7 @@ class Level implements ChunkManager, Metadatable{
 	private static $levelIdCounter = 1;
 	public static $COMPRESSION_LEVEL = 8;
 
-	const DIMENSION_NORMAL = 1;
+	const DIMENSION_NORMAL = 0;
 	const DIMENSION_NETHER = 1;
 	const DIMENSION_END = 2;
 
@@ -446,6 +446,10 @@ class Level implements ChunkManager, Metadatable{
 				}
 			}
 		}
+	}
+
+	public function getTickRate() {
+		return 1;
 	}
 
 	public function addParticle(Particle $particle, array $players = null) {

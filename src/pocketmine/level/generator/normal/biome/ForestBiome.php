@@ -26,6 +26,7 @@ use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\normal\Normal;
 use pocketmine\level\generator\populator\Bush;
 use pocketmine\level\generator\populator\FallenTree;
+use pocketmine\level\generator\populator\Mushroom;
 use pocketmine\level\generator\populator\TallGrass;
 use pocketmine\level\generator\populator\Tree;
 
@@ -62,6 +63,9 @@ class ForestBiome extends GrassyBiome implements Mountainable {
 
 		$this->addPopulator($bush);
 		$this->addPopulator($tallGrass);
+
+		$mushroom = new Mushroom();
+		$this->addPopulator($mushroom);
 
 		$this->setElevation(63, 81);
 

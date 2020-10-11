@@ -47,7 +47,11 @@ class Flat extends Generator{
 	private $random;
 	/** @var Populator[] */
 	private $populators = [];
-	private $structure, $chunks, $options, $floorLevel, $preset;
+	private $structure;
+	private $chunks;
+	private $options;
+	private $floorLevel;
+	private $preset;
 
 	public function getSettings(){
 		return $this->options;

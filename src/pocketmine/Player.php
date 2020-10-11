@@ -195,6 +195,7 @@ use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v331\BiomeDefinitionListPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v392\CreativeItemsListPacket;
+use pocketmine\scheduler\InventoryTransactionTask;
 use function rand;
 use function random_int;
 
@@ -2932,6 +2933,14 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$this->dataPacket($pk);
 	}
 
+	public function sendJukeboxPopup($message, $parameters = []) {
+		$pk = new TextPacket();
+		$pk->type = TextPacket::TYPE_JUKEBOX_POPUP;
+		$pk->message = $message;
+		$pk->parameters = $parameters;
+		$this->dataPacket($pk);
+	}
+
 	public function sendTip($message){
 		$pk = new TextPacket();
 		$pk->type = TextPacket::TYPE_TIP;
@@ -3246,6 +3255,17 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->name = UpdateAttributesPacket::HEALTH;
 			$this->dataPacket($pk);
 		}
+	}
+
+	public function setMaxHealth($amount) {
+		parent::setMaxHealth($amount);
+		$pk = new UpdateAttributesPacket();
+		$this->foodTick = 0;
+		$pk->minValue = 0;
+		$pk->maxValue = $amount;
+		$pk->value = $this->getHealth();
+		$pk->name = UpdateAttributesPacket::HEALTH;
+		$this->dataPacket($pk);
 	}
 
 	public function setFoodEnabled($enabled) {
@@ -4610,7 +4630,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 //					echo '[INFO] Transaction execute holded.'.PHP_EOL;
 				} else {
 //					echo '[INFO] Transaction execute fail.'.PHP_EOL;
-					$trGroup->sendInventories();
+					$trGroup->attempts = 0;
+					InventoryTransactionTask::$data[] = $trGroup;
+//					$trGroup->sendInventories();
 				}
 			} else {
 //				echo '[INFO] Transaction successfully executed.'.PHP_EOL;
