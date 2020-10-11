@@ -1624,6 +1624,10 @@ class Server{
 			"auto-generate" => true,
 			"save-player-data" => true,
 			"time-update" => true,
+			"nether.allow-nether" => false,
+			"nether.level-name" => "nether",
+			"ender.allow-ender" => false,
+			"ender.level-game" => "ender",
 			"level.weather" => true,
 			"level.weather-random-duration-min" => 6000,
 			"level.weather-random-duration-max" => 12000,
@@ -1656,6 +1660,11 @@ class Server{
 		$this->banByIP = new BanList($this->dataPath . "banned-ips.txt");
 		$this->banByIP->load();
 
+		// TODO: make a new file for this instead of using server.properties
+		$this->netherEnabled = $this->getConfigBoolean("nether.allow-nether", false);
+		$this->netherName = $this->getConfigString("nether.level-name", "nether");
+		$this->enderEnabled = $this->getConfigBoolean("ender.allow-ender", false);
+		$this->enderName = $this->getConfigString("ender.level-name", "ender");
 		$this->weatherEnabled = $this->getConfigBoolean("level.weather", true);
 		$this->weatherRandomDurationMin = $this->getConfigInt("level.weather-random-duration-min", 6000);
 		$this->weatherRandomDurationMax = $this->getConfigInt("level.weather-random-duration-max", 12000);
