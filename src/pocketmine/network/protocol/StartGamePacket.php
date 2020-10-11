@@ -142,6 +142,12 @@ class StartGamePacket extends PEPacket{
 		$this->putByte(1);	// commands enabled
 
 		$this->putByte(0); // isTexturepacksRequired 1x Byte
+		if ($playerProtocol >= Info::PROTOCOL_415) {
+			$this->putByte(0); // unknown
+			$this->putByte(0); // unknown
+			$this->putByte(0); // unknown
+			$this->putByte(0); // unknown
+		}
 		
 		$this->putVarInt(count(self::$defaultRules)); // rules count
 		foreach (self::$defaultRules as $rule) {
@@ -161,7 +167,8 @@ class StartGamePacket extends PEPacket{
 		}
 
 		if ($playerProtocol >= Info::PROTOCOL_415) {
-			$this->putByte(0); // unknown
+//			$this->putVarInt(0); // unknown
+//			$this->putByte(0); // unknown
 		}
 		$this->putByte(0); // is bonus chest enabled
 		$this->putByte(0); // is start with map enabled
@@ -201,6 +208,11 @@ class StartGamePacket extends PEPacket{
 				$this->putLFloat(0); // unknown
 			}
 		}
+		if ($playerProtocol >= Info::PROTOCOL_415) {
+			$this->putLInt(0); // unknown
+			$this->putByte(0); // unknown
+			$this->putByte(0); // unknown
+		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putLInt(16); // limited word width
 			$this->putLInt(16); // limited word width
@@ -220,7 +232,11 @@ class StartGamePacket extends PEPacket{
 		$this->putString(''); // template pack id
 		$this->putByte(0); // is trial?
 		if ($playerProtocol >= Info::PROTOCOL_389) {
-			$this->putByte(0); // is server authoritative over movement
+			if ($playerProtocol >= Info::PROTOCOL_415) {
+				$this->putVarInt(2);
+			} else {
+				$this->putByte(0); // is server authoritative over movement
+			}
 		}
 		$this->putLong(0); // current level time
 		$this->putSignedVarInt(0); // enchantment seed
