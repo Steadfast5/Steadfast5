@@ -311,12 +311,18 @@ class Server{
 
 	/** @var Level */
 	private $levelDefault = null;
-	
+
 	private $useAnimal;
 	private $animalLimit;
 	private $useMonster ;
 	private $monsterLimit;
 
+	public $netherEnabled = false;
+	public $netherName = "nether";
+	public $netherLevel = null;
+	public $enderEnabled = false;
+	public $enderName = "ender";
+	public $enderLevel = null;
 	public $weatherEnabled = true;
 	public $weatherRandomDurationMin = 6000;
 	public $weatherRandomDurationMax = 12000;
