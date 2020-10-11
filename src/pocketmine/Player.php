@@ -2613,7 +2613,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 				break;
 			/** @minProtocol 120 */
-			case 'COMMAND_OUTPUT_PACKET':
+//			case 'COMMAND_OUTPUT_PACKET':
 			/** @minProtocol 120 */
 			case 'COMMAND_REQUEST_PACKET':
 				if ($packet->command[0] != '/') {
@@ -4348,7 +4348,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 			if ($this->level->useBreakOn($vector, $item, $this) === true) {
 				if ($this->isSurvival()) {
-					if (!$item->equals($oldItem, true) or $item->getCount() !== $oldItem->getCount()) {
+					if (!$item->equals($oldItem, true) || $item->getCount() !== $oldItem->getCount()) {
 						$this->inventory->setItemInHand($item, $this);
 						$this->inventory->sendHeldItem($this->hasSpawned);
 					}
