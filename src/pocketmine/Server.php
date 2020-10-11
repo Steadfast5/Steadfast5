@@ -302,12 +302,19 @@ class Server{
 
 	/** @var Level */
 	private $levelDefault = null;
-	
+
 	private $useAnimal;
 	private $animalLimit;
 	private $useMonster ;
 	private $monsterLimit;
-		
+
+	public $netherEnabled = false;
+	public $netherName = "nether";
+	public $netherLevel = null;
+	public $enderEnabled = false;
+	public $enderName = "ender";
+	public $enderLevel = null;
+
 	public $packetMaker = null;
 	
 	private $jsonCommands = [];
