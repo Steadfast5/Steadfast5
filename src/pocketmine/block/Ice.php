@@ -45,7 +45,7 @@ class Ice extends Transparent{
 	}
 	
 	public function onBreak(Item $item, Player $player = null) {
-		if (($player === null || $player->isSurvival()) && !$item->hasEnchantment(Enchantment::SILK_TOUCH)) {
+		if (($player === null || $player->isSurvival()) && !$item->hasEnchantment(Enchantment::TYPE_MINING_SILK_TOUCH)) {
 			return $this->getLevel()->setBlock($this, Block::get(Block::WATER), true);
 		}
 		return parent::onBreak($item, $player);
