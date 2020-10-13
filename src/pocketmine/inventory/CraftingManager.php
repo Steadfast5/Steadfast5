@@ -368,8 +368,8 @@ class CraftingManager{
 		
 		$this->registerRecipe((new BigShapedRecipe(Item::get(Item::ENCHANTING_TABLE, 0, 1),
 			" A ",
-            "BCB",
-            "CCC"
+			"BCB",
+			"CCC"
 		))->setIngredient("A", Item::get(Item::BOOK))->setIngredient("B", Item::get(Item::DIAMOND))->setIngredient("C", Item::get(Item::OBSIDIAN)));
 
 		$this->registerRecipe((new BigShapedRecipe(Item::get(Item::BOOKSHELF, 0, 1),
