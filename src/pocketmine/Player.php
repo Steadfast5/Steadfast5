@@ -5198,7 +5198,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->setDeviceId($this->getDeviceOS());
 			$this->server->batchPackets($this->server->getOnlinePlayers(), [$pk]);
 		}
-		$this->playerListIsSent = true;
 	}
 
 	/**
@@ -5332,6 +5331,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData()];
 			$this->server->batchPackets($otherPlayers, [$pk]);
 		}
+		$this->playerListIsSent = true;
 	}
 
 	public function setVehicle($vehicle) {
