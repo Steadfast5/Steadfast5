@@ -13,8 +13,8 @@ use function substr;
 
 class BinaryStream {
 
-    private $offset = 0;
-    public $buffer = "";
+	public $offset;
+	public $buffer;
 
 	protected $deviceId = Player::OS_UNKNOWN;
 
@@ -51,18 +51,18 @@ class BinaryStream {
 	}
 	
 	public function __construct($buffer = "", $offset = 0) {
-		$this->setBuffer($buffer, $offset);
+		$this->buffer = $buffer;
+		$this->offset = $offset;
 	}
 
 	public function reset() {
-        $this->buffer = "";
-        $this->offset = 0;
-    }
+		$this->buffer = "";
+		$this->offset = 0;
+	}
 
-    public function rewind()
-    {
-        $this->offset = 0;
-    }
+	public function rewind() {
+		$this->offset = 0;
+	}
 
 	public function setBuffer($buffer = "", $offset = 0) {
 		$this->buffer = $buffer;
@@ -82,31 +82,32 @@ class BinaryStream {
 	}
 
 	public function get($len) {
-        if($len === 0){
-            return "";
-        }
+		if($len === 0){
+			return "";
+		}
 
-        $buflen = strlen($this->buffer);
-        if($len === true){
-            $str = substr($this->buffer, $this->offset);
-            $this->offset = $buflen;
-            return $str;
-        }
-        if($len < 0){
-            $this->offset = $buflen - 1;
-            return "";
-        }
-        $remaining = $buflen - $this->offset;
-        if($remaining < $len){
-            throw new \Exception("Not enough bytes left in buffer: need $len, have $remaining");
-        }
+		$buflen = strlen($this->buffer);
+		if($len === true){
+			$str = substr($this->buffer, $this->offset);
+			$this->offset = $buflen;
+			return $str;
+		}
+		if($len < 0){
+			$this->offset = $buflen - 1;
+			return "";
+		}
 
-        return $len === 1 ? $this->buffer[$this->offset++] : substr($this->buffer, ($this->offset += $len) - $len, $len);
+		$remaining = $buflen - $this->offset;
+		if($remaining < $len){
+			throw new \Exception("Not enough bytes left in buffer: need $len, have $remaining");
+		}
+
+		return $len === 1 ? $this->buffer[$this->offset++] : substr($this->buffer, ($this->offset += $len) - $len, $len);
 	}
 
-    public function getBool() : bool{
-        return $this->get(1) !== "\x00";
-    }
+	public function getBool() : bool{
+		return $this->get(1) !== "\x00";
+	}
 
 	public function put($str) {
 		$this->buffer .= $str;
@@ -233,14 +234,14 @@ class BinaryStream {
 		$this->putLInt($uuid->getPart(2));
 	}
 
-    public function getRemaining() : string{
-        $str = substr($this->buffer, $this->offset);
-        if($str === false){
-            throw new \Exception("No bytes left to read");
-        }
-        $this->offset = strlen($this->buffer);
-        return $str;
-    }
+	public function getRemaining() : string{
+		$str = substr($this->buffer, $this->offset);
+		if($str === false){
+			throw new \Exception("No bytes left to read");
+		}
+		$this->offset = strlen($this->buffer);
+		return $str;
+	}
 
 	public function getSlot($playerProtocol) {
 		$id = $this->getSignedVarInt();
