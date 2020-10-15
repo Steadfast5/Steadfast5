@@ -2341,6 +2341,10 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				//Timings::$timerTextPacket->stopTiming();
 				break;
 			case 'CONTAINER_CLOSE_PACKET':
+				if ($this->getPlayerProtocol() >= Info::PROTOCOL_406 && $packet->windowId === 0) {
+					$this->onCloseSelfInventory();
+					$this->inventory->close($this);
+				}
 				//Timings::$timerContainerClosePacket->startTiming();
 				if ($this->spawned === false || $packet->windowid === 0){
 					break;
