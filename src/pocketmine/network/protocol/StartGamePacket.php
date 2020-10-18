@@ -128,7 +128,7 @@ class StartGamePacket extends PEPacket{
 		$this->putByte(1); // Broadcast to LAN?
 		if ($playerProtocol >= Info::PROTOCOL_330) {
 			$this->putSignedVarInt(self::BROADCAST_SETTINGS_FRIENDS_OF_FRIENDS); // XBox Live Broadcast setting
-			if ($playerProtocol < Info::PROTOCOL_406) {
+			if ($playerProtocol < Info::PROTOCOL_406 || $playerProtocol >= Info::PROTOCOL_415) {
 				$this->putSignedVarInt(self::BROADCAST_SETTINGS_FRIENDS_OF_FRIENDS); // Platform Broadcast setting
 			}
 		} else {
@@ -142,13 +142,7 @@ class StartGamePacket extends PEPacket{
 		$this->putByte(1);	// commands enabled
 
 		$this->putByte(0); // isTexturepacksRequired 1x Byte
-		if ($playerProtocol >= Info::PROTOCOL_415) {
-			$this->putByte(0); // unknown
-			$this->putByte(0); // unknown
-			$this->putByte(0); // unknown
-			$this->putByte(0); // unknown
-		}
-		
+
 		$this->putVarInt(count(self::$defaultRules)); // rules count
 		foreach (self::$defaultRules as $rule) {
 			$this->putString($rule['name']);
@@ -199,6 +193,10 @@ class StartGamePacket extends PEPacket{
 			if ($playerProtocol >= Info::PROTOCOL_361) {
 				$this->putByte(1); // Only spawn v1 villagers
 			}		
+			if ($playerProtocol >= Info::PROTOCOL_415) {
+				$this->putLInt(0); // unknown
+				$this->putByte(0); // unknown
+			}
 			if ($playerProtocol >= Info::PROTOCOL_370) {
 				$this->putString(''); // Vanila version
 			}
@@ -207,11 +205,6 @@ class StartGamePacket extends PEPacket{
 				$this->putByte(1); // unknown
 				$this->putLFloat(0); // unknown
 			}
-		}
-		if ($playerProtocol >= Info::PROTOCOL_415) {
-			$this->putLInt(0); // unknown
-			$this->putByte(0); // unknown
-			$this->putByte(0); // unknown
 		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putLInt(16); // limited word width
@@ -238,8 +231,12 @@ class StartGamePacket extends PEPacket{
 				$this->putByte(0); // is server authoritative over movement
 			}
 		}
-		$this->putLong(0); // current level time
-		$this->putSignedVarInt(0); // enchantment seed
+		if ($playerProtocol >= Info::PROTOCOL_415) {
+			$this->put(hex2bin('3613000000000000f8'));
+		} else {
+			$this->putLong(0); // current level time
+			$this->putSignedVarInt(0); // enchantment seed
+		}
 
 		if ($playerProtocol >= Info::PROTOCOL_280) {
 			$this->put(self::getBlockPalletData($playerProtocol));
