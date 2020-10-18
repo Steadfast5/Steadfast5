@@ -670,9 +670,7 @@ class Item implements ItemIds {
 	
 	private static function initCreativeItems(){
 		self::clearCreativeItems();
-		
-		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 0), self::CREATIVE_GROUP_PLANKS);
-		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 1), self::CREATIVE_GROUP_PLANKS);
+
 		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 0), self::CREATIVE_GROUP_PLANKS);
 		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 1), self::CREATIVE_GROUP_PLANKS);
 		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 2), self::CREATIVE_GROUP_PLANKS);
