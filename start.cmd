@@ -19,7 +19,7 @@
 
 TITLE Steadfast5 server software for Minecraft: Bedrock Edition
 
-cd /d %~dp0 goto PMSTART
+cd /d %~dp0
 
 if not exist bin\php\php.exe (
 	powershell -command "& { iwr https://jenkins.pmmp.io/job/PHP-7.3-Aggregate/lastSuccessfulBuild/artifact/PHP-7.3-Windows-x64.zip -OutFile PHP-7.3-Windows-x64.zip }"

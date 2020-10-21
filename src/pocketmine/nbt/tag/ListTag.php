@@ -6,7 +6,9 @@ use pocketmine\nbt\NBT;
 use pocketmine\nbt\NBTStream;
 
 class ListTag extends NamedTag implements \ArrayAccess, \Countable {
-
+// deprecated
+// use Enum instead
+/*
 	private $tagType;
 
 	public function __construct($name = "", $value = []) {
@@ -208,4 +210,5 @@ class ListTag extends NamedTag implements \ArrayAccess, \Countable {
 		}
 		return $str . "}";
 	}
+*/
 }

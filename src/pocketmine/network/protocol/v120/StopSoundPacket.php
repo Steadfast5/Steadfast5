@@ -2,8 +2,8 @@
 
 namespace pocketmine\network\protocol\v120;
 
-use pocketmine\network\protocol\StopSoundPacket;
+use pocketmine\network\protocol\StopSoundPacket as Packet;
 
-class StopSoundPacket extends StopSoundPacket {
+class StopSoundPacket extends Packet {
 
 }

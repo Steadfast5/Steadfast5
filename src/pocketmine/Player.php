@@ -5812,24 +5812,28 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->dataPacket($pk);
 		}
 	}
-	
+
 	protected function updateFallState($distanceThisTick, $onGround) {
 		if ($onGround || !$this->allowFlight && !$this->elytraIsActivated) {
 			parent::updateFallState($distanceThisTick, $onGround);
 		}
 	}
-	
+
 	protected function sendAllInventories(){
 		if (!is_null($this->currentWindow)) {
 			$this->currentWindow->sendContents($this);
 		}
 		$this->getInventory()->sendContents($this);
 	}
-	
-	protected function onDimensionChanged() {
-		
+
+	public function getAdditionalSkinData() {
+		return $this->additionalSkinData;
 	}
-	
+
+	protected function onDimensionChanged() {
+
+	}
+
 	public function move($dx, $dy, $dz) {
 		$this->blocksAround = null;
 		if ($dx == 0 && $dz == 0 && $dy == 0) {
