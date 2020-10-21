@@ -1043,9 +1043,9 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::REDSTONE_BLOCK, 0));
 		self::addCreativeItem(Item::get(Item::HOPPER, 0));
 		self::addCreativeItem(Item::get(Item::TNT, 0));
-		
+
 	}
-	
+
 	private static function addColoredCreativeItem($itemId, $creativeGroup) {
 		self::addCreativeItem(Item::get($itemId, Block::COLOR_WHITE), $creativeGroup);
 		self::addCreativeItem(Item::get($itemId, Block::COLOR_ORANGE), $creativeGroup);
