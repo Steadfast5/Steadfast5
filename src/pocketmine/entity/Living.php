@@ -45,6 +45,8 @@ abstract class Living extends Entity implements Damageable{
 
 	protected $attackTime = 0;
 
+	protected $jumpVelocity = 0.42;
+
 	protected $invisible = false;
 
 	protected function initEntity(){
@@ -229,6 +231,24 @@ abstract class Living extends Entity implements Damageable{
 			$this->attackTime -= $tickDiff;
 		}
 		return $hasUpdate;
+	}
+
+	public function getJumpVelocity() {
+		return $this->jumpVelocity + ($this->hasEffect(Effect::JUMP) ? ($this->getEffect(Effect::JUMP)->getEffectLevel() / 10) : 0);
+	}
+
+	public function jump() {
+		if ($this->onGround) {
+			$this->motionY = $this->getJumpVelocity();
+		}
+	}
+
+	public function fall($fallDistance) {
+		$damage = ceil($fallDistance - 3 - ($this->hasEffect(Effect::JUMP) ? $this->getEffect(Effect::JUMP)->getEffectLevel() : 0))
+		if ($damage > 0) {
+			$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_FALL, $damage);
+			$this->attack($ev->getFinalDamage, $ev);
+		}
 	}
 
 	/**

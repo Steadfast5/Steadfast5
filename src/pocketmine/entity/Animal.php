@@ -22,7 +22,7 @@
 namespace pocketmine\entity;
 
 
-abstract class Animal extends Creature implements Ageable{
+abstract class Animal extends Creature implements Ageable {
 
 	public function initEntity(){
 		parent::initEntity();
@@ -34,4 +34,5 @@ abstract class Animal extends Creature implements Ageable{
 	public function isBaby(){
 		return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
 	}
+
 }

@@ -143,8 +143,11 @@ use pocketmine\utils\VersionString;
 use pocketmine\network\protocol\Info;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\scheduler\FileWriteTask;
+use pocketmine\entity\animal\flying\Bat;
+use pocketmine\entity\animal\flying\Parrot;
 use pocketmine\entity\animal\walking\Chicken;
 use pocketmine\entity\animal\walking\Cow;
+use pocketmine\entity\animal\walking\Llama;
 use pocketmine\entity\animal\walking\Mooshroom;
 use pocketmine\entity\animal\walking\Ocelot;
 use pocketmine\entity\animal\walking\Pig;
@@ -152,11 +155,14 @@ use pocketmine\entity\animal\walking\Rabbit;
 use pocketmine\entity\animal\walking\Sheep;
 use pocketmine\entity\monster\flying\Blaze;
 use pocketmine\entity\monster\flying\Ghast;
+use pocketmine\entity\monster\jumping\MagmaCube;
+use pocketmine\entity\monster\jumping\Slime;
 use pocketmine\entity\monster\walking\CaveSpider;
 use pocketmine\entity\monster\walking\Creeper;
 use pocketmine\entity\monster\walking\Enderman;
 use pocketmine\entity\monster\walking\IronGolem;
 use pocketmine\entity\monster\walking\PigZombie;
+use pocketmine\entity\monster\walking\PolarBear;
 use pocketmine\entity\monster\walking\Silverfish;
 use pocketmine\entity\monster\walking\Skeleton;
 use pocketmine\entity\monster\walking\SnowGolem;
@@ -175,7 +181,8 @@ use pocketmine\tile\Banner;
 /**
  * The class that manages everything
  */
-class Server{
+class Server {
+
 	const BROADCAST_CHANNEL_ADMINISTRATIVE = "pocketmine.broadcast.admin";
 	const BROADCAST_CHANNEL_USERS = "pocketmine.broadcast.user";
 
@@ -2723,7 +2730,7 @@ class Server{
 		Entity::registerEntity(Villager::class);
 		Entity::registerEntity(Squid::class);
 		Entity::registerEntity(Human::class, true);		
-		
+
 		Entity::registerEntity(Blaze::class);
 		Entity::registerEntity(CaveSpider::class);
 		Entity::registerEntity(Chicken::class);
@@ -2733,13 +2740,19 @@ class Server{
 		Entity::registerEntity(Ghast::class);
 		Entity::registerEntity(IronGolem::class);
 		Entity::registerEntity(Lightning::class);
+		Entity::registerEntity(Bat::class);
+		Entity::registerEntity(Llama::class);
+		Entity::registerEntity(MagmaCube::class);
 		Entity::registerEntity(Mooshroom::class);
 		Entity::registerEntity(Ocelot::class);
+		Entity::registerEntity(Parrot::class);
 		Entity::registerEntity(Pig::class);
 		Entity::registerEntity(PigZombie::class);
+		Entity::registerEntity(PolarBear::class);
 		Entity::registerEntity(Rabbit::class);
 		Entity::registerEntity(Sheep::class);
 		Entity::registerEntity(Silverfish::class);
+		Entity::registerEntity(Slime::class);
 		Entity::registerEntity(Skeleton::class);
 		Entity::registerEntity(SnowGolem::class);
 		Entity::registerEntity(Spider::class);

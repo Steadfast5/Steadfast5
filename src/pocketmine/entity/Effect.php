@@ -173,6 +173,10 @@ class Effect{
 		return $this->amplifier;
 	}
 
+	public function getEffectLevel() {
+		return $this->amplifier + 1;
+	}
+
 	/**
 	 * @param int $amplifier
 	 *

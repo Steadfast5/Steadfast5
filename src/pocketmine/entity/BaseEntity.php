@@ -22,8 +22,9 @@ use pocketmine\nbt\tag\Enum;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\entity\monster\walking\Wolf;
 
-abstract class BaseEntity extends Creature{
+abstract class BaseEntity extends Creature {
 
+	public $stayTime = 0;
 	protected $moveTime = 0;
 
 	/** @var Vector3|Entity */
@@ -80,7 +81,11 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function getSpeed(){
-		return 1;
+		return $this->speed;
+	}
+
+	public function getBaseTarget() {
+		return $this->baseTarget;
 	}
 
 	public function initEntity(){
@@ -149,7 +154,9 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function attack($damage, EntityDamageEvent $source){
-		if($this->isKnockback() > 0) return;
+		if ($this->isKnockback() > 0) {
+			return;
+		}
 
 		parent::attack($damage, $source);
 
@@ -187,11 +194,15 @@ abstract class BaseEntity extends Creature{
 			$this->attack($ev->getFinalDamage(), $ev);
 		}
 
+		if ($this->stayTime > 0) {
+			$this->stayTime -= $tickDiff;
+		}
+
 		if($this->moveTime > 0){
 			$this->moveTime -= $tickDiff;
 		}
 		
-		 if($this->sprintTime > 0){
+		if($this->sprintTime > 0){
 			$this->sprintTime -= $tickDiff;
 		}
 

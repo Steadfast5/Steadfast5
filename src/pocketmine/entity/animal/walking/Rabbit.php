@@ -35,7 +35,17 @@ class Rabbit extends WalkingAnimal{
 	}
 
 	public function getDrops(){
-		return [];
+		$drops = [];
+		array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));
+		if ($this->isOnFire()) {
+			array_push($drops, Item::get(Item::COOKED_RABBIT, 0, mt_rand(0, 1)));
+		} else {
+			array_push($drops, Item::get(Item::RAW_RABBIT, 0, mt_rand(0, 1)));
+		}
+		if (mt_rand(0, 100) <= 10) {
+			array_push($drops, Item::get(Item::RABBIT_FOOT, 0, 1));
+		}
+		return $drops;
 	}
 
 }

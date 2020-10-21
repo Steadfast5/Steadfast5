@@ -94,7 +94,7 @@ abstract class FlyingEntity extends BaseEntity{
 		$isJump = false;
 		$dx = $this->motionX;
 		$dy = $this->motionY;
-		$dz = $this->motionZ ;
+		$dz = $this->motionZ;
 
 		$this->move($dx, $dy, $dz);
 		$be = new Vector2($this->x + $dx, $this->z + $dz);

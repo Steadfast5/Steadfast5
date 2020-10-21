@@ -1642,23 +1642,23 @@ abstract class Entity extends Location implements Metadatable{
 	public function __toString(){
 		return (new \ReflectionClass($this))->getShortName() . "(" . $this->getId() . ")";
 	}
-	
+
 	public function setAirTick($val){
 		$this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, $val, false);
 	}
-	
+
 	public function isNeedSaveOnChunkUnload() {
 		return true;
 	}
-	
+
 	public function isCanFreezeChunk() {
 		return false;
 	}
-	
+
 	public function interact($player) {
-		
+
 	}
-	
+
 	public function removeClosedViewer($player) {
 		unset($this->hasSpawned[$player->getId()]);
 	}
