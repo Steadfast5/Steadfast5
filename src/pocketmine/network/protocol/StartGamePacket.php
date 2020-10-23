@@ -50,6 +50,7 @@ class StartGamePacket extends PEPacket{
 //		['name' => 'showcoordinates', 'type' => 1, 'value' => 1]
 	];
 	public $multiplayerCorrelationId;
+	public static $itemsList = [];
 
 	public function decode($playerProtocol){
 
@@ -242,13 +243,32 @@ class StartGamePacket extends PEPacket{
 			$this->put(self::getBlockPalletData($playerProtocol));
 		}
 		if ($playerProtocol >= Info::PROTOCOL_360) {
-			$this->putVarInt(0); // item list size
+			if ($playerProtocol >= Info::PROTOCOL_415) {
+				$itemsData = self::getItemsList();
+				$this->putVarInt(count($itemsData));
+				foreach ($itemsData as $data) {
+					$this->putString($data['NetworkName']);
+					$this->putShort($data['NetworkID']);
+				}
+			} else {
+				$this->putVarInt(0); // item list size
+			}
 		}
 		if ($playerProtocol >= Info::PROTOCOL_282) {
 			$this->putString($this->multiplayerCorrelationId);
 		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putByte(0); // Whether the new item stack net manager is enabled for server authoritative inventory
+		}
+	}
+
+	protected static getItemsList() { // TODO: find another place for this in multiversion folder and move Items.json there too
+		if (!empty(self::$itemsList)) {
+			return self::$itemsList;
+		} else {
+			$path = __DIR__ . "/data/Items.json";
+			self::$itemsList = json_decode(file_get_contents($path), true);
+			return self::$itemsList;
 		}
 	}
 
