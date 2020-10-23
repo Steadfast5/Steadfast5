@@ -185,7 +185,15 @@ abstract class PEPacket extends DataPacket {
 		$pallet = self::getPallet($playerProtocol);
 		return is_null($pallet) ? "" : $pallet->getDataForPackets();
 	}
-	
+
+	/*public static function getItemsList() {
+		if (!empty(self::$itemsList)) {
+			return self::$itemsList;
+		} else {
+			
+		}
+	}*/
+
 	/**
 	 * 
 	 * @param type $playerProtocol
