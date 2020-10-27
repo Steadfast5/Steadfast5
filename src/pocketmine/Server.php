@@ -159,6 +159,7 @@ use pocketmine\entity\projectile\FireBall;
 use pocketmine\utils\MetadataConvertor;
 use pocketmine\event\server\SendRecipiesList;
 use pocketmine\network\protocol\PEPacket;
+use pocketmine\scheduler\InventoryTransactionTask;
 use pocketmine\tile\Beacon;
 use pocketmine\tile\Banner;
 
@@ -303,12 +304,19 @@ class Server{
 
 	/** @var Level */
 	private $levelDefault = null;
-	
+
 	private $useAnimal;
 	private $animalLimit;
 	private $useMonster ;
 	private $monsterLimit;
-		
+
+	public $netherEnabled = false;
+	public $netherName = "nether";
+	public $netherLevel = null;
+	public $enderEnabled = false;
+	public $enderName = "ender";
+	public $enderLevel = null;
+
 	public $packetMaker = null;
 	
 	private $jsonCommands = [];
@@ -1774,12 +1782,14 @@ class Server{
 		if($this->getAdvancedProperty("main.player-shuffle", 0) > 0){
 			$this->scheduler->scheduleDelayedRepeatingTask(new CallbackTask([$this, "shufflePlayers"]), $this->getAdvancedProperty("main.player-shuffle", 0), $this->getAdvancedProperty("main.player-shuffle", 0));
 		}
-		
+
+		$this->scheduler->scheduleRepeatingTask(new InventoryTransactionTask(), 2);
+
 		$this->modsManager = new ModsManager();
-		
+
 		$this->start();
 	}
-	
+
 	/**
 	 * @return AdvancedSourceInterface
 	 */
