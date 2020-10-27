@@ -58,7 +58,7 @@ class LoginPacket extends PEPacket {
 	public $skinGeometryName = "";
 	public $skinGeometryData = "";
 	public $capeData = "";
-	public $isVerified = true;
+	public $isVerified = true; // xbox auth?
 	public $premiunSkin = "";
 	public $identityPublicKey = "";
 	public $platformChatId = "";
