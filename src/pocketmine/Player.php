@@ -2012,6 +2012,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				$this->additionalSkinData = $packet->additionalSkinData;				
 				$this->processLogin();
 				//Timings::$timerLoginPacket->stopTiming();
+				// debug
+				var_dump('identityPublicKey', $this->identityPublicKey);
 				break;
 			case 'MOVE_PLAYER_PACKET':
 				foreach ($this->editingSignData as $hash => $data) {
