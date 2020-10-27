@@ -193,6 +193,7 @@ use pocketmine\network\protocol\v331\BiomeDefinitionListPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v392\CreativeItemsListPacket;
 use pocketmine\scheduler\InventoryTransactionTask;
+use pocketmine\network\protocol\v417\ItemComponentPacket;
 use function rand;
 use function random_int;
 
@@ -3540,8 +3541,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$pk->eid = $this->id;
 		$pk->stringClientVersion = $this->clientVersion;
 		$pk->multiplayerCorrelationId = $this->uuid->toString();
-		$this->directDataPacket($pk);	
+		$this->directDataPacket($pk);
 		if ($this->protocol >= ProtocolInfo::PROTOCOL_331) {
+			if ($this->getPlayerProtocol() >= Info::PROTOCOL_417) {
+				$this->directDataPacket(new ItemComponentPacket());
+			}
 			$this->directDataPacket(new AvailableEntityIdentifiersPacket());
 			$this->directDataPacket(new BiomeDefinitionListPacket());
 		}

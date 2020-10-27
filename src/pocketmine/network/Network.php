@@ -52,6 +52,7 @@ use pocketmine\network\protocol\HurtArmorPacket;
 use pocketmine\network\protocol\Info120 as ProtocolInfo120;
 use pocketmine\network\protocol\Info310 as ProtocolInfo310;
 use pocketmine\network\protocol\Info331 as ProtocolInfo331;
+use pocketmine\network\protocol\Info417 as ProtocolInfo417;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\network\protocol\LevelSoundEventPacket;
@@ -106,6 +107,7 @@ use pocketmine\network\protocol\PlayerInputPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v310\NetworkChunkPublisherUpdatePacket;
 use pocketmine\network\protocol\v310\SpawnParticleEffectPacket;
+use pocketmine\network\protocol\v417\ItemComponentPacket;
 
 class Network {	
 	
@@ -117,6 +119,8 @@ class Network {
 	private $packetPool310;
 	/** @var \SplFixedArray */
 	private $packetPool331;
+	/** @var \SplFixedArray */
+	private $packetPool417;
 
 	/** @var Server */
 	private $server;
@@ -136,6 +140,7 @@ class Network {
 		$this->registerPackets120();
 		$this->registerPackets310();
 		$this->registerPackets331();
+		$this->registerPackets417();
 		$this->server = $server;
 	}
 
@@ -262,6 +267,10 @@ class Network {
 		$this->packetPool331[$id] = new $class;
 	}
 	
+	public function registerPacket417($id, $class) {
+		$this->packetPool417[$id] = new $class;
+	}
+
 	public function getServer(){
 		return $this->server;
 	}
@@ -300,6 +309,7 @@ class Network {
 			case Info::PROTOCOL_412:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_415:
+			case Info::PROTOCOL_417:
 			case Info::PROTOCOL_418:
 			case Info::PROTOCOL_419:
 				$class = $this->packetPool331[$id];
@@ -324,6 +334,8 @@ class Network {
 			case Info::PROTOCOL_419:
 			case Info::PROTOCOL_418:
 				return Info::PROTOCOL_418;
+			case Info::PROTOCOL_417:
+				return Info::PROTOCOL_417;
 			case Info::PROTOCOL_415:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:
@@ -612,5 +624,82 @@ class Network {
         $this->registerPacket331(ProtocolInfo331::SCRIPT_CUSTOM_EVENT_PACKET, ScriptCustomEventPacket::class);
         $this->registerPacket331(ProtocolInfo331::PLAY_SOUND_PACKET, PlaySoundPacket::class);
         $this->registerPacket331(ProtocolInfo331::STOP_SOUND_PACKET, StopSoundPacket::class);
+	}
+
+	private function registerPackets417() {
+		$this->packetPool417 = new \SplFixedArray(256);
+		$this->registerPacket417(ProtocolInfo417::LOGIN_PACKET, LoginPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAY_STATUS_PACKET, PlayStatusPacket::class);
+		$this->registerPacket417(ProtocolInfo417::DISCONNECT_PACKET, DisconnectPacket::class);
+		$this->registerPacket417(ProtocolInfo417::TEXT_PACKET, TextPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_TIME_PACKET, SetTimePacket::class);
+		$this->registerPacket417(ProtocolInfo417::START_GAME_PACKET, StartGamePacket::class);
+		$this->registerPacket417(ProtocolInfo417::ADD_PLAYER_PACKET, AddPlayerPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ADD_ENTITY_PACKET, AddEntityPacket::class);
+		$this->registerPacket417(ProtocolInfo417::REMOVE_ENTITY_PACKET, RemoveEntityPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ADD_ITEM_ENTITY_PACKET, AddItemEntityPacket::class);
+		$this->registerPacket417(ProtocolInfo417::TAKE_ITEM_ENTITY_PACKET, TakeItemEntityPacket::class);
+		$this->registerPacket417(ProtocolInfo417::MOVE_ENTITY_PACKET, MoveEntityPacket::class);
+		$this->registerPacket417(ProtocolInfo417::MOVE_PLAYER_PACKET, MovePlayerPacket::class);
+		$this->registerPacket417(ProtocolInfo417::UPDATE_BLOCK_PACKET, UpdateBlockPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ADD_PAINTING_PACKET, AddPaintingPacket::class);
+		$this->registerPacket417(ProtocolInfo417::EXPLODE_PACKET, ExplodePacket::class);
+		$this->registerPacket417(ProtocolInfo417::LEVEL_EVENT_PACKET, LevelEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::BLOCK_EVENT_PACKET, BlockEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::TILE_EVENT_PACKET, TileEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ENTITY_EVENT_PACKET, EntityEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SIMPLE_EVENT_PACKET, SimpleEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::MOB_EQUIPMENT_PACKET, MobEquipmentPacket::class);
+		$this->registerPacket417(ProtocolInfo417::MOB_ARMOR_EQUIPMENT_PACKET, MobArmorEquipmentPacket::class);
+		$this->registerPacket417(ProtocolInfo417::INTERACT_PACKET, InteractPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAYER_ACTION_PACKET, PlayerActionPacket::class);
+		$this->registerPacket417(ProtocolInfo417::HURT_ARMOR_PACKET, HurtArmorPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_ENTITY_DATA_PACKET, SetEntityDataPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_ENTITY_MOTION_PACKET, SetEntityMotionPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_ENTITY_LINK_PACKET, SetEntityLinkPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_SPAWN_POSITION_PACKET, SetSpawnPositionPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ANIMATE_PACKET, AnimatePacket::class);
+		$this->registerPacket417(ProtocolInfo417::RESPAWN_PACKET, RespawnPacket::class);
+		$this->registerPacket417(ProtocolInfo417::CONTAINER_OPEN_PACKET, ContainerOpenPacket::class);
+		$this->registerPacket417(ProtocolInfo417::CONTAINER_CLOSE_PACKET, ContainerClosePacket::class);
+		$this->registerPacket417(ProtocolInfo417::CONTAINER_SET_DATA_PACKET, ContainerSetDataPacket::class);
+		$this->registerPacket417(ProtocolInfo417::CRAFTING_DATA_PACKET, CraftingDataPacket::class);
+		$this->registerPacket417(ProtocolInfo417::CRAFTING_EVENT_PACKET, CraftingEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ADVENTURE_SETTINGS_PACKET, AdventureSettingsPacket::class);
+		$this->registerPacket417(ProtocolInfo417::TILE_ENTITY_DATA_PACKET, TileEntityDataPacket::class);
+		$this->registerPacket417(ProtocolInfo417::FULL_CHUNK_DATA_PACKET, FullChunkDataPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_COMMANDS_ENABLED_PACKET, SetCommandsEnabledPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SET_DIFFICULTY_PACKET, SetDifficultyPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAYER_LIST_PACKET, PlayerListPacket::class);
+		$this->registerPacket417(ProtocolInfo417::REQUEST_CHUNK_RADIUS_PACKET, RequestChunkRadiusPacket::class);
+		$this->registerPacket417(ProtocolInfo417::CHUNK_RADIUS_UPDATE_PACKET, ChunkRadiusUpdatePacket::class);
+		$this->registerPacket417(ProtocolInfo417::AVAILABLE_COMMANDS_PACKET, AvailableCommandsPacket::class);
+		$this->registerPacket417(ProtocolInfo417::TRANSFER_PACKET, TransferPacket::class);
+		$this->registerPacket417(ProtocolInfo417::CLIENT_TO_SERVER_HANDSHAKE_PACKET, ClientToServerHandshakePacket::class);
+		$this->registerPacket417(ProtocolInfo417::RESOURCE_PACK_DATA_INFO_PACKET, ResourcePackDataInfoPacket::class);
+		$this->registerPacket417(ProtocolInfo417::RESOURCE_PACKS_INFO_PACKET, ResourcePackDataInfoPacket::class);
+		$this->registerPacket417(ProtocolInfo417::RESOURCE_PACKS_CLIENT_RESPONSE_PACKET, ResourcePackClientResponsePacket::class);
+		$this->registerPacket417(ProtocolInfo417::RESOURCE_PACK_CHUNK_REQUEST_PACKET, ResourcePackChunkRequestPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAYER_INPUT_PACKET, PlayerInputPacket::class);
+		$this->registerPacket417(ProtocolInfo417::MAP_INFO_REQUEST_PACKET, MapInfoRequestPacket::class);
+		$this->registerPacket417(ProtocolInfo417::INVENTORY_TRANSACTION_PACKET, InventoryTransactionPacket::class);
+		$this->registerPacket417(ProtocolInfo417::INVENTORY_CONTENT_PACKET, InventoryContentPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAYER_HOTBAR_PACKET, PlayerHotbarPacket::class);
+		$this->registerPacket417(ProtocolInfo417::COMMAND_REQUEST_PACKET, CommandRequestPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAYER_SKIN_PACKET, PlayerSkinPacket::class);
+		$this->registerPacket417(ProtocolInfo417::MODAL_FORM_RESPONSE_PACKET, ModalFormResponsePacket::class);
+		$this->registerPacket417(ProtocolInfo417::SERVER_SETTINGS_REQUEST_PACKET, ServerSettingsRequestPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PURCHASE_RECEIPT_PACKET, PurchaseReceiptPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SUB_CLIENT_LOGIN_PACKET, SubClientLoginPacket::class);			
+		$this->registerPacket417(ProtocolInfo417::AVAILABLE_ENTITY_IDENTIFIERS_PACKET, AvailableEntityIdentifiersPacket::class);	
+		$this->registerPacket417(ProtocolInfo417::LEVEL_SOUND_EVENT_PACKET, LevelSoundEventPacket::class);	
+		$this->registerPacket417(ProtocolInfo417::NETWORK_CHUNK_PUBLISHER_UPDATE_PACKET, NetworkChunkPublisherUpdatePacket::class);	
+		$this->registerPacket417(ProtocolInfo417::SPAWN_PARTICLE_EFFECT_PACKET, SpawnParticleEffectPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SPAWN_EXPERIENCE_ORB_PACKET, SpawnExperienceOrbPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ITEM_FRAME_DROP_ITEM_PACKET, ItemFrameDropItemPacket::class);
+		$this->registerPacket417(ProtocolInfo417::SCRIPT_CUSTOM_EVENT_PACKET, ScriptCustomEventPacket::class);
+		$this->registerPacket417(ProtocolInfo417::PLAY_SOUND_PACKET, PlaySoundPacket::class);
+		$this->registerPacket417(ProtocolInfo417::STOP_SOUND_PACKET, StopSoundPacket::class);
+		$this->registerPacket417(ProtocolInfo417::ITEM_COMPONENT_PACKET, ItemComponentPacket::class);
 	}
 }

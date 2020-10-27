@@ -221,6 +221,7 @@ class MetadataConvertor {
 		switch ($protocol) {
 			case Info::PROTOCOL_419:
 			case Info::PROTOCOL_418:
+			case Info::PROTOCOL_417:
 			case Info::PROTOCOL_415:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:
@@ -295,6 +296,7 @@ class MetadataConvertor {
 		switch ($protocol) {
 			case Info::PROTOCOL_419:
 			case Info::PROTOCOL_418:
+			case Info::PROTOCOL_417:
 			case Info::PROTOCOL_415:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:

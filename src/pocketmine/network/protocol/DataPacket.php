@@ -141,7 +141,8 @@ abstract class DataPacket extends BinaryStream
 //		self::$packetsIds[Info::PROTOCOL_414] = $oClass->getConstants();
 //		self::$packetsIds[Info::PROTOCOL_415] = $oClass->getConstants();
 //		self::$packetsIds[Info::PROTOCOL_416] = $oClass->getConstants();
-//		self::$packetsIds[Info::PROTOCOL_417] = $oClass->getConstants();
+		$oClass = new \ReflectionClass ('pocketmine\network\protocol\Info417');
+		self::$packetsIds[Info::PROTOCOL_417] = $oClass->getConstants();
 		self::$packetsIds[Info::PROTOCOL_418] = $oClass->getConstants();
 		self::$packetsIds[Info::PROTOCOL_419] = $oClass->getConstants();
 	}
