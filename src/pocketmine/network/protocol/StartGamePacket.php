@@ -247,9 +247,9 @@ class StartGamePacket extends PEPacket{
 			if ($playerProtocol >= Info::PROTOCOL_418) {
 				$itemsData = self::getItemsList();
 				$this->putVarInt(count($itemsData));
-				foreach ($itemsData as $data) {
-					$this->putString($data['NetworkName']);
-					$this->putShort($data['NetworkID']);
+				foreach ($itemsData as $name => $id) {
+					$this->putString($name);
+					$this->putShort($id);
 					$this->putByte(0); // unknown
 				}
 			} else {
@@ -264,7 +264,7 @@ class StartGamePacket extends PEPacket{
 		}
 	}
 
-	protected static getItemsList() { // TODO: find another place for this in multiversion folder and move Items.json there too
+	protected static function getItemsList() { // TODO: find another place for this in multiversion folder and move Items.json there too
 		if (!empty(self::$itemsList)) {
 			return self::$itemsList;
 		} else {
