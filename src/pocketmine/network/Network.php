@@ -106,6 +106,7 @@ use pocketmine\network\protocol\PlayerInputPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v310\NetworkChunkPublisherUpdatePacket;
 use pocketmine\network\protocol\v310\SpawnParticleEffectPacket;
+use pocketmine\network\protocol\v419\ItemComponentPacket;
 
 class Network {	
 	
@@ -612,5 +613,6 @@ class Network {
         $this->registerPacket331(ProtocolInfo331::SCRIPT_CUSTOM_EVENT_PACKET, ScriptCustomEventPacket::class);
         $this->registerPacket331(ProtocolInfo331::PLAY_SOUND_PACKET, PlaySoundPacket::class);
         $this->registerPacket331(ProtocolInfo331::STOP_SOUND_PACKET, StopSoundPacket::class);
+		$this->registerPacket331(ProtocolInfo331::ITEM_COMPONENT_PACKET, ItemComponentPacket::class); // ??
 	}
 }
