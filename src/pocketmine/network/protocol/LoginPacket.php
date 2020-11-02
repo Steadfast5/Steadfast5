@@ -125,7 +125,9 @@ class LoginPacket extends PEPacket {
 					} else if ($validationKey != null && $validationKey == $data['header']['x5u']) {
 						$dataIndex = $index;
 					} else {
-						if (!isset($data['payload']['extraData'])) continue;
+						if (!isset($data['payload']['extraData'])) {
+							continue;
+						}
 						$data['payload']['extraData']['XUID'] = "";
 						$this->isVerified = false;
 						$dataIndex = $index;
