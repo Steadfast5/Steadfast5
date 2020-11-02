@@ -244,7 +244,7 @@ class StartGamePacket extends PEPacket{
 				$this->putVarInt(count($itemsData));
 				foreach ($itemsData as $name => $id) {
 					$this->putString($name);
-					$this->putShort($id);
+					$this->putLShort($id);
 					$this->putByte(0); // unknown
 				}
 			} else {
@@ -263,7 +263,8 @@ class StartGamePacket extends PEPacket{
 		if (!empty(self::$itemsList)) {
 			return self::$itemsList;
 		} else {
-			$path = __DIR__ . "/data/Items.json";
+//			$path = __DIR__ . "/data/Items.json";
+			$path = __DIR__ . "/data/Items2.json";
 			self::$itemsList = json_decode(file_get_contents($path), true);
 			return self::$itemsList;
 		}
