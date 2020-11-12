@@ -290,10 +290,17 @@ class BinaryStream {
 			return;
 		}
 		$this->putSignedVarInt($item->getId());
-		$this->putSignedVarInt(($item->getDamage() === null ? 0  : ($item->getDamage() << 8)) + $item->getCount());	
-		$nbt = $item->getCompound();	
+		if (is_null($item->getDamage())) {
+			$item->setDamage(0);
+		}
+		$auxValue = (($item->getDamage() << 8 & 0x7fff) | $item->getCount() & 0xff);
+		$this->putSignedVarInt($auxValue);
+//		$this->putSignedVarInt(($item->getDamage() === null ? 0  : ($item->getDamage() << 8)) + $item->getCount());	
+		$nbt = $item->getCompound();
 		$this->putLShort(strlen($nbt));
-		$this->put($nbt);
+//		$this->putLShort(0xffff); // User Data Serialization Marker
+//		$this->putByte(1); // User Data Serialization Version
+		$this->put($nbt)
 		$canPlaceOnBlocks = $item->getCanPlaceOnBlocks();
 		$canDestroyBlocks = $item->getCanDestroyBlocks();
 		$this->putSignedVarInt(count($canPlaceOnBlocks));
@@ -403,7 +410,7 @@ class BinaryStream {
 		}
 		if (isset($additionalSkinData['skinGeomtryData'])) {
 			$skinGeomtryData = $additionalSkinData['skinGeomtryData'];
-		}		
+		}
 		if (empty($skinGeomtryName)) {
 			$skinGeomtryName = "geometry.humanoid.custom";
 		}
@@ -432,6 +439,9 @@ class BinaryStream {
 				$this->putString($animation['Image']);
 				$this->putLInt($animation['Type']);
 				$this->putLFloat($animation['Frames']);
+				if ($playerProtocol >= Info::PROTOCOL_418) {
+					$this->putLInt($animation['AnimationExpression']);
+				}
 			}
 		} else {
 			$this->putLInt(0);
@@ -491,7 +501,7 @@ class BinaryStream {
 					$this->putString($color);
 				}
 			}
-		} 	
+		}
 	}
 
 	public function getSerializedSkin($playerProtocol, &$skinId, &$skinData, &$skinGeomtryName, &$skinGeomtryData, &$capeData, &$additionalSkinData) {		
@@ -513,6 +523,7 @@ class BinaryStream {
 				'Image' => $this->getString(),
 				'Type' => $this->getLInt(),
 				'Frames' => $this->getLFloat(),
+				'AnimationExpression' => ($playerProtocol >= Info::PROTOCOL_418) ? $this->getLInt() : 0,
 			];
 		}
 
