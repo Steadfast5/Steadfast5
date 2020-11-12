@@ -4,6 +4,7 @@ namespace pocketmine\network\protocol\v392;
 
 use pocketmine\network\protocol\PEPacket;
 use pocketmine\network\protocol\Info331;
+use pocketmine\network\protocol\Info;
 
 class CreativeItemsListPacket extends PEPacket {
 
