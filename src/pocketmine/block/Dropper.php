@@ -174,7 +174,11 @@ class Dropper extends Solid {
 				// drop item
 				$params = $this->calculateShootingParams();
 				$nbt = new Compound("", [
-					"Pos" => new Enum("Pos", [new DoubleTag("", $params['x']), new DoubleTag("", $params['y']), new DoubleTag("", $params['z'])]),
+					"Pos" => new Enum("Pos", [
+						new DoubleTag("", $params['x']),
+						new DoubleTag("", $params['y']),
+						new DoubleTag("", $params['z'])
+					]),
 					"Rotation" => new Enum("Rotation", [
 						new FloatTag("", $params['yawRad'] * 180 / M_PI),
 						new FloatTag("", $params['pitchRad'] * 180 / M_PI)
