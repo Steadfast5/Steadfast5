@@ -105,6 +105,7 @@ use pocketmine\network\protocol\PlayerInputPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v310\NetworkChunkPublisherUpdatePacket;
 use pocketmine\network\protocol\v310\SpawnParticleEffectPacket;
+use pocketmine\network\protocol\v419\ItemComponentPacket;
 
 class Network {	
 	
@@ -298,6 +299,9 @@ class Network {
 			case Info::PROTOCOL_411:
 			case Info::PROTOCOL_412:
 			case Info::PROTOCOL_413:
+			case Info::PROTOCOL_415:
+			case Info::PROTOCOL_418:
+			case Info::PROTOCOL_419:
 				$class = $this->packetPool331[$id];
 				break;
 			case Info::PROTOCOL_310:
@@ -317,6 +321,10 @@ class Network {
 	
 	public static function getChunkPacketProtocol($playerProtocol){
 		switch ($playerProtocol) {
+			case Info::PROTOCOL_419:
+			case Info::PROTOCOL_418:
+				return Info::PROTOCOL_418;
+			case Info::PROTOCOL_415:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:
 			case Info::PROTOCOL_411:
@@ -601,5 +609,6 @@ class Network {
         $this->registerPacket331(ProtocolInfo331::SCRIPT_CUSTOM_EVENT_PACKET, ScriptCustomEventPacket::class);
         $this->registerPacket331(ProtocolInfo331::PLAY_SOUND_PACKET, PlaySoundPacket::class);
         $this->registerPacket331(ProtocolInfo331::STOP_SOUND_PACKET, StopSoundPacket::class);
+		$this->registerPacket331(ProtocolInfo331::ITEM_COMPONENT_PACKET, ItemComponentPacket::class); // ??
 	}
 }
