@@ -159,6 +159,9 @@ class Level implements ChunkManager, Metadatable{
 	/** @var LevelProvider */
 	protected $provider;
 
+	private $chunkLoaders = [];
+	private $playerLoaders = [];
+
 	/** @var Weather */
 	private $weather;
 
@@ -1779,8 +1782,10 @@ class Level implements ChunkManager, Metadatable{
 		return isset($this->chunkLoaders[$index = Level::chunkHash($chunkX, $chunkZ)]) ? $this->chunkLoaders[$index] : [];
 	}
 
-	
-	
+	public function getChunkPlayers(int $chunkX, int $chunkZ) {
+		return $this->playerLoaders[Level::chunkHash($chunkX, $chunkZ)] ?? [];
+	}
+
 	public function generateChunkCallback($x, $z, FullChunk $chunk){
 		if ($this->closed || is_null($this->generator)) {
 			return;

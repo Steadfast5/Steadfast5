@@ -47,7 +47,7 @@ abstract class Fallable extends Solid {
 		}
 		if ($type === Level::BLOCK_UPDATE_NORMAL) {
 			$down = $this->getSide(Vector3::SIDE_DOWN);
-			if ($down->getId() === self::AIR or ( $down instanceof Liquid)) {
+			if (($down->getId() === self::AIR) || ($down instanceof Liquid) || ($down instanceof Fire)) {
 				$fall = Entity::createEntity("FallingSand", $this->getLevel()->getChunk($this->x >> 4, $this->z >> 4), new Compound("", [
 					"Pos" => new Enum("Pos", [
 						new DoubleTag("", $this->x + 0.5),
