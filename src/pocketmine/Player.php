@@ -192,6 +192,7 @@ use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v331\BiomeDefinitionListPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v392\CreativeItemsListPacket;
+use pocketmine\network\protocol\v419\ItemComponentPacket;
 use pocketmine\scheduler\InventoryTransactionTask;
 use function rand;
 use function random_int;
@@ -2228,6 +2229,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					case 'CHANGE_DIMENSION_ACK':
 						$this->onDimensionChanged();
 						break;
+					case 'INTERACT_WITH_BLOCK':
+						break; // TODO
 				}
 
 				$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ACTION, false);
@@ -2237,7 +2240,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				break;
 			case 'INTERACT_PACKET':
 				if ($packet->action === InteractPacket::ACTION_OPEN_INVENTORY && $this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_392) {
-					$this->addWindow($this->getInventory());
+					$this->addWindow($this->getInventory()); // TODO
 				} elseif ($packet->action === InteractPacket::ACTION_DAMAGE) {
 					$this->attackByTargetId($packet->target);
 				} elseif ($packet->action === InteractPacket::ACTION_SEE) {
@@ -2245,14 +2248,16 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					if ($target instanceof Vehicle) {
 						$target->onNearPlayer($this);
 					}
-				} else {		
-					if ($packet->action === 3) {
+				} else {
+					if ($packet->action === 3) { // InteractPacket::ACTION_STOP_RIDING
 						$target = $this->getLevel()->getEntity($packet->target);
 						if ($target instanceof Vehicle) {
 							$target->dissMount();
 						}
 					}
-					$this->customInteract($packet);
+					if ($packet->action === InteractPacket::ACTION_INTERACT_UPDATE) {
+						$this->customInteract($packet);
+					}
 				}
 				break;
 			case 'ANIMATE_PACKET':
@@ -3298,7 +3303,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 		$this->currentWindow = $inventory;
 		$this->currentWindowId = !is_null($forceId) ? $forceId : rand(self::MIN_WINDOW_ID, 98);
-		if (!$inventory->open($this)) {
+		if (!$inventory->open($this)) { // TODO: inventory not opening
 			$this->removeWindow($inventory);
 		}
 		return $this->currentWindowId;
@@ -3542,6 +3547,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$pk->multiplayerCorrelationId = $this->uuid->toString();
 		$this->directDataPacket($pk);	
 		if ($this->protocol >= ProtocolInfo::PROTOCOL_331) {
+			if ($this->protocol >= Info::PROTOCOL_419) {
+				$this->directDataPacket(new ItemComponentPacket());
+			}
 			$this->directDataPacket(new AvailableEntityIdentifiersPacket());
 			$this->directDataPacket(new BiomeDefinitionListPacket());
 		}

@@ -510,7 +510,8 @@ abstract class MultiversionEnums {
 			21 => 'START_SWIMMING',
 			22 => 'STOP_SWIMMING',
 			23 => 'START_SPIN_ATTACK',
-			24 => 'STOP_SPIN_ATTACK'
+			24 => 'STOP_SPIN_ATTACK',
+			25 => 'INTERACT_WITH_BLOCK'
 		],
 	];
 
