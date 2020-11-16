@@ -2,30 +2,69 @@
 
 namespace pocketmine\inventory;
 
+use pocketmine\inventory\InventoryType;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
+use pocketmine\network\protocol\TileEventPacket;
 use pocketmine\Player;
+use pocketmine\Server;
 use pocketmine\tile\Beacon;
 
 class BeaconInventory extends ContainerInventory {
 
-	public function __construct(Beacon $tile){
-		parent::__construct($tile);
+	public function __construct(Beacon $tile) {
+		parent::__construct($tile, InventoryType::get(InventoryType::BEACON));
 	}
 
-	public function getName() {
-		return "Beacon";
+	/**
+	 * @return Beacon
+	 */
+	public function getHolder() {
+		return $this->holder;
 	}
 
-	public function getDefaultSize() {
-		return 1;
+	public function onOpen(Player $who) {
+		parent::onOpen($who);
+		if (count($this->getViewers()) === 1) {
+			$pk = new TileEventPacket();
+			$pk->x = $this->holder->getX();
+			$pk->y = $this->holder->getY();
+			$pk->z = $this->holder->getZ();
+			$pk->case1 = 1;
+			$pk->case2 = 2;
+			if (($level = $this->holder->getLevel()) instanceof Level) {
+				Server::broadcastPacket($level->getUsingChunk($this->holder->getX() >> 4, $this->holder->getZ() >> 4), $pk);
+			}
+		}
 	}
 
-	public function onResult(Player $player, Item $result) {
-		return true;
+	public function onClose(Player $who) {
+		if (count($this->getViewers()) === 1) {
+			$pk = new TileEventPacket();
+			$pk->z = $this->holder->getX();
+			$pk->y = $this->holder->getY();
+			$pk->z = $this->holder->getZ();
+			$pk->case1 = 1;
+			$pk->case2 = 2;
+			if (($level = $this->holder->getLevel()) instanceof Level) {
+				Server::broadcastPacket($level->getUsingChunk($this->holder->getX() >> 4, $this->holder->getZ() >> 4), $pk);
+			}
+		}
+		parent::onClose($who);
 	}
 
-	public function getResultSlot() {
-		return 0;
+	/**
+	 * 
+	 * @return Item | null
+	 */
+	public function getFirstItem(&$itemIndex) {
+		foreach ($this->getContents() as $index => $item) {
+			if ($item->getId() != Item::AIR && $item->getCount() >= 0) {
+				$itemIndex = $index;
+				return $item;
+			}
+		}
+		return null;
 	}
 
 }
