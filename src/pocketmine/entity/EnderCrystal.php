@@ -11,7 +11,7 @@ use pocketmine\level\generator\ender\Ender;
 
 class EnderCrystal extends Entity {
 
-	const NETWORK_ID = self::ENDER_CRYSTAL;
+	const NETWORK_ID = 71;
 
 	public $height = 0.98;
 	public $width = 0.98;
