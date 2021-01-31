@@ -1150,9 +1150,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			case 'SET_ENTITY_DATA_PACKET':
 			case 'MOB_EQUIPMENT_PACKET':
 			case 'MOB_ARMOR_EQUIPMENT_PACKET':
-			case 'BLOCK_EVENT_PACKET':
 			case 'ENTITY_EVENT_PACKET':
-			case 'SIMPLE_EVENT_PACKET':
+//			case 'SIMPLE_EVENT_PACKET':
 			case 'MOB_EFFECT_PACKET':
 			case 'BOSS_EVENT_PACKET':
 				if (isset($this->lastEntityRemove[$packet->eid])) {
@@ -1743,6 +1742,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					if($this->getFood() > 17){
 						$ev = new EntityRegainHealthEvent($this, 1, EntityRegainHealthEvent::CAUSE_EATING);
 						$this->heal(1, $ev);
+
 						if (!$ev->isCancelled()) {
 							$this->saturation -= 6;
 						}
@@ -1770,7 +1770,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::BEETROOT => ['food' => 1, 'saturation' => 1.2],
 		Item::BEETROOT_SOUP => ['food' => 6, 'saturation' => 7.2],
 		Item::BREAD => ['food' => 5, 'saturation' => 6],
-		/** @todo cake slice and whole */
+		/** @TODO: cake slice and whole */
 		Item::CARROT => ['food' => 3, 'saturation' => 3.6],
 		Item::CHORUS_FRUIT => ['food' => 4, 'saturation' => 2.4],
 		Item::COOKED_CHICKEN => ['food' => 6, 'saturation' => 7.2],
@@ -1780,7 +1780,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::COOKED_RABBIT => ['food' => 5, 'saturation' => 6],
 		Item::COOKED_SALMON => ['food' => 6, 'saturation' => 9.6],
 		Item::COOKIE => ['food' => 2, 'saturation' => 0.4],
-		//Item::GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
+//		Item::GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
+//		Item::ENCHANTNED_GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6], // crashes client
 		Item::GOLDEN_CARROT => ['food' => 6, 'saturation' => 14.4],
 		Item::MELON => ['food' => 2, 'saturation' => 1.2],
 		Item::MUSHROOM_STEW => ['food' => 6, 'saturation' => 7.2],
@@ -1790,6 +1791,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::RABBIT_STEW => ['food' => 10, 'saturation' => 12],
 		Item::RAW_BEEF => ['food' => 3, 'saturation' => 1.8],
 		Item::RAW_CHICKEN => ['food' => 2, 'saturation' => 1.2],
+		// TODO: rewrite fish
 		Item::RAW_FISH => [
 			0 => ['food' => 2, 'saturation' => 0.4], // raw fish
 			1 => ['food' => 2, 'saturation' => 0.4], // raw salmon
@@ -2616,7 +2618,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 				break;
 			/** @minProtocol 120 */
-			case 'COMMAND_OUTPUT_PACKET':
+//			case 'COMMAND_OUTPUT_PACKET':
 			/** @minProtocol 120 */
 			case 'COMMAND_REQUEST_PACKET':
 				if ($packet->command[0] != '/') {
@@ -4355,7 +4357,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 			if ($this->level->useBreakOn($vector, $item, $this) === true) {
 				if ($this->isSurvival()) {
-					if (!$item->equals($oldItem, true) or $item->getCount() !== $oldItem->getCount()) {
+					if (!$item->equals($oldItem, true) || $item->getCount() !== $oldItem->getCount()) {
 						$this->inventory->setItemInHand($item, $this);
 						$this->inventory->sendHeldItem($this->hasSpawned);
 					}
@@ -5205,7 +5207,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->setDeviceId($this->getDeviceOS());
 			$this->server->batchPackets($this->server->getOnlinePlayers(), [$pk]);
 		}
-		$this->playerListIsSent = true;
 	}
 
 	/**
@@ -5339,6 +5340,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData()];
 			$this->server->batchPackets($otherPlayers, [$pk]);
 		}
+		$this->playerListIsSent = true;
 	}
 
 	public function setVehicle($vehicle) {
