@@ -301,7 +301,7 @@ class BinaryStream {
 		$this->putLShort(strlen($nbt));
 //		$this->putLShort(0xffff); // User Data Serialization Marker
 //		$this->putByte(1); // User Data Serialization Version
-		$this->put($nbt)
+		$this->put($nbt);
 		$canPlaceOnBlocks = $item->getCanPlaceOnBlocks();
 		$canDestroyBlocks = $item->getCanDestroyBlocks();
 		$this->putSignedVarInt(count($canPlaceOnBlocks));
