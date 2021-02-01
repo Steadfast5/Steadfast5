@@ -2,6 +2,7 @@
 
 namespace pocketmine\network\protocol;
 
+use pocketmine\item\Item;
 use pocketmine\network\protocol\DataPacket;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\multiversion\BlockPallet;
@@ -59,6 +60,14 @@ abstract class PEPacket extends DataPacket {
 	
 	public final static function convertProtocol($protocol) {
 		switch ($protocol) {
+			case Info::PROTOCOL_419:
+				return Info::PROTOCOL_419;
+			case Info::PROTOCOL_418:
+				return Info::PROTOCOL_418;
+			case Info::PROTOCOL_417:
+			case Info::PROTOCOL_416:
+			case Info::PROTOCOL_415:
+			case Info::PROTOCOL_414:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:
 			case Info::PROTOCOL_411:
@@ -173,14 +182,36 @@ abstract class PEPacket extends DataPacket {
 	
 	public static function getBlockRuntimeID($id, $meta, $playerProtocol) {
 		$pallet = self::getPallet($playerProtocol);
+		if ($playerProtocol == Info::PROTOCOL_419) {
+			$meta = self::getActualMeta($id, $meta);
+		}
 		return is_null($pallet) ? 0 : $pallet->getBlockRuntimeIDByData($id, $meta);
 	}
-	
+
+	private static function getActualMeta($id, $meta) {
+		if ($id == Item::ITEM_FRAME_BLOCK) {
+			$array = [3 => 8, 4 => 5, 5 => 4];
+			return $array[$meta] ?? $meta;
+		}
+		if ($id == Item::LEAVES2 && $meta > 7) {
+			return 7;
+		}
+		return $meta;
+	}
+
 	public static function getBlockPalletData($playerProtocol) {
 		$pallet = self::getPallet($playerProtocol);
 		return is_null($pallet) ? "" : $pallet->getDataForPackets();
 	}
-	
+
+	/*public static function getItemsList() {
+		if (!empty(self::$itemsList)) {
+			return self::$itemsList;
+		} else {
+			
+		}
+	}*/
+
 	/**
 	 * 
 	 * @param type $playerProtocol

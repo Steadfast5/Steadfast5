@@ -4,7 +4,7 @@ namespace pocketmine\scheduler;
 
 class InventoryTransactionTask extends Task {
 
-	CONST MAX_ATTEMPTS = 20;
+	const MAX_ATTEMPTS = 20;
 
 	static public $data = []; 
 

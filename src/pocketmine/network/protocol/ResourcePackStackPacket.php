@@ -15,7 +15,7 @@ class ResourcePackStackPacket extends PEPacket {
 	public $resourcePacks = [];
 
 	public function decode($playerProtocol) {
-		
+
 	}
 
 	public function encode($playerProtocol) {
@@ -34,8 +34,17 @@ class ResourcePackStackPacket extends PEPacket {
 			$this->putString($resourcePack->subPackName);
 		}
 		if ($playerProtocol >= Info::PROTOCOL_290) {
-			$this->putVarInt(0); // ???
-			$this->putVarInt(0); // ???
+			if ($playerProtocol < Info::PROTOCOL_418) {
+				$this->putVarInt(0); // ???
+			}
+			$this->putString('*'); // ???
+		}
+		if ($playerProtocol >= Info::PROTOCOL_418) {
+			$this->putVarInt(0); // experiments count
+			$this->putByte(0); // were any experiments toggled
+			$this->putByte(0); // ??
+			$this->putByte(0); // ??
+			$this->putByte(0); // ??
 		}
 	}
 

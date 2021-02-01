@@ -10,6 +10,7 @@ use pocketmine\Server;
 
 class RawFish extends Item {
 
+	// TODO: rewrite fish 
 	public static $food = ['food' => 2, 'saturation' => 0.4];
 
 	public function __construct($meta = 0, $count = 1) {

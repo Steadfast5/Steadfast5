@@ -192,6 +192,7 @@ use pocketmine\network\protocol\v120\InventoryContentPacket;
 use pocketmine\network\protocol\v331\BiomeDefinitionListPacket;
 use pocketmine\network\protocol\v310\AvailableEntityIdentifiersPacket;
 use pocketmine\network\protocol\v392\CreativeItemsListPacket;
+use pocketmine\network\protocol\v419\ItemComponentPacket;
 use pocketmine\scheduler\InventoryTransactionTask;
 use function rand;
 use function random_int;
@@ -1149,9 +1150,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			case 'SET_ENTITY_DATA_PACKET':
 			case 'MOB_EQUIPMENT_PACKET':
 			case 'MOB_ARMOR_EQUIPMENT_PACKET':
-			case 'BLOCK_EVENT_PACKET':
 			case 'ENTITY_EVENT_PACKET':
-			case 'SIMPLE_EVENT_PACKET':
+//			case 'SIMPLE_EVENT_PACKET':
 			case 'MOB_EFFECT_PACKET':
 			case 'BOSS_EVENT_PACKET':
 				if (isset($this->lastEntityRemove[$packet->eid])) {
@@ -1742,6 +1742,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					if($this->getFood() > 17){
 						$ev = new EntityRegainHealthEvent($this, 1, EntityRegainHealthEvent::CAUSE_EATING);
 						$this->heal(1, $ev);
+
 						if (!$ev->isCancelled()) {
 							$this->saturation -= 6;
 						}
@@ -1769,7 +1770,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::BEETROOT => ['food' => 1, 'saturation' => 1.2],
 		Item::BEETROOT_SOUP => ['food' => 6, 'saturation' => 7.2],
 		Item::BREAD => ['food' => 5, 'saturation' => 6],
-		/** @todo cake slice and whole */
+		/** @TODO: cake slice and whole */
 		Item::CARROT => ['food' => 3, 'saturation' => 3.6],
 		Item::CHORUS_FRUIT => ['food' => 4, 'saturation' => 2.4],
 		Item::COOKED_CHICKEN => ['food' => 6, 'saturation' => 7.2],
@@ -1779,7 +1780,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::COOKED_RABBIT => ['food' => 5, 'saturation' => 6],
 		Item::COOKED_SALMON => ['food' => 6, 'saturation' => 9.6],
 		Item::COOKIE => ['food' => 2, 'saturation' => 0.4],
-		//Item::GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
+//		Item::GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6],
+//		Item::ENCHANTNED_GOLDEN_APPLE => ['food' => 4, 'saturation' => 9.6], // crashes client
 		Item::GOLDEN_CARROT => ['food' => 6, 'saturation' => 14.4],
 		Item::MELON => ['food' => 2, 'saturation' => 1.2],
 		Item::MUSHROOM_STEW => ['food' => 6, 'saturation' => 7.2],
@@ -1789,6 +1791,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		Item::RABBIT_STEW => ['food' => 10, 'saturation' => 12],
 		Item::RAW_BEEF => ['food' => 3, 'saturation' => 1.8],
 		Item::RAW_CHICKEN => ['food' => 2, 'saturation' => 1.2],
+		// TODO: rewrite fish
 		Item::RAW_FISH => [
 			0 => ['food' => 2, 'saturation' => 0.4], // raw fish
 			1 => ['food' => 2, 'saturation' => 0.4], // raw salmon
@@ -2228,6 +2231,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					case 'CHANGE_DIMENSION_ACK':
 						$this->onDimensionChanged();
 						break;
+					case 'INTERACT_WITH_BLOCK':
+						break; // TODO
 				}
 
 				$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_ACTION, false);
@@ -2237,7 +2242,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				break;
 			case 'INTERACT_PACKET':
 				if ($packet->action === InteractPacket::ACTION_OPEN_INVENTORY && $this->getPlayerProtocol() >= ProtocolInfo::PROTOCOL_392) {
-					$this->addWindow($this->getInventory());
+					$this->addWindow($this->getInventory()); // TODO
 				} elseif ($packet->action === InteractPacket::ACTION_DAMAGE) {
 					$this->attackByTargetId($packet->target);
 				} elseif ($packet->action === InteractPacket::ACTION_SEE) {
@@ -2245,14 +2250,16 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					if ($target instanceof Vehicle) {
 						$target->onNearPlayer($this);
 					}
-				} else {		
-					if ($packet->action === 3) {
+				} else {
+					if ($packet->action === 3) { // InteractPacket::ACTION_STOP_RIDING
 						$target = $this->getLevel()->getEntity($packet->target);
 						if ($target instanceof Vehicle) {
 							$target->dissMount();
 						}
 					}
-					$this->customInteract($packet);
+					if ($packet->action === InteractPacket::ACTION_INTERACT_UPDATE) {
+						$this->customInteract($packet);
+					}
 				}
 				break;
 			case 'ANIMATE_PACKET':
@@ -2615,7 +2622,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 				break;
 			/** @minProtocol 120 */
-			case 'COMMAND_OUTPUT_PACKET':
+//			case 'COMMAND_OUTPUT_PACKET':
 			/** @minProtocol 120 */
 			case 'COMMAND_REQUEST_PACKET':
 				if ($packet->command[0] != '/') {
@@ -3302,7 +3309,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 		$this->currentWindow = $inventory;
 		$this->currentWindowId = !is_null($forceId) ? $forceId : rand(self::MIN_WINDOW_ID, 98);
-		if (!$inventory->open($this)) {
+		if (!$inventory->open($this)) { // TODO: inventory not opening
 			$this->removeWindow($inventory);
 		}
 		return $this->currentWindowId;
@@ -3546,6 +3553,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$pk->multiplayerCorrelationId = $this->uuid->toString();
 		$this->directDataPacket($pk);	
 		if ($this->protocol >= ProtocolInfo::PROTOCOL_331) {
+			if ($this->protocol >= Info::PROTOCOL_419) {
+				$this->directDataPacket(new ItemComponentPacket());
+			}
 			$this->directDataPacket(new AvailableEntityIdentifiersPacket());
 			$this->directDataPacket(new BiomeDefinitionListPacket());
 		}
@@ -3576,6 +3586,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->groups = Item::getCreativeGroups();
 			$pk->items = Item::getCreativeItems();
 			$this->dataPacket($pk);
+			// $this->directDataPacket($pk); ??
 		} else {
 			$slots = [];
 			foreach(Item::getCreativeItems() as $item){
@@ -4350,7 +4361,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 			if ($this->level->useBreakOn($vector, $item, $this) === true) {
 				if ($this->isSurvival()) {
-					if (!$item->equals($oldItem, true) or $item->getCount() !== $oldItem->getCount()) {
+					if (!$item->equals($oldItem, true) || $item->getCount() !== $oldItem->getCount()) {
 						$this->inventory->setItemInHand($item, $this);
 						$this->inventory->sendHeldItem($this->hasSpawned);
 					}
@@ -5200,7 +5211,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->setDeviceId($this->getDeviceOS());
 			$this->server->batchPackets($this->server->getOnlinePlayers(), [$pk]);
 		}
-		$this->playerListIsSent = true;
 	}
 
 	/**
@@ -5334,6 +5344,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData()];
 			$this->server->batchPackets($otherPlayers, [$pk]);
 		}
+		$this->playerListIsSent = true;
 	}
 
 	public function setVehicle($vehicle) {
@@ -5590,24 +5601,28 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->dataPacket($pk);
 		}
 	}
-	
+
 	protected function updateFallState($distanceThisTick, $onGround) {
 		if ($onGround || !$this->allowFlight && !$this->elytraIsActivated) {
 			parent::updateFallState($distanceThisTick, $onGround);
 		}
 	}
-	
+
 	protected function sendAllInventories(){
 		if (!is_null($this->currentWindow)) {
 			$this->currentWindow->sendContents($this);
 		}
 		$this->getInventory()->sendContents($this);
 	}
-	
-	protected function onDimensionChanged() {
-		
+
+	public function getAdditionalSkinData() {
+		return $this->additionalSkinData;
 	}
-	
+
+	protected function onDimensionChanged() {
+
+	}
+
 	public function move($dx, $dy, $dz) {
 		$this->blocksAround = null;
 		if ($dx == 0 && $dz == 0 && $dy == 0) {
