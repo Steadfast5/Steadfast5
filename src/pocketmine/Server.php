@@ -302,12 +302,19 @@ class Server{
 
 	/** @var Level */
 	private $levelDefault = null;
-	
+
 	private $useAnimal;
 	private $animalLimit;
 	private $useMonster ;
 	private $monsterLimit;
-		
+
+	public $netherEnabled = false;
+	public $netherName = "nether";
+	public $netherLevel = null;
+	public $enderEnabled = false;
+	public $enderName = "ender";
+	public $enderLevel = null;
+
 	public $packetMaker = null;
 	
 	private $jsonCommands = [];
@@ -2402,12 +2409,20 @@ class Server{
 			$recipies = [];
 			
 			foreach($this->getCraftingManager()->getRecipes() as $recipe){
+				if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+					if (!in_array($recipe->getResult()->getId(), [Item::SUGAR, Item::PAPER, Item::MELON_BLOCK])) {
+						continue;
+					}
+				}
 				$recipies[] = $recipe;
 			}
-			foreach($this->getCraftingManager()->getFurnaceRecipes() as $recipe){
-				$recipies[] = $recipe;
+			// TODO: fix furnace recipes
+			if ($p->getPlayerProtocol() < Info::PROTOCOL_419) {
+				foreach ($this->getCraftingManager()->getFurnaceRecipes() as $recipe) {
+					$recipies[] = $recipe;
+				}
 			}
-			
+
 			$this->getPluginManager()->callEvent($ev = new SendRecipiesList($recipies));
 			
 			foreach($ev->getRecipies() as $recipe){
@@ -2420,7 +2435,7 @@ class Server{
 				}
 			}
 			
-			$pk->encode($p->getPlayerProtocol(), $p->getSubClientId());
+			$pk->encode($p->getPlayerProtocol());
 			$bpk = new BatchPacket();
 			$buffer = $pk->getBuffer();
 			$bpk->payload = zlib_encode(Binary::writeVarInt(strlen($buffer)) . $buffer, Player::getCompressAlg($p->getPlayerProtocol()), 7);

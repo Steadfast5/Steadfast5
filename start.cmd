@@ -19,12 +19,12 @@
 
 TITLE Steadfast5 server software for Minecraft: Bedrock Edition
 
-cd /d %~dp0 goto PMSTART
+cd /d %~dp0
 
-where git >nul 2>nul || (powershell -command "& { iwr https://github.com/git-for-windows/git/releases/download/v2.20.1.windows.1/Git-2.20.1-64-bit.exe -OutFile Git-2.20.1-64-bit.exe }" & start Git-2.20.1-64-bit.exe & pause)
-
-powershell -command "& { iwr https://jenkins.pmmp.io/job/PHP-7.3-Aggregate/lastSuccessfulBuild/artifact/PHP-7.3-Windows-x64.zip -OutFile PHP-7.3-Windows-x64.zip }"
-powershell -command "Expand-Archive -Path PHP-7.3-Windows-x64.zip -DestinationPath ."
+if not exist bin\php\php.exe (
+	powershell -command "& { iwr https://jenkins.pmmp.io/job/PHP-7.4-Aggregate/lastSuccessfulBuild/artifact/PHP-7.4-Windows-x64.zip -OutFile PHP-7.4-Windows-x64.zip }"
+	powershell -command "Expand-Archive -Path PHP-7.4-Windows-x64.zip -DestinationPath ."
+)
 
 if exist bin\php\php.exe (
 	set PHPRC=""

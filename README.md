@@ -8,7 +8,9 @@
 
 Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other repository.
 
-[![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Steadfast5/Steadfast5) [![GitHub release](https://img.shields.io/github/release/Steadfast5/Steadfast5.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest)
+[![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Steadfast5/Steadfast5)
+[![GitHub Release](https://img.shields.io/github/release/Steadfast5/Steadfast5.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest)
 
 ## Credits
 

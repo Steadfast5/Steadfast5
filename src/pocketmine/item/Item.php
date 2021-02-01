@@ -549,6 +549,7 @@ class Item implements ItemIds {
 
             // update for 1.0
             self::$list[self::CHORUS_FRUIT] = ChorusFruit::class;
+            self::$list[self::POPPED_CHORUS_FRUIT] = PoppedChorusFruit::class;
             self::$list[self::REDSTONE_DUST] = Redstone::class;
             self::$list[self::TOTEM_OF_UNDYING] = TotemOfUndying::class;
         }
@@ -669,9 +670,7 @@ class Item implements ItemIds {
 	
 	private static function initCreativeItems(){
 		self::clearCreativeItems();
-		
-		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 0), self::CREATIVE_GROUP_PLANKS);
-		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 1), self::CREATIVE_GROUP_PLANKS);
+
 		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 0), self::CREATIVE_GROUP_PLANKS);
 		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 1), self::CREATIVE_GROUP_PLANKS);
 		self::addCreativeItem(Item::get(Item::WOODEN_PLANKS, 2), self::CREATIVE_GROUP_PLANKS);
@@ -871,7 +870,7 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::RED_FLOWER, Flower::TYPE_PINK_TULIP), self::CREATIVE_GROUP_FLOWER);
 		self::addCreativeItem(Item::get(Item::RED_FLOWER, Flower::TYPE_OXEYE_DAISY), self::CREATIVE_GROUP_FLOWER);
 		
-		self::addColoredCreativeItem(Item::DYE, self::CREATIVE_GROUP_DYE);
+//		self::addColoredCreativeItem(Item::DYE, self::CREATIVE_GROUP_DYE); // ??
 		
 		self::addCreativeItem(Item::get(Item::VINES, 0));
 		self::addCreativeItem(Item::get(Item::WATER_LILY, 0));
@@ -1042,9 +1041,9 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::REDSTONE_BLOCK, 0));
 		self::addCreativeItem(Item::get(Item::HOPPER, 0));
 		self::addCreativeItem(Item::get(Item::TNT, 0));
-		
+
 	}
-	
+
 	private static function addColoredCreativeItem($itemId, $creativeGroup) {
 		self::addCreativeItem(Item::get($itemId, Block::COLOR_WHITE), $creativeGroup);
 		self::addCreativeItem(Item::get($itemId, Block::COLOR_ORANGE), $creativeGroup);

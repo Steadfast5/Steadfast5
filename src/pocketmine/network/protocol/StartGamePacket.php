@@ -50,6 +50,7 @@ class StartGamePacket extends PEPacket{
 //		['name' => 'showcoordinates', 'type' => 1, 'value' => 1]
 	];
 	public $multiplayerCorrelationId;
+	public static $itemsList = [];
 
 	public function decode($playerProtocol){
 
@@ -108,7 +109,7 @@ class StartGamePacket extends PEPacket{
 		
 		$this->putByte(0); //edu mode
 		
-		if ($playerProtocol >= Info::PROTOCOL_260 && $this->stringClientVersion != '1.2.20.1') {
+		if ($playerProtocol < Info::PROTOCOL_418 && $playerProtocol >= Info::PROTOCOL_260 && $this->stringClientVersion != '1.2.20.1') {
 			$this->putByte(0); // Are education features enabled?
 		}
 
@@ -128,7 +129,7 @@ class StartGamePacket extends PEPacket{
 		$this->putByte(1); // Broadcast to LAN?
 		if ($playerProtocol >= Info::PROTOCOL_330) {
 			$this->putSignedVarInt(self::BROADCAST_SETTINGS_FRIENDS_OF_FRIENDS); // XBox Live Broadcast setting
-			if ($playerProtocol < Info::PROTOCOL_406) {
+			if ($playerProtocol < Info::PROTOCOL_406 || $playerProtocol >= Info::PROTOCOL_418) {
 				$this->putSignedVarInt(self::BROADCAST_SETTINGS_FRIENDS_OF_FRIENDS); // Platform Broadcast setting
 			}
 		} else {
@@ -142,7 +143,7 @@ class StartGamePacket extends PEPacket{
 		$this->putByte(1);	// commands enabled
 
 		$this->putByte(0); // isTexturepacksRequired 1x Byte
-		
+
 		$this->putVarInt(count(self::$defaultRules)); // rules count
 		foreach (self::$defaultRules as $rule) {
 			$this->putString($rule['name']);
@@ -159,13 +160,13 @@ class StartGamePacket extends PEPacket{
 					break;
 			}	
 		}
-		
+
 		$this->putByte(0); // is bonus chest enabled
 		$this->putByte(0); // is start with map enabled
 		if ($playerProtocol < Info::PROTOCOL_330) {
 			$this->putByte(0); // has trust players enabled
 		}
-		$this->putSignedVarInt(1); // permission level
+		$this->putSignedVarInt(0); // permission level
 		if ($playerProtocol < Info::PROTOCOL_330) {
 			$this->putSignedVarInt(4); // game publish setting
 		}
@@ -188,9 +189,14 @@ class StartGamePacket extends PEPacket{
 			}
 			if ($playerProtocol >= Info::PROTOCOL_361) {
 				$this->putByte(1); // Only spawn v1 villagers
-			}		
+			}
 			if ($playerProtocol >= Info::PROTOCOL_370) {
 				$this->putString(''); // Vanila version
+			}
+			if ($playerProtocol >= Info::PROTOCOL_418) { // unknown
+				$this->putLInt(0); // unknown
+				$this->putByte(1); // unknown
+				$this->putByte(42); // unknown
 			}
 			if ($playerProtocol == Info::PROTOCOL_386) {
 				$this->putByte(0); // unknown
@@ -217,22 +223,51 @@ class StartGamePacket extends PEPacket{
 		$this->putString(''); // template pack id
 		$this->putByte(0); // is trial?
 		if ($playerProtocol >= Info::PROTOCOL_389) {
-			$this->putByte(0); // is server authoritative over movement
+			if ($playerProtocol >= Info::PROTOCOL_418) {
+				$this->putVarInt(0); // player movement type
+			} else {
+				$this->putByte(0); // is server authoritative over movement
+			}
 		}
 		$this->putLong(0); // current level time
+		if ($playerProtocol >= Info::PROTOCOL_418) {
+			$this->putVarInt(0); // unknown
+		}
 		$this->putSignedVarInt(0); // enchantment seed
 
-		if ($playerProtocol >= Info::PROTOCOL_280) {
+		if ($playerProtocol >= Info::PROTOCOL_280 && $playerProtocol < Info::PROTOCOL_418) {
 			$this->put(self::getBlockPalletData($playerProtocol));
 		}
 		if ($playerProtocol >= Info::PROTOCOL_360) {
-			$this->putVarInt(0); // item list size
+			if ($playerProtocol >= Info::PROTOCOL_418) {
+				$itemsData = self::getItemsList();
+				$this->putVarInt(count($itemsData));
+				foreach ($itemsData as $name => $id) {
+					$this->putString($name);
+					$this->putLShort($id);
+					$this->putByte(0); // unknown
+				}
+			} else {
+				$this->putVarInt(0); // item list size
+			}
 		}
 		if ($playerProtocol >= Info::PROTOCOL_282) {
-			$this->putString($this->multiplayerCorrelationId);
+			$this->putString($this->multiplayerCorrelationId); // multiplayerCorrelationId
 		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putByte(0); // Whether the new item stack net manager is enabled for server authoritative inventory
+		}
+	}
+
+	protected static function getItemsList() { // TODO: find another place for this in multiversion folder and move Items.json there too
+		if (!empty(self::$itemsList)) {
+			return self::$itemsList;
+		} else {
+			$path = __DIR__ . "/data/Items.json";
+//			$path = __DIR__ . "/data/Items2.json";
+//			$path = __DIR__ . "/data/Items3.json";
+			self::$itemsList = json_decode(file_get_contents($path), true);
+			return self::$itemsList;
 		}
 	}
 
