@@ -13,8 +13,8 @@ use function substr;
 
 class BinaryStream {
 
-    private $offset = 0;
-    public $buffer = "";
+	public $offset;
+	public $buffer;
 
 	protected $deviceId = Player::OS_UNKNOWN;
 
@@ -49,27 +49,30 @@ class BinaryStream {
 				return;
 		}
 	}
-	
+
 	public function __construct($buffer = "", $offset = 0) {
-		$this->setBuffer($buffer, $offset);
+		$this->buffer = $buffer;
+		$this->offset = $offset;
 	}
 
 	public function reset() {
-        $this->buffer = "";
-        $this->offset = 0;
-    }
+		$this->buffer = "";
+		$this->offset = 0;
+	}
 
-    public function rewind()
-    {
-        $this->offset = 0;
-    }
+	/**
+	 * Rewinds the stream pointer to the start.
+	 */
+	public function rewind() {
+		$this->offset = 0;
+	}
 
 	public function setBuffer($buffer = "", $offset = 0) {
 		$this->buffer = $buffer;
 		$this->offset = (int) $offset;
 	}
 
-	public function getBuffer(){
+	public function getBuffer() {
 		return $this->buffer;
 	}
 
@@ -77,39 +80,64 @@ class BinaryStream {
 		$this->offset = $offset;
 	}
 
-	public function getOffset(){
+	public function getOffset() {
 		return $this->offset;
 	}
 
+	/**
+	 * @param int|bool $len
+	 *
+	 * @return string
+	 *
+	 * @throws BinaryDataException if there are not enough bytes left in the buffer
+	 */
 	public function get($len) {
-        if($len === 0){
-            return "";
-        }
+		if($len === 0){
+			return "";
+		}
 
-        $buflen = strlen($this->buffer);
-        if($len === true){
-            $str = substr($this->buffer, $this->offset);
-            $this->offset = $buflen;
-            return $str;
-        }
-        if($len < 0){
-            $this->offset = $buflen - 1;
-            return "";
-        }
-        $remaining = $buflen - $this->offset;
-        if($remaining < $len){
-            throw new \Exception("Not enough bytes left in buffer: need $len, have $remaining");
-        }
+		$buflen = strlen($this->buffer);
+		if($len === true){
+			$str = substr($this->buffer, $this->offset);
+			$this->offset = $buflen;
+			return $str;
+		}
+		if($len < 0){
+			$this->offset = $buflen - 1;
+			return "";
+		}
 
-        return $len === 1 ? $this->buffer[$this->offset++] : substr($this->buffer, ($this->offset += $len) - $len, $len);
+		$remaining = $buflen - $this->offset;
+		if($remaining < $len){
+			throw new BinaryDataException("Not enough bytes left in buffer: need $len, have $remaining");
+		}
+
+		return $len === 1 ? $this->buffer[$this->offset++] : substr($this->buffer, ($this->offset += $len) - $len, $len);
 	}
 
-    public function getBool() : bool{
-        return $this->get(1) !== "\x00";
-    }
+	/**
+	 * @return string
+	 * @throws BinaryDataException
+	 */
+	public function getRemaining() {
+		$str = substr($this->buffer, $this->offset);
+		if($str === false){
+			throw new BinaryDataException("No bytes left to read");
+		}
+		$this->offset = strlen($this->buffer);
+		return $str;
+	}
 
 	public function put($str) {
 		$this->buffer .= $str;
+	}
+
+	public function getBool() {
+		return $this->get(1) !== "\x00";
+	}
+
+	public function putBool($v) {
+		$this->put(Binary::writeBool($v));
 	}
 
 	public function getLong() {
@@ -233,15 +261,6 @@ class BinaryStream {
 		$this->putLInt($uuid->getPart(2));
 	}
 
-    public function getRemaining() : string{
-        $str = substr($this->buffer, $this->offset);
-        if($str === false){
-            throw new \Exception("No bytes left to read");
-        }
-        $this->offset = strlen($this->buffer);
-        return $str;
-    }
-
 	public function getSlot($playerProtocol) {
 		$id = $this->getSignedVarInt();
 		if ($id == 0) {
@@ -256,7 +275,7 @@ class BinaryStream {
 		$nbt = "";	
 		if ($nbtLen > 0) {
 			$nbt = $this->get($nbtLen);
-		} elseif($nbtLen == -1) {
+		} elseif ($nbtLen == -1) {
 			$nbtCount = $this->getVarInt();
 			if ($nbtCount > 100) {
 				throw new \Exception('get slot nbt error, too many count');
@@ -300,7 +319,7 @@ class BinaryStream {
 		$this->putLShort(strlen($nbt));
 //		$this->putLShort(0xffff); // User Data Serialization Marker
 //		$this->putByte(1); // User Data Serialization Version
-		$this->put($nbt)
+		$this->put($nbt);
 		$canPlaceOnBlocks = $item->getCanPlaceOnBlocks();
 		$canDestroyBlocks = $item->getCanDestroyBlocks();
 		$this->putSignedVarInt(count($canPlaceOnBlocks));
@@ -313,25 +332,25 @@ class BinaryStream {
 		}
 	}
 
-	public function getBlockPosition(&$x, &$y, &$z){
+	public function getBlockPosition(&$x, &$y, &$z) {
 		$x = $this->getVarInt();
 		$y = $this->getUnsignedVarInt();
 		$z = $this->getVarInt();
 	}
 
-	public function putBlockPosition($x, $y, $z){
+	public function putBlockPosition($x, $y, $z) {
 		$this->putVarInt($x);
 		$this->putUnsignedVarInt($y);
 		$this->putVarInt($z);
 	}
 
-	public function getBlockCoords(&$x, &$y, &$z){
+	public function getBlockCoords(&$x, &$y, &$z) {
 		$x = $this->getVarInt();
 		$y = $this->getUnsignedVarInt();
 		$z = $this->getVarInt();
 	}
 
-	public function putBlockCoords($x, $y, $z){
+	public function putBlockCoords($x, $y, $z) {
 		$this->putVarInt($x);
 		$this->putUnsignedVarInt($y);
 		$this->putVarInt($z);
@@ -341,7 +360,7 @@ class BinaryStream {
 		return !isset($this->buffer{$this->offset});
 	}
 
-/**
+	/**
 	 * Reads an unsigned varint from the stream.
 	 */
 	public function getUnsignedVarInt(){
@@ -372,7 +391,8 @@ class BinaryStream {
 			$byte = $this->getByte();
 			$result |= ($byte & 0x7f) << $shift;
 			$shift += 7;
-		} while ($byte > 0x7f);
+		}
+		while ($byte > 0x7f);
 		return $result;
 	}
 
@@ -382,10 +402,6 @@ class BinaryStream {
 
 	public function putVarInt($v) {
 		$this->put(Binary::writeVarInt($v));
-	}
-	
-	public function putBool($v) {
-		$this->put(Binary::writeBool($v));
 	}
 
 	public function getString(){

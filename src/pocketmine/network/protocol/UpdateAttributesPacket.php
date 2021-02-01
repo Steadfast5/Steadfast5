@@ -67,7 +67,7 @@ class UpdateAttributesPacket extends PEPacket {
 			}
 		}
 		if ($playerProtocol >= Info::PROTOCOL_418) {
-			$this->putVarInt(0); // unknown
+			$this->putVarInt(0); // tick
 		}
 	}
 

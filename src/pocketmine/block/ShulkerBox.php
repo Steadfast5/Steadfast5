@@ -49,7 +49,7 @@ class ShulkerBox extends Solid {
 	public function getHardness(){
 		return 5;
 	}
-
+/*
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$this->getLevel()->setBlock($block, $this, true, true);
 		$nbt = ShulkerTile::createNBT($this, $face, $item, $player);
@@ -57,7 +57,7 @@ class ShulkerBox extends Solid {
 		if ($items !== null) {
 			$nbt->setTag($items);
 		}
-		Tile::createTile(Tile::SHULKER_BOX, $this->getLevel(), $nbt);
+		Tile::createTile(Tile::SHULKER_BOX, $this->level->getChunk($this->x >> 4, $this->z >> 4), $nbt);
 		($inv = $player->getInventory())->clear($inv->getHeldItemIndex());
 		return true;
 	}
@@ -69,7 +69,7 @@ class ShulkerBox extends Solid {
 			$itemNBT = clone $item->getNamedTag();
 			$itemNBT->setTag($t->getCleanedNBT()->getTag(Container::TAG_ITEMS));
 			$item->setNamedTag($itemNBT);
-			$this->getLevel()->dropItem($this->add(0.5,0.5,0.5), $item);
+			$this->getLevel()->dropItem($this->add(0.5, 0.5, 0.5), $item);
 			$t->getInventory()->clearAll();
 		}
 		$this->getLevel()->setBlock($this, Block::get(Block::AIR), true, true);
@@ -80,13 +80,13 @@ class ShulkerBox extends Solid {
 		if ($player instanceof Player) {
 			$t = $this->getLevel()->getTile($this);
 			if (!($t instanceof ShulkerTile)) {
-				$t = Tile::createTile(Tile::SHULKER_BOX, $this->getLevel(), ShulkerTile::createNBT($this));
+				$t = Tile::createTile(Tile::SHULKER_BOX, $this->level->getChunk($this->x >> 4, $this->z >> 4), $nbt);
 			}
 			$player->addWindow($t->getInventory());
 		}
 		return true;
 	}
-
+*/
 	public function getDrops(Item $item){
 		return [
 			
