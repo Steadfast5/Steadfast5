@@ -10,10 +10,12 @@ class ShowProfilePacket extends PEPacket {
 	public $xuid;
 
 	public function encode($playerProtocol) {
+		$this->reset($playerProtocol);
 		$this->putString($this->xuid);
 	}
 
 	public function decode($playerProtocol) {
+		$this->getHeader($playerProtocol);
 		$this->xuid = $this->getString();
 	}
 

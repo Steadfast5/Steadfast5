@@ -219,6 +219,9 @@ class MetadataConvertor {
 
 	private static function updateMetaIds($meta, $protocol) {
 		switch ($protocol) {
+			case Info::PROTOCOL_419:
+			case Info::PROTOCOL_418:
+			case Info::PROTOCOL_415:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:
 			case Info::PROTOCOL_411:
@@ -290,6 +293,9 @@ class MetadataConvertor {
 			return $meta;
 		}
 		switch ($protocol) {
+			case Info::PROTOCOL_419:
+			case Info::PROTOCOL_418:
+			case Info::PROTOCOL_415:
 			case Info::PROTOCOL_413:
 			case Info::PROTOCOL_412:
 			case Info::PROTOCOL_411:

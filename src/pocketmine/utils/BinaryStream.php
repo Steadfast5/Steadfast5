@@ -13,8 +13,8 @@ use function substr;
 
 class BinaryStream {
 
-    private $offset = 0;
-    public $buffer = "";
+	public $offset;
+	public $buffer;
 
 	protected $deviceId = Player::OS_UNKNOWN;
 
@@ -49,27 +49,30 @@ class BinaryStream {
 				return;
 		}
 	}
-	
+
 	public function __construct($buffer = "", $offset = 0) {
-		$this->setBuffer($buffer, $offset);
+		$this->buffer = $buffer;
+		$this->offset = $offset;
 	}
 
 	public function reset() {
-        $this->buffer = "";
-        $this->offset = 0;
-    }
+		$this->buffer = "";
+		$this->offset = 0;
+	}
 
-    public function rewind()
-    {
-        $this->offset = 0;
-    }
+	/**
+	 * Rewinds the stream pointer to the start.
+	 */
+	public function rewind() {
+		$this->offset = 0;
+	}
 
 	public function setBuffer($buffer = "", $offset = 0) {
 		$this->buffer = $buffer;
 		$this->offset = (int) $offset;
 	}
 
-	public function getBuffer(){
+	public function getBuffer() {
 		return $this->buffer;
 	}
 
@@ -77,39 +80,64 @@ class BinaryStream {
 		$this->offset = $offset;
 	}
 
-	public function getOffset(){
+	public function getOffset() {
 		return $this->offset;
 	}
 
+	/**
+	 * @param int|bool $len
+	 *
+	 * @return string
+	 *
+	 * @throws BinaryDataException if there are not enough bytes left in the buffer
+	 */
 	public function get($len) {
-        if($len === 0){
-            return "";
-        }
+		if($len === 0){
+			return "";
+		}
 
-        $buflen = strlen($this->buffer);
-        if($len === true){
-            $str = substr($this->buffer, $this->offset);
-            $this->offset = $buflen;
-            return $str;
-        }
-        if($len < 0){
-            $this->offset = $buflen - 1;
-            return "";
-        }
-        $remaining = $buflen - $this->offset;
-        if($remaining < $len){
-            throw new \Exception("Not enough bytes left in buffer: need $len, have $remaining");
-        }
+		$buflen = strlen($this->buffer);
+		if($len === true){
+			$str = substr($this->buffer, $this->offset);
+			$this->offset = $buflen;
+			return $str;
+		}
+		if($len < 0){
+			$this->offset = $buflen - 1;
+			return "";
+		}
 
-        return $len === 1 ? $this->buffer[$this->offset++] : substr($this->buffer, ($this->offset += $len) - $len, $len);
+		$remaining = $buflen - $this->offset;
+		if($remaining < $len){
+			throw new BinaryDataException("Not enough bytes left in buffer: need $len, have $remaining");
+		}
+
+		return $len === 1 ? $this->buffer[$this->offset++] : substr($this->buffer, ($this->offset += $len) - $len, $len);
 	}
 
-    public function getBool() : bool{
-        return $this->get(1) !== "\x00";
-    }
+	/**
+	 * @return string
+	 * @throws BinaryDataException
+	 */
+	public function getRemaining() {
+		$str = substr($this->buffer, $this->offset);
+		if($str === false){
+			throw new BinaryDataException("No bytes left to read");
+		}
+		$this->offset = strlen($this->buffer);
+		return $str;
+	}
 
 	public function put($str) {
 		$this->buffer .= $str;
+	}
+
+	public function getBool() {
+		return $this->get(1) !== "\x00";
+	}
+
+	public function putBool($v) {
+		$this->put(Binary::writeBool($v));
 	}
 
 	public function getLong() {
@@ -233,15 +261,6 @@ class BinaryStream {
 		$this->putLInt($uuid->getPart(2));
 	}
 
-    public function getRemaining() : string{
-        $str = substr($this->buffer, $this->offset);
-        if($str === false){
-            throw new \Exception("No bytes left to read");
-        }
-        $this->offset = strlen($this->buffer);
-        return $str;
-    }
-
 	public function getSlot($playerProtocol) {
 		$id = $this->getSignedVarInt();
 		if ($id == 0) {
@@ -256,7 +275,7 @@ class BinaryStream {
 		$nbt = "";	
 		if ($nbtLen > 0) {
 			$nbt = $this->get($nbtLen);
-		} elseif($nbtLen == -1) {
+		} elseif ($nbtLen == -1) {
 			$nbtCount = $this->getVarInt();
 			if ($nbtCount > 100) {
 				throw new \Exception('get slot nbt error, too many count');
@@ -290,9 +309,16 @@ class BinaryStream {
 			return;
 		}
 		$this->putSignedVarInt($item->getId());
-		$this->putSignedVarInt(($item->getDamage() === null ? 0  : ($item->getDamage() << 8)) + $item->getCount());	
-		$nbt = $item->getCompound();	
+		if (is_null($item->getDamage())) {
+			$item->setDamage(0);
+		}
+		$auxValue = (($item->getDamage() << 8 & 0x7fff) | $item->getCount() & 0xff);
+		$this->putSignedVarInt($auxValue);
+//		$this->putSignedVarInt(($item->getDamage() === null ? 0  : ($item->getDamage() << 8)) + $item->getCount());	
+		$nbt = $item->getCompound();
 		$this->putLShort(strlen($nbt));
+//		$this->putLShort(0xffff); // User Data Serialization Marker
+//		$this->putByte(1); // User Data Serialization Version
 		$this->put($nbt);
 		$canPlaceOnBlocks = $item->getCanPlaceOnBlocks();
 		$canDestroyBlocks = $item->getCanDestroyBlocks();
@@ -306,25 +332,25 @@ class BinaryStream {
 		}
 	}
 
-	public function getBlockPosition(&$x, &$y, &$z){
+	public function getBlockPosition(&$x, &$y, &$z) {
 		$x = $this->getVarInt();
 		$y = $this->getUnsignedVarInt();
 		$z = $this->getVarInt();
 	}
 
-	public function putBlockPosition($x, $y, $z){
+	public function putBlockPosition($x, $y, $z) {
 		$this->putVarInt($x);
 		$this->putUnsignedVarInt($y);
 		$this->putVarInt($z);
 	}
 
-	public function getBlockCoords(&$x, &$y, &$z){
+	public function getBlockCoords(&$x, &$y, &$z) {
 		$x = $this->getVarInt();
 		$y = $this->getUnsignedVarInt();
 		$z = $this->getVarInt();
 	}
 
-	public function putBlockCoords($x, $y, $z){
+	public function putBlockCoords($x, $y, $z) {
 		$this->putVarInt($x);
 		$this->putUnsignedVarInt($y);
 		$this->putVarInt($z);
@@ -334,7 +360,7 @@ class BinaryStream {
 		return !isset($this->buffer{$this->offset});
 	}
 
-/**
+	/**
 	 * Reads an unsigned varint from the stream.
 	 */
 	public function getUnsignedVarInt(){
@@ -365,7 +391,8 @@ class BinaryStream {
 			$byte = $this->getByte();
 			$result |= ($byte & 0x7f) << $shift;
 			$shift += 7;
-		} while ($byte > 0x7f);
+		}
+		while ($byte > 0x7f);
 		return $result;
 	}
 
@@ -375,10 +402,6 @@ class BinaryStream {
 
 	public function putVarInt($v) {
 		$this->put(Binary::writeVarInt($v));
-	}
-	
-	public function putBool($v) {
-		$this->put(Binary::writeBool($v));
 	}
 
 	public function getString(){
@@ -391,24 +414,24 @@ class BinaryStream {
 	}
 
 
-	public function putSerializedSkin($playerProtocol, $skinId, $skinData, $skinGeomtryName, $skinGeomtryData, $capeData, $additionalSkinData) {
+	public function putSerializedSkin($playerProtocol, $skinId, $skinData, $skinGeometryName, $skinGeometryData, $capeData, $additionalSkinData) {
 		if ($this->deviceId == Player::OS_NX || !isset($additionalSkinData['PersonaSkin']) || !$additionalSkinData['PersonaSkin']) {
 			$additionalSkinData = [];
 		}
 		if (isset($additionalSkinData['skinData'])) {
 			$skinData = $additionalSkinData['skinData'];
 		}
-		if (isset($additionalSkinData['skinGeomtryName'])) {
-			$skinGeomtryName = $additionalSkinData['skinGeomtryName'];
+		if (isset($additionalSkinData['skinGeometryName'])) {
+			$skinGeometryName = $additionalSkinData['skinGeometryName'];
 		}
-		if (isset($additionalSkinData['skinGeomtryData'])) {
-			$skinGeomtryData = $additionalSkinData['skinGeomtryData'];
-		}		
-		if (empty($skinGeomtryName)) {
-			$skinGeomtryName = "geometry.humanoid.custom";
+		if (isset($additionalSkinData['skinGeometryData'])) {
+			$skinGeometryData = $additionalSkinData['skinGeometryData'];
+		}
+		if (empty($skinGeometryName)) {
+			$skinGeometryName = "geometry.humanoid.custom";
 		}
 		$this->putString($skinId);
-		$this->putString(isset($additionalSkinData['SkinResourcePatch']) ? $additionalSkinData['SkinResourcePatch'] : '{"geometry" : {"default" : "' . $skinGeomtryName . '"}}');
+		$this->putString(isset($additionalSkinData['SkinResourcePatch']) ? $additionalSkinData['SkinResourcePatch'] : '{"geometry" : {"default" : "' . $skinGeometryName . '"}}');
 		if (isset($additionalSkinData['SkinImageHeight']) && isset($additionalSkinData['SkinImageWidth'])) {
 			$width = $additionalSkinData['SkinImageWidth'];
 			$height = $additionalSkinData['SkinImageHeight'];
@@ -432,6 +455,9 @@ class BinaryStream {
 				$this->putString($animation['Image']);
 				$this->putLInt($animation['Type']);
 				$this->putLFloat($animation['Frames']);
+				if ($playerProtocol >= Info::PROTOCOL_418) {
+					$this->putLInt($animation['AnimationExpression']);
+				}
 			}
 		} else {
 			$this->putLInt(0);
@@ -458,7 +484,7 @@ class BinaryStream {
 			$this->putString($capeData);
 		}
 
-		$this->putString($skinGeomtryData); // Skin Geometry Data
+		$this->putString($skinGeometryData); // Skin Geometry Data
 		$this->putString(isset($additionalSkinData['SkinAnimationData']) ? $additionalSkinData['SkinAnimationData'] : ''); // Serialized Animation Data
 
 		$this->putByte(isset($additionalSkinData['PremiumSkin']) ? $additionalSkinData['PremiumSkin'] : 0); // Is Premium Skin 
@@ -469,7 +495,7 @@ class BinaryStream {
 		if (isset($additionalSkinData['FullSkinId'])) {
 			$this->putString($additionalSkinData['FullSkinId']); // Full Skin ID	
 		} else {
-			$uniqId = $skinId . $skinGeomtryName . "-" . microtime(true);
+			$uniqId = $skinId . $skinGeometryName . "-" . microtime(true);
 			$this->putString($uniqId); // Full Skin ID
 		}
 		if ($playerProtocol == Info::PROTOCOL_390 || $playerProtocol >= Info::PROTOCOL_406) {
@@ -491,14 +517,14 @@ class BinaryStream {
 					$this->putString($color);
 				}
 			}
-		} 	
+		}
 	}
 
-	public function getSerializedSkin($playerProtocol, &$skinId, &$skinData, &$skinGeomtryName, &$skinGeomtryData, &$capeData, &$additionalSkinData) {		
+	public function getSerializedSkin($playerProtocol, &$skinId, &$skinData, &$skinGeometryName, &$skinGeometryData, &$capeData, &$additionalSkinData) {		
 		$skinId = $this->getString();
 		$additionalSkinData['SkinResourcePatch'] = $this->getString();
 		$geometryData = json_decode($additionalSkinData['SkinResourcePatch'], true);
-		$skinGeomtryName = isset($geometryData['geometry']['default']) ? $geometryData['geometry']['default'] : '';
+		$skinGeometryName = isset($geometryData['geometry']['default']) ? $geometryData['geometry']['default'] : '';
 
 		$additionalSkinData['SkinImageWidth'] = $this->getLInt();
 		$additionalSkinData['SkinImageHeight'] = $this->getLInt();
@@ -513,6 +539,7 @@ class BinaryStream {
 				'Image' => $this->getString(),
 				'Type' => $this->getLInt(),
 				'Frames' => $this->getLFloat(),
+				'AnimationExpression' => ($playerProtocol >= Info::PROTOCOL_418) ? $this->getLInt() : 0,
 			];
 		}
 
@@ -520,9 +547,9 @@ class BinaryStream {
 		$additionalSkinData['CapeImageHeight'] = $this->getLInt();
 		$capeData = $this->getString();
 
-		$skinGeomtryData = $this->getString();
-		if (strpos($skinGeomtryData, 'null') === 0) {
-			$skinGeomtryData = '';
+		$skinGeometryData = $this->getString();
+		if (strpos($skinGeometryData, 'null') === 0) {
+			$skinGeometryData = '';
 		}
 		$additionalSkinData['SkinAnimationData'] = $this->getString();
 
@@ -565,24 +592,24 @@ class BinaryStream {
 		}	
 	}
 
-	public function checkSkinData(&$skinData, &$skinGeomtryName, &$skinGeomtryData, &$additionalSkinData) {
-		if (empty($skinGeomtryName) && !empty($additionalSkinData['SkinResourcePatch'])) {
+	public function checkSkinData(&$skinData, &$skinGeometryName, &$skinGeometryData, &$additionalSkinData) {
+		if (empty($skinGeometryName) && !empty($additionalSkinData['SkinResourcePatch'])) {
 			if (($jsonSkinResourcePatch = @json_decode($additionalSkinData['SkinResourcePatch'], true)) && isset($jsonSkinResourcePatch['geometry']['default'])) {
-				$skinGeomtryName = $jsonSkinResourcePatch['geometry']['default'];
+				$skinGeometryName = $jsonSkinResourcePatch['geometry']['default'];
 			}
 		} 
-		if (!empty($skinGeomtryName) && stripos($skinGeomtryName, 'geometry.') !== 0) {
-			if (!empty($skinGeomtryData) && ($jsonSkinData = @json_decode($skinGeomtryData, true))) {
+		if (!empty($skinGeometryName) && stripos($skinGeometryName, 'geometry.') !== 0) {
+			if (!empty($skinGeometryData) && ($jsonSkinData = @json_decode($skinGeometryData, true))) {
 				foreach ($jsonSkinData as $key => $value) {
-					if ($key == $skinGeomtryName) {
+					if ($key == $skinGeometryName) {
 						unset($jsonSkinData[$key]);
 						$jsonSkinData['geometry.' . $key] = $value;
-						$skinGeomtryName = 'geometry.' . $key;
-						$skinGeomtryData = json_encode($jsonSkinData);
+						$skinGeometryName = 'geometry.' . $key;
+						$skinGeometryData = json_encode($jsonSkinData);
 						if (!empty($additionalSkinData['SkinResourcePatch']) && ($jsonSkinResourcePatch = @json_decode($additionalSkinData['SkinResourcePatch'], true)) && !empty($jsonSkinResourcePatch['geometry'])) {
 							foreach ($jsonSkinResourcePatch['geometry'] as &$geometryName) {
 								if ($geometryName == $key) {
-									$geometryName = $skinGeomtryName;
+									$geometryName = $skinGeometryName;
 									$additionalSkinData['SkinResourcePatch'] = json_encode($jsonSkinResourcePatch);
 									break;
 								}
@@ -600,14 +627,14 @@ class BinaryStream {
 				$defaultSkins[] = [file_get_contents(__DIR__ . "/defaultSkins/Steve.dat"), 'geometry.humanoid.custom'];
 			}
 			$additionalSkinData['skinData'] = $skinData;
-			$additionalSkinData['skinGeomtryName'] = $skinGeomtryName;
-			$additionalSkinData['skinGeomtryData'] = $skinGeomtryData;
+			$additionalSkinData['skinGeometryName'] = $skinGeometryName;
+			$additionalSkinData['skinGeometryData'] = $skinGeometryData;
 			$randomSkinData =  $defaultSkins[array_rand($defaultSkins)];
 			$skinData = $randomSkinData[0];
-			$skinGeomtryData = '';
-			$skinGeomtryName = $randomSkinData[1];
-		} elseif (in_array($skinGeomtryName, ['geometry.humanoid.customSlim', 'geometry.humanoid.custom'])) {
-			$skinGeomtryData = '';
+			$skinGeometryData = '';
+			$skinGeometryName = $randomSkinData[1];
+		} elseif (in_array($skinGeometryName, ['geometry.humanoid.customSlim', 'geometry.humanoid.custom'])) {
+			$skinGeometryData = '';
 			$additionalSkinData = [];
 		}
 	}
