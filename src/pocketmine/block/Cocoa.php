@@ -56,7 +56,7 @@ class Cocoa extends Transparent {
 		return Tool::TYPE_AXE;
 	}
 
-	public function onActivate(Item $item, Player $player = null) {
+	/*public function onActivate(Item $item, Player $player = null) {
 		if ($item->getId() === Item::DYE && $item->getDamage() === 0x0f) {
 			$block = clone $this;
 			if ($block->meta > 7) {
@@ -114,7 +114,7 @@ class Cocoa extends Transparent {
 			}
 		}
 		return false;
-	}
+	}*/ // temporary disable
 
 	public function getDrops(Item $item) {
 		return [

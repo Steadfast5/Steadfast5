@@ -23,6 +23,7 @@ namespace pocketmine\network\protocol;
 
 #include <rules/DataPacket.h>
 
+use pocketmine\network\protocol\Info;
 
 class ContainerClosePacket extends PEPacket{
 	const NETWORK_ID = Info::CONTAINER_CLOSE_PACKET;
@@ -38,6 +39,9 @@ class ContainerClosePacket extends PEPacket{
 	public function encode($playerProtocol){
 		$this->reset($playerProtocol);
 		$this->putByte($this->windowid);
+		if ($playerProtocol >= Info::PROTOCOL_419) {
+			$this->putByte(0); // unknown
+		}
 	}
 
 }
