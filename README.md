@@ -24,12 +24,6 @@ Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes t
 
 - Players don't fall out of the world naturally, you'll want to handle PlayerMoveEvent as needed to kill them.
 
-### TODO List
-- [ ] Improve EntityAI
-- [ ] Improve redstone
-- [ ] Improve level generation
-- [ ] Add level formats
-
 ## Installation
 
 **The steps below will only work if you have Git installed. If you don't, follow [these](https://github.com/Steadfast5/Steadfast5/wiki/Installing-without-Git#installation) instructions**
