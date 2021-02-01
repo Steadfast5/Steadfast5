@@ -59,7 +59,7 @@ class Cauldron extends Solid {
 		return true;
 	}
 
-	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
+	/*public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
 		$nbt = Tile::createNBT($this);
 		if ($item->hasCustomBlockData()) {
 			foreach ($item->getCustomBlockData() as $key => $v) {
@@ -295,7 +295,7 @@ class Cauldron extends Solid {
 				break;
 		}
 		return true;
-	}
+	}*/
 
 	public function getDrops(Item $item){
 		return [
