@@ -224,7 +224,7 @@ class BinaryStream {
 		if (strlen($this->buffer) < $this->offset + 1) {
 			throw new \Exception('binary stream getByte error');
 		}
-		return ord($this->buffer{$this->offset++});
+		return ord($this->buffer[$this->offset++]);
 	}
 
 	public function putByte($v) {
@@ -357,7 +357,7 @@ class BinaryStream {
 	}
 
 	public function feof() {
-		return !isset($this->buffer{$this->offset});
+		return !isset($this->buffer[$this->offset]);
 	}
 
 	/**
