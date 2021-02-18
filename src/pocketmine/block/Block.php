@@ -1350,7 +1350,7 @@ class Block extends Position implements Metadatable {
 		return false;
 	}
 	
-	private static function isHaveWireOnSide($side, $x, $y, $z) {
+	private function isHaveWireOnSide($side, $x, $y, $z) {
 		static $offsets = [
 			Vector3::SIDE_NORTH => [ 0, 0, -1],
 			Vector3::SIDE_SOUTH => [ 0, 0, 1],
