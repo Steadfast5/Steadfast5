@@ -1112,6 +1112,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			return false;
 		}
 
+		// var_dump("Packet: " . $packet->pname());
+		// var_dump($packet);
+
 		if ($this->subClientId > 0 && $this->parent != null) {
 			$packet->senderSubClientID = $this->subClientId;
 			return $this->parent->dataPacket($packet);
@@ -1883,6 +1886,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 */
 	public function handleDataPacket(DataPacket $packet){
 		$this->server->getPluginManager()->callEvent(new DataPacketReceiveEvent($this, $packet));
+		// var_dump("Packet: " . $packet->pname());
+		// var_dump($packet);
 		if($this->connected === false){
 			return;
 		}
