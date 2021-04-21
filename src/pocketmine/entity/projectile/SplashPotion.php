@@ -23,6 +23,7 @@ namespace pocketmine\entity\projectile;
 
 use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
+use pocketmine\item\SplashPotion as Potion;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\Compound;
@@ -34,6 +35,7 @@ use pocketmine\Server;
 
 class SplashPotion extends Projectile
 {
+
     const NETWORK_ID = 86;
 
     public $width = 0.25;
@@ -74,7 +76,7 @@ class SplashPotion extends Projectile
                 $this->shootingEntity->sendSound("SOUND_GLASS", ['x' => $this->getX(), 'y' => $this->getY(), 'z' => $this->getZ()] ,EntityIds::ID_NONE, -1 ,$this->getViewers());
             }
 
-            $color = \pocketmine\item\SplashPotion::getColor($this->getPotionId());
+            $color = Potion::getColor($this->getPotionId());
 
             $pk = new LevelEventPacket;
             $pk->evid = LevelEventPacket::EVENT_PARTICLE_SPLASH;
@@ -86,7 +88,7 @@ class SplashPotion extends Projectile
 
             foreach ($this->level->getNearbyEntities($this->boundingBox->grow(4, 4, 4), $this) as $entity) { //todo: someone has to check this https://minecraft.gamepedia.com/Splash_Potion
                 if ($entity->add(0, $entity->getEyeHeight(), 0)->distanceSquared($this) <= 16) {
-                    foreach (\pocketmine\item\SplashPotion::getEffectsById($this->getPotionId()) as $effect) {
+                    foreach (Potion::getEffectsById($this->getPotionId()) as $effect) {
                         $entity->addEffect($effect);
                     }
                 }

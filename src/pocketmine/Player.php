@@ -1020,7 +1020,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 		$count = 0;
 		foreach($this->loadQueue as $index => $distance){
-			if($count >= 10 or $count == 0){
+			if($count >= 10){
 				break;
 			}
 			$X = null;
@@ -1183,6 +1183,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		if($this->connected === false){
 			return false;
 		}
+
+		// var_dump("Packet: " . $packet->pname());
+		// var_dump($packet);
 
 		if ($this->subClientId > 0 && $this->parent != null) {
 			$packet->senderSubClientID = $this->subClientId;
@@ -1984,6 +1987,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 */
 	public function handleDataPacket(DataPacket $packet){
 		$this->server->getPluginManager()->callEvent(new DataPacketReceiveEvent($this, $packet));
+		// var_dump("Packet: " . $packet->pname());
+		// var_dump($packet);
 		if($this->connected === false){
 			return;
 		}
@@ -5564,6 +5569,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk = new PlayerListPacket();
 			$pk->type = PlayerListPacket::TYPE_ADD;
 			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData()];
+			$pk->setDeviceId($this->getDeviceOS());
 			$this->server->batchPackets($otherPlayers, [$pk]);
 		}
 		$this->playerListIsSent = true;

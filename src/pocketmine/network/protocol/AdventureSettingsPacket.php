@@ -85,11 +85,12 @@ class AdventureSettingsPacket extends PEPacket{
 		$this->putVarInt($this->customStoredPermissions);
 		// we should put eid as long but in signed varint format
 		// maybe i'm wrong but it works
-		if ($this->userId & 1) { // userId is odd
-			$this->putLLong(-1 * (($this->userId + 1) >> 1));
-		} else { // userId is even
-			$this->putLLong($this->userId >> 1);
-		}
+//		if ($this->userId & 1) { // userId is odd
+//			$this->putLLong(-1 * (($this->userId + 1) >> 1));
+//		} else { // userId is even
+//			$this->putLLong($this->userId >> 1);
+//		}
+		$this->putLLong($this->userId); // entity unique id
 	}
 
 }
