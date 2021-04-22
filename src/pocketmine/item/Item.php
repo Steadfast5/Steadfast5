@@ -851,6 +851,7 @@ class Item implements ItemIds {
 		self::addCreativeItem(Item::get(Item::WHEAT, 0), self::CREATIVE_GROUP_CROP);        
 		self::addCreativeItem(Item::get(Item::APPLE, 0), self::CREATIVE_GROUP_CROP);
 		self::addCreativeItem(Item::get(Item::GOLDEN_APPLE, 0), self::CREATIVE_GROUP_CROP);
+		self::addCreativeItem(Item::get(Item::ENCHANTED_GOLDEN_APPLE, 0), self::CREATIVE_GROUP_CROP);
 		
 		self::addCreativeItem(Item::get(Item::MELON_BLOCK, 0), self::CREATIVE_GROUP_CROP);
 		self::addCreativeItem(Item::get(Item::MELON, 0), self::CREATIVE_GROUP_CROP);
