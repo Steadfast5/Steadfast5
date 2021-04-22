@@ -2250,7 +2250,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					$this->addWindow($this->getInventory()); // TODO
 				} elseif ($packet->action === InteractPacket::ACTION_DAMAGE) {
 					$this->attackByTargetId($packet->target);
-				} elseif ($packet->action === InteractPacket::ACTION_SEE) {
+				} elseif ($packet->action === InteractPacket::ACTION_INTERACT_UPDATE) {
 					$target = $this->getLevel()->getEntity($packet->target);
 					if ($target instanceof Vehicle) {
 						$target->onNearPlayer($this);
