@@ -23,141 +23,142 @@ use pocketmine\utils\Random;
 class Loot {
 
 	private static $loot = [
-		0 => array(
+		0 => [
 			"minCount" => 4,
 			"maxCount" => 6,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 352,
 			"data" => 0,
-		),
-		1 => array(
+		],
+		1 => [
 			"minCount" => 3,
 			"maxCount" => 7,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 367,
 			"data" => 0,
-		),
-		2 => array(
+		],
+		2 => [
 			"minCount" => 1,
 			"maxCount" => 8,
 			"minStacks" => 4,
 			"maxStacks" => 4,
 			"id" => 289,
 			"data" => 0,
-		),
-		3 => array(
+		],
+		3 => [
 			"minCount" => 1,
 			"maxCount" => 8,
 			"minStacks" => 4,
 			"maxStacks" => 4,
 			"id" => 12,
 			"data" => 0,
-		),
-		4 => array(
+		],
+		4 => [
 			"minCount" => 1,
 			"maxCount" => 8,
 			"minStacks" => 4,
 			"maxStacks" => 4,
 			"id" => 287,
 			"data" => 0,
-		),
-		5 => array(
+		],
+		5 => [
 			"minCount" => 1,
 			"maxCount" => 3,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 375,
 			"data" => 0,
-		),
-		6 => array("minCount" => 1,
+		],
+		6 => [
+			"minCount" => 1,
 			"maxCount" => 1,
 			"maxStacks" => 1,
 			"minStacks" => 1,
 			"id" => 403,
 			"data" => 0,
-		),
-		7 => array(
+		],
+		7 => [
 			"minCount" => 1,
 			"maxCount" => 1,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 329,
 			"data" => 0,
-		),
-		8 => array(
+		],
+		8 => [
 			"minCount" => 1,
 			"maxCount" => 1,
 			"minStacks" => 1,
 			"maxStacks" => 1,
 			"id" => 322,
 			"data" => 0,
-		),
-		9 => array(
+		],
+		9 => [
 			"minCount" => 2,
 			"maxCount" => 7,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 266,
 			"data" => 0,
-		),
-		10 => array(
+		],
+		10 => [
 			"minCount" => 1,
 			"maxCount" => 5,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 265,
 			"data" => 0,
-		),
-		11 => array(
+		],
+		11 => [
 			"minCount" => 1,
 			"maxCount" => 3,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 388,
 			"data" => 0,
-		),
-		12 => array(
+		],
+		12 => [
 			"minCount" => 1,
 			"maxCount" => 1,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 417,
 			"data" => 0,
-		),
-		13 => array(
+		],
+		13 => [
 			"minCount" => 1,
 			"maxCount" => 1,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 418,
 			"data" => 0,
-		),
-		14 => array(
+		],
+		14 => [
 			"minCount" => 1,
 			"maxCount" => 3,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 264,
 			"data" => 0,
-		),
-		15 => array(
+		],
+		15 => [
 			"minCount" => 1,
 			"maxCount" => 1,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 419,
 			"data" => 0,
-		),
-		16 => array(
+		],
+		16 => [
 			"minCount" => 1,
 			"maxCount" => 1,
 			"minStacks" => 2,
 			"maxStacks" => 4,
 			"id" => 466,
 			"data" => 0
-		),
+		],
 	];
 
 	public static function placeAll(ChunkManager $level) {
@@ -190,7 +191,7 @@ class Loot {
 			]);
 			$nbt->Items->setTagType(NBT::TAG_Compound);
 			Tile::createTile("Chest", $level->getChunk($v->x >> 4, $v->z >> 4), $nbt);
-			echo "Created tile {$c}" . PHP_EOL;
+			// echo "Created tile {$c}" . PHP_EOL;
 		}
 		$c = 0;
 		foreach ($data as $pos) {
@@ -201,7 +202,7 @@ class Loot {
 			if ($tile != null && $tile instanceof ChestTile) {
 				self::fillChest($tile);
 			}
-			echo "Filled chest {$c}" . PHP_EOL;
+			// echo "Filled chest {$c}" . PHP_EOL;
 		}
 		$c = 0;
 		foreach ($data as $pos) {
@@ -224,9 +225,9 @@ class Loot {
 				new IntTag("Delay", mt_rand(200, 799)),
 			]);
 			$tile = Tile::createTile("MobSpawner", $level->getChunk($v->x >> 4, $v->z >> 4), $nbt);
-			echo "Placed spawner {$c}" . PHP_EOL;
+			// echo "Placed spawner {$c}" . PHP_EOL;
 		}
-		echo "Completed!\n";
+		// echo "Completed!\n";
 	}
 
 	public static function fillChest(Tile &$tile) {
