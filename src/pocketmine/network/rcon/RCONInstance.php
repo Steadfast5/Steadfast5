@@ -137,8 +137,8 @@ class RCONInstance extends Thread {
 								}
 								if($payload === $this->password){
 									socket_getpeername($client, $addr, $port);
-                                    $this->logger->info("[INFO] Successful Rcon connection from: /$addr:$port");
-									$this->response = "[INFO] Successful Rcon connection from: /$addr:$port";
+									$this->logger->info("[INFO] Successful Rcon connection from: /" . $addr . ":" . $port);
+									$this->response = "[INFO] Successful Rcon connection from: /" . $addr . ":" . $port;
 									$this->synchronized(function (){
 										$this->wait();
 									});
