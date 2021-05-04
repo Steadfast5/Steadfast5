@@ -15,8 +15,8 @@ use pocketmine\tile\Container;
 use pocketmine\tile\Nameable;
 use pocketmine\tile\Spawnable;
 
-abstract class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
-/*
+class ShulkerBox extends Spawnable implements InventoryHolder, Container, Nameable {
+
 	protected $inventory = null;
 
 	public function __construct(FullChunk $chunk, Compound $nbt) {
@@ -40,7 +40,7 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 		}
 	}
 
-	public function saveNBT() {
+	/*public function saveNBT() {
 		parent::saveNBT();
 		$this->namedtag->Items = new Enum("Items", []);
 		$this->namedtag->Items->setTagType(NBT::TAG_Compound);
@@ -93,8 +93,11 @@ abstract class ShulkerBox extends Spawnable implements InventoryHolder, Containe
 
 	public function getRealInventory() {
 		return $this->inventory;
-	}
+	}*/
 
+	/**
+	 * @return ShulkerInventory
+	 */
 	public function getInventory() {
 		return $this->inventory;
 	}

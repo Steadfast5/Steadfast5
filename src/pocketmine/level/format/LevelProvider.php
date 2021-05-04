@@ -75,7 +75,7 @@ interface LevelProvider{
 	 * @param int     $seed
 	 * @param array[] $options
 	 */
-	public static function generate($path, $name, $seed, array $options = []);
+	public static function generate($path, $name, $seed, $generator, array $options = []);
 
 	/**
 	 * Gets the Chunk object

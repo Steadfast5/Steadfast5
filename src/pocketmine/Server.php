@@ -33,6 +33,7 @@ use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\command\SimpleCommandMap;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Effect;
+use pocketmine\entity\EnderCrystal;
 use pocketmine\entity\Entity;
 use pocketmine\entity\ExperienceOrb;
 use pocketmine\entity\FallingSand;
@@ -46,6 +47,7 @@ use pocketmine\entity\Snowball;
 use pocketmine\entity\Egg;
 use pocketmine\entity\Squid;
 use pocketmine\entity\Villager;
+use pocketmine\entity\Lightning;
 use pocketmine\entity\Minecart;
 use pocketmine\entity\Boat;
 use pocketmine\entity\FishingHook;
@@ -65,9 +67,15 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\level\format\anvil\Anvil;
 use pocketmine\level\format\pmanvil\PMAnvil;
+use pocketmine\level\format\leveldb\LevelDB;
 use pocketmine\level\format\LevelProviderManager;
 use pocketmine\level\format\mcregion\McRegion;
+use pocketmine\level\format\generator\Flat;
+use pocketmine\level\format\generator\VoidWorld;
 use pocketmine\level\generator\Generator;
+use pocketmine\level\generator\hell\Nether;
+use pocketmine\level\generator\Normal;
+use pocketmine\level\generator\ender\Ender;
 use pocketmine\level\Level;
 use pocketmine\metadata\EntityMetadataStore;
 use pocketmine\metadata\LevelMetadataStore;
@@ -117,6 +125,7 @@ use pocketmine\tile\Furnace;
 use pocketmine\tile\PistonArm;
 use pocketmine\tile\ShulkerBox;
 use pocketmine\tile\ItemFrame;
+use pocketmine\tile\Jukebox;
 use pocketmine\tile\Sign;
 use pocketmine\tile\Skull;
 use pocketmine\tile\Tile;
@@ -314,6 +323,11 @@ class Server{
 	public $enderEnabled = false;
 	public $enderName = "ender";
 	public $enderLevel = null;
+	public $weatherEnabled = true;
+	public $weatherRandomDurationMin = 6000;
+	public $weatherRandomDurationMax = 12000;
+	public $lightningTime = 200;
+	public $lightningFire = false;
 
 	public $packetMaker = null;
 	
@@ -326,6 +340,9 @@ class Server{
 	private $serverPrivateKey = '';
 	private $serverToken = 'hksdYI3has';
 	private $isUseEncrypt = false;
+	public $enderEnabled = true;
+	public $enderName = "ender";
+	public $enderLevel = null;
 	
 	private $modsManager = null;
 
@@ -639,6 +656,10 @@ class Server{
 	 */
 	public function getAllowFlight(){
 		return $this->getConfigBoolean("allow-flight", false);
+	}
+
+	public function getAllowInvCheats() {
+		return $this->getProperty("player.inventory.allow-cheats", false);
 	}
 
 	/**
@@ -1331,6 +1352,28 @@ class Server{
 	}
 
 	/**
+	 * @param string $variable
+	 * @param float    $defaultValue
+	 *
+	 * @return float
+	 */
+	public function getConfigFloat($variable, $defaultValue = 0) {
+		$v = getopt("", ["$variable::"]);
+		if (isset($v[$variable])) {
+			return (float) $v[$variable];
+		}
+		return $this->properties->exists($variable) ? (float) $this->properties->get($variable) : (float) $defaultValue;
+	}
+
+	/**
+	 * @param string $variable
+	 * @param float    $value
+	 */
+	public function setConfigFloat($variable, $value){
+		$this->properties->set($variable, (float) $value);
+	}
+
+	/**
 	 * @param string  $variable
 	 * @param boolean $defaultValue
 	 *
@@ -1557,6 +1600,7 @@ class Server{
 			"server-port" => 19132,
 			"memory-limit" => "256M",
 			"white-list" => false,
+			"announce-player-achievements" => true,
 			"spawn-protection" => 16,
 			"max-players" => 20,
 			"allow-flight" => false,
@@ -1580,6 +1624,15 @@ class Server{
 			"auto-generate" => true,
 			"save-player-data" => true,
 			"time-update" => true,
+			"nether.allow-nether" => false,
+			"nether.level-name" => "nether",
+			"ender.allow-ender" => false,
+			"ender.level-game" => "ender",
+			"level.weather" => true,
+			"level.weather-random-duration-min" => 6000,
+			"level.weather-random-duration-max" => 12000,
+			"level.lightning-time" => 200,
+			"level.lightning-fire" => false,
 			"use-encrypt" => false
 		]);
 
@@ -1606,6 +1659,17 @@ class Server{
 		@touch($this->dataPath . "banned-ips.txt");
 		$this->banByIP = new BanList($this->dataPath . "banned-ips.txt");
 		$this->banByIP->load();
+
+		// TODO: make a new file for this instead of using server.properties
+		$this->netherEnabled = $this->getConfigBoolean("nether.allow-nether", false);
+		$this->netherName = $this->getConfigString("nether.level-name", "nether");
+		$this->enderEnabled = $this->getConfigBoolean("ender.allow-ender", false);
+		$this->enderName = $this->getConfigString("ender.level-name", "ender");
+		$this->weatherEnabled = $this->getConfigBoolean("level.weather", true);
+		$this->weatherRandomDurationMin = $this->getConfigInt("level.weather-random-duration-min", 6000);
+		$this->weatherRandomDurationMax = $this->getConfigInt("level.weather-random-duration-max", 12000);
+		$this->lightningTime = $this->getConfigInt("level.lightning-time", 200);
+		$this->lightningFire = $this->getConfigBoolean("level.lightning-fire", false);
 
 		$this->maxPlayers = $this->getConfigInt("max-players", 20);
 		$this->setAutoSave($this->getConfigBoolean("auto-save", true));
@@ -1712,7 +1776,16 @@ class Server{
 		LevelProviderManager::addProvider($this, Anvil::class);
 		LevelProviderManager::addProvider($this, PMAnvil::class);
 		LevelProviderManager::addProvider($this, McRegion::class);
-		
+		//LevelProviderManager::addProvider($this, LevelDB::class);
+
+		Generator::addGenerator(Flat::class, "flat");
+		Generator::addGenerator(Normal::class, "normal");
+		Generator::addGenerator(Nether::class, "hell");
+		Generator::addGenerator(Nether::class, "nether");
+		Generator::addGenerator(VoidWorld::class, "void");
+		Generator::addGenerator(Ender::class, "ender");
+		Generator::addGenerator(Ender::class, "end");
+
 		foreach((array) $this->getProperty("worlds", []) as $name => $worldSetting){
 			if($this->loadLevel($name) === false){
 				$seed = $this->getProperty("worlds.$name.seed", time());
@@ -1744,6 +1817,27 @@ class Server{
 			$this->setDefaultLevel($this->getLevelByName($default));
 		}
 
+		if ($this->isAllowNether() && $this->getNetherLevel() === null) {
+			$netherLevelName = $this->getConfigString("dimensions.nether.level-name", "nether");
+			if (trim($netherLevelName) == "") {
+				$netherLevelName = "nether";
+			}
+			if (!$this->loadLevel($netherLevelName)) {
+				$this->generateLevel($netherLevelName, time(), Generator::getGenerator("hell"));
+			}
+			$this->setNetherLevel($this->getLevelByName($netherLevelName));
+		}
+
+		if ($this->isAllowTheEnd() && $this->getTheEndLevel() === null) {
+			$endLevelName = $this->getConfigString("dimensions.the-end.level-name", "end");
+			if (trim($endLevelName) == "") {
+				$endLevelName = "end";
+			}
+			if (!$this->loadLevel($endLevelName)) {
+				$this->generateLevel($endLevelName, time(), Generator::getGenerator("end"));
+			}
+			$this->setTheEndLevel($this->getLevelByName($endLevelName));
+		}
 
 		$this->properties->save();
 
@@ -1776,6 +1870,14 @@ class Server{
 		$this->modsManager = new ModsManager();
 
 		$this->start();
+	}
+
+	public function isAllowNether() {
+		return $this->getConfigString("dimensions.nether.active", true);
+	}
+
+	public function isAllowTheEnd() {
+		return $this->getConfigString("dimensions.the-end.active", true);
 	}
 
 	/**
@@ -2638,6 +2740,7 @@ class Server{
 		Entity::registerEntity(Enderman::class);
 		Entity::registerEntity(Ghast::class);
 		Entity::registerEntity(IronGolem::class);
+		Entity::registerEntity(Lightning::class);
 		Entity::registerEntity(Mooshroom::class);
 		Entity::registerEntity(Ocelot::class);
 		Entity::registerEntity(Pig::class);
@@ -2654,6 +2757,7 @@ class Server{
 		Entity::registerEntity(FireBall::class);
 		Entity::registerEntity(BottleOEnchanting::class);
 		Entity::registerEntity(ExperienceOrb::class);
+		Entity::registerEntity(EnderCrystal::class);
 
 		Entity::registerEntity(Painting::class);
 	}
@@ -2672,6 +2776,7 @@ class Server{
 		Tile::registerTile(PistonArm::class);
 		Tile::registerTile(ShulkerBox::class);
 		Tile::registerTile(ItemFrame::class);
+		Tile::registerTile(Jukebox::class);
 		Tile::registerTile(Dropper::class);
 		Tile::registerTile(Hopper::class);
 		Tile::registerTile(Beacon::class);

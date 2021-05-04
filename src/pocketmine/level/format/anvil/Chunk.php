@@ -133,6 +133,15 @@ class Chunk extends BaseChunk {
 		return $this->nbt["TerrainPopulated"] > 0;
 	}
 
+	public function isLightPopulated() {
+		return $this->nbt["LightPopulated"] > 0;
+	}
+
+	public function setLightPopulated($value = 1) {
+		$this->nbt->LightPopulated = new ByteTag("LightPopulated", $value);
+		$this->hasChanged = true;
+	}
+
 	/**
 	 * @param int $value
 	 */

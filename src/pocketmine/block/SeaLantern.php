@@ -22,13 +22,14 @@
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\enchantment\Enchantment;
 
 class SeaLantern extends Solid {
 
 	protected $id = self::SEA_LANTERN;
 
-	public function __construct(){
-
+	public function __construct($meta = 0){
+		$this->meta = $meta;
 	}
 
 	public function getName(){
@@ -40,9 +41,15 @@ class SeaLantern extends Solid {
 	}
 	
 	public function getDrops(Item $item) {
-		return [
-			[Item::SEA_LANTERN, 0, 1]
-		];
+		if ($item->hasEnchantment(Enchantment::TYPE_MINING_SILK_TOUCH)) {
+			return [
+				[Item::SEA_LANTERN, 0, 1]
+			];
+		} else {
+			return [
+				[Item::PRISMARINE_CRYSTALS, 0, 3],
+			];
+		}
 	}
 
 }

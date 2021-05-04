@@ -91,6 +91,11 @@ namespace pocketmine {
 		@define("pocketmine\\PATH", getcwd() . DIRECTORY_SEPARATOR);
 	}
 
+	if (PHP_INT_SIZE < 8) {
+		echo "[CRITICAL] 32-bit systems/PHP are no longer supported. Please upgrade to a 64-bit system, or use a 64-bit PHP binary if this is a 64-bit system." . PHP_EOL;
+		exit(1);
+	}
+
 	if(version_compare("7.3", PHP_VERSION) > 0){
 		echo "[CRITICAL] You must use PHP >= 7.3" . PHP_EOL;
 		echo "[CRITICAL] Please use the installer provided on the homepage." . PHP_EOL;

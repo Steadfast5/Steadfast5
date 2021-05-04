@@ -21,17 +21,24 @@
 
 namespace pocketmine\level\generator\normal\biome;
 
+use pocketmine\level\generator\populator\Mushroom;
+use pocketmine\level\generator\populator\SugarCane;
 use pocketmine\level\generator\populator\TallGrass;
 
-class OceanBiome extends GrassyBiome{
+class OceanBiome extends WateryBiome {
 
-	public function __construct(){
+	public function __construct() {
 		parent::__construct();
 
+		$sugarCane = new SugarCane();
+		$sugarCane->setBaseAmount(6);
 		$tallGrass = new TallGrass();
 		$tallGrass->setBaseAmount(5);
+		$mushroom = new Mushroom();
 
+		$this->addPopulator($sugarCane);
 		$this->addPopulator($tallGrass);
+		$this->addPopulator($mushroom);
 
 		$this->setElevation(46, 58);
 
@@ -39,7 +46,8 @@ class OceanBiome extends GrassyBiome{
 		$this->rainfall = 0.5;
 	}
 
-	public function getName(){
+	public function getName() {
 		return "Ocean";
 	}
+
 }

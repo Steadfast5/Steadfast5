@@ -344,6 +344,13 @@ abstract class PluginBase implements Plugin{
 	}
 
 	/**
+	 * @return ServerScheduler
+	 */
+	public function getScheduler() {
+		return $this->server->getScheduler;
+	}
+
+	/**
 	 * @return string
 	 */
 	public final function getName(){

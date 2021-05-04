@@ -24,7 +24,8 @@ namespace pocketmine\network\protocol;
 #include <rules/DataPacket.h>
 
 
-class TileEventPacket extends PEPacket{
+class TileEventPacket extends PEPacket {
+
 	const NETWORK_ID = Info::TILE_EVENT_PACKET;
 	const PACKET_NAME = "TILE_EVENT_PACKET";
 

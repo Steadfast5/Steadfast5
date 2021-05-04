@@ -23,6 +23,7 @@ namespace pocketmine\level\format\mcregion;
 
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\format\generic\BaseLevelProvider;
+use pocketmine\level\generator\Generator;
 use pocketmine\level\Level;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\ByteTag;
@@ -67,7 +68,7 @@ class McRegion extends BaseLevelProvider{
 		return $isValid;
 	}
 
-	public static function generate($path, $name, $seed, array $options = []){
+	public static function generate($path, $name, $seed, $generator, array $options = []){
 		if(!file_exists($path)){
 			mkdir($path, 0777, true);
 		}
@@ -90,7 +91,7 @@ class McRegion extends BaseLevelProvider{
 			"RandomSeed" => new LongTag("RandomSeed", $seed),
 			"SizeOnDisk" => new LongTag("SizeOnDisk", 0),
 			"Time" => new LongTag("Time", 0),
-			"generatorName" => new StringTag("generatorName", "FLAT"),
+			"generatorName" => new StringTag("generatorName", Generator::getGeneratorName($generator)),
 			"generatorOptions" => new StringTag("generatorOptions", isset($options["preset"]) ? $options["preset"] : ""),
 			"LevelName" => new StringTag("LevelName", $name),
 			"GameRules" => new Compound("GameRules", [])

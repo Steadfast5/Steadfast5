@@ -25,31 +25,57 @@ use pocketmine\block\Block;
 use pocketmine\block\Fire;
 use pocketmine\block\Solid;
 use pocketmine\level\Level;
+use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\LevelSoundEventPacket;
 use pocketmine\Player;
+use function assert;
 
-class FlintSteel extends Tool{
-	public function __construct($meta = 0, $count = 1){
+class FlintSteel extends Tool {
+
+	/** @var Vector3 */
+	private $temporalVector = null;
+
+	public function __construct($meta = 0, $count = 1) {
 		parent::__construct(self::FLINT_STEEL, $meta, $count, "Flint and Steel");
+		if ($this->temporalVector === null) {
+			$this->temporalVector = new Vector3(0, 0, 0);
+		}
 	}
 
 	public function canBeActivated(){
-		return false;
+		return true;
 	}
 
 	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
-		if($block->getId() === self::AIR and ($target instanceof Solid)){
-			$level->setBlock($block, new Fire(), true);
-			if(($player->gamemode & 0x01) === 0 and $this->useOn($block)){
- 				if($this->getDamage() >= $this->getMaxDurability()){
- 					$player->getInventory()->setItemInHand(new Item(Item::AIR, 0, 0));
- 				}else{
- 					$this->meta++;
- 					$player->getInventory()->setItemInHand($this);
- 				}
- 			}
+		$tx = $target->getX();
+		$ty = $target->getY();
+		$tz = $target->getZ();
+		$clickVector = new Vector3($tx, $ty, $tz);
+		if ($target->getId() === self::AIR) {
+			assert($level !== null);
+			$level->setBlock($target, new Fire(), true);
+			$pos = $target->add(0.5, 0.5, 0.5);
+			$soundId = LevelSoundEventPacket::SOUND_IGNITE;
+			$pk = new LevelSoundEventPacket();
+			$pk->sound = $soundId;
+			$pk->pitch = $pitch;
+			$pitch = 1;
+			$extraData = -1;
+			$unknown = false;
+			$disableRelativeVolume = false;
+			$pk->extraData = $extraData;
+			$pk->unknownBool = $unknown;
+			$pk->disableRelativeVolume = $disableRelativeVolume;
+			list($pk->x, $pk->y, $pk->z) = [$pos->x, $pos->y, $pos->z];
+			$level->addChunkPacket($pos->x >> 4, $pos->z >> 4, $pk);
 			return true;
 		}
 
 		return false;
 	}
+
+	public function getMaxDurability() : int{
+		return 65;
+	}
+
 }

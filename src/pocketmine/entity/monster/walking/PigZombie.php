@@ -11,10 +11,12 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use pocketmine\entity\Creature;
 use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\level\Level;
 
-class PigZombie extends WalkingMonster{
+class PigZombie extends WalkingMonster {
+
 	const NETWORK_ID = 36;
 
 	private $angry = 0;
@@ -44,7 +46,7 @@ class PigZombie extends WalkingMonster{
 	}
 
 	public function getName(){
-		return "PigZombie";
+		return "Zombie Pigmen";
 	}
 
 	public function isAngry(){

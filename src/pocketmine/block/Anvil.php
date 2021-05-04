@@ -24,6 +24,7 @@ namespace pocketmine\block;
 use pocketmine\inventory\AnvilInventory;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
+use pocketmine\level\sound\AnvilFallSound;
 use pocketmine\Player;
 
 class Anvil extends Fallable {
@@ -54,8 +55,14 @@ class Anvil extends Fallable {
 		return 6000;
 	}
 
-	public function getName(){
-		return "Anvil";
+	public function getName() {
+		$names = [
+			self::NORMAL => "Anvil",
+			self::SLIGHTLY_DAMAGED => "Slightly Damaged Anvil",
+			self::VERY_DAMAGED => "Very Damaged Anvil",
+			12 => "Anvil"
+		];
+		return $names[$this->meta & 0x0c];
 	}
 
 	public function getToolType(){
@@ -74,13 +81,21 @@ class Anvil extends Fallable {
 		return true;
 	}
 
+	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null) {
+		$direction = ($player !== null ? $player->getDirection() : 0) & 0x03;
+		$this->meta = ($this->meta & 0x0c) | $direction;
+		$this->getLevel()->setBlock($block, $this, true, true);
+		$this->getLevel()->addSound(new AnvilFallSound($this));
+	}
+
 	public function getDrops(Item $item){
-		if($item->isPickaxe() >= 1){
+		if ($item->isPickaxe() >= 1) {
 			return [
-				[$this->id, 0, 1], //TODO break level
+				[$this->id, $this->meta & 0x0c, 1], //TODO break level
 			];
-		}else{
+		} else {
 			return [];
 		}
 	}
+
 }
