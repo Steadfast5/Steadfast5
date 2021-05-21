@@ -38,9 +38,12 @@ class EnderChest extends Transparent {
 	}
     
     public function getDrops(Item $item) {
-        return [
-            [self::OBSIDIAN, 0, 8]
-        ];
+        if ($item->isPickaxe()) {
+            return [
+                [Item::OBSIDIAN, 0, 8]
+            ];
+        }
+        return [];
     }
     
     public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){

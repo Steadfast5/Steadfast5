@@ -198,7 +198,7 @@ namespace pocketmine {
 				 *	  string(20) "(UTC+09:30) Adelaide"
 				 *	  [2] =>
 				 *	  string(0) ""
-				 *	}
+				 * }
 				 */
 				exec("wmic timezone get Caption", $output);
 

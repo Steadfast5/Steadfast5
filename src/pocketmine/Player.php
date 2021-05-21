@@ -977,7 +977,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 
 		$count = 0;
 		foreach($this->loadQueue as $index => $distance){
-			if($count >= 10 or $count == 0){
+			if($count >= 10){
 				break;
 			}
 			$X = null;
@@ -1020,7 +1020,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->status = PlayStatusPacket::PLAYER_SPAWN;
 			$this->dataPacket($pk);
 
-			$this->setImmobile(false);
+			// $this->setImmobile(false);
 			$this->noDamageTicks = 60;
 			$this->spawned = true;
 			$chunkX = $chunkZ = null;
@@ -1111,6 +1111,9 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		if($this->connected === false){
 			return false;
 		}
+
+		// var_dump("Packet: " . $packet->pname());
+		// var_dump($packet);
 
 		if ($this->subClientId > 0 && $this->parent != null) {
 			$packet->senderSubClientID = $this->subClientId;
@@ -1883,6 +1886,8 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 	 */
 	public function handleDataPacket(DataPacket $packet){
 		$this->server->getPluginManager()->callEvent(new DataPacketReceiveEvent($this, $packet));
+		// var_dump("Packet: " . $packet->pname());
+		// var_dump($packet);
 		if($this->connected === false){
 			return;
 		}
@@ -2245,7 +2250,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 					$this->addWindow($this->getInventory()); // TODO
 				} elseif ($packet->action === InteractPacket::ACTION_DAMAGE) {
 					$this->attackByTargetId($packet->target);
-				} elseif ($packet->action === InteractPacket::ACTION_SEE) {
+				} elseif ($packet->action === InteractPacket::ACTION_INTERACT_UPDATE) {
 					$target = $this->getLevel()->getEntity($packet->target);
 					if ($target instanceof Vehicle) {
 						$target->onNearPlayer($this);
@@ -3573,7 +3578,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->dead = true;
 		}
 
-		$this->setImmobile();
+		// $this->setImmobile();
 
 		$this->server->getLogger()->info(TextFormat::AQUA . $this->username . TextFormat::WHITE . "/" . TextFormat::AQUA . $this->ip . " connected");
 
@@ -5338,6 +5343,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk = new PlayerListPacket();
 			$pk->type = PlayerListPacket::TYPE_ADD;
 			$pk->entries[] = [$this->getUniqueId(), $this->getId(), $this->getName(), $this->getSkinName(), $this->getSkinData(), $this->getCapeData(), $this->getSkinGeometryName(), $this->getSkinGeometryData()];
+			$pk->setDeviceId($this->getDeviceOS());
 			$this->server->batchPackets($otherPlayers, [$pk]);
 		}
 		$this->playerListIsSent = true;
