@@ -6,6 +6,7 @@ use pocketmine\event\block\BlockTeleportEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
+use pocketmine\level\particle\GenericParticle;
 use pocketmine\level\sound\GenericSound;
 use pocketmine\network\protocol\LevelEventPacket;
 use pocketmine\Player;
@@ -70,14 +71,14 @@ class DragonEgg extends Fallable {
 			$intDistance = $oldPos->distance($newPos);
 			for ($i = 0; $i <= $intDistance; $i++) {
 				$progress = $i / $intDistance;
-				$this->getLevel()->addSound(new GenericSound(
+				$this->getLevel()->addParticle(new GenericParticle(
 					new Position(
 						$oldPos->x + $posDistance->x * $progress,
 						1.62 + $oldPos->y + $posDistance->y * $progress,
 						$oldPos->z + $posDistance->z * $progress,
 						$this->getLevel()
 					),
-					LevelEventPacket::EVENT_PARTICLE_PORTAL_1
+					LevelEventPacket::EVENT_PARTICLE_DRAGON_EGG_TELEPORT
 				));
 			}
 		}
