@@ -1020,7 +1020,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$pk->status = PlayStatusPacket::PLAYER_SPAWN;
 			$this->dataPacket($pk);
 
-			$this->setImmobile(false);
+			// $this->setImmobile(false);
 			$this->noDamageTicks = 60;
 			$this->spawned = true;
 			$chunkX = $chunkZ = null;
@@ -3578,7 +3578,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->dead = true;
 		}
 
-		$this->setImmobile();
+		// $this->setImmobile();
 
 		$this->server->getLogger()->info(TextFormat::AQUA . $this->username . TextFormat::WHITE . "/" . TextFormat::AQUA . $this->ip . " connected");
 
