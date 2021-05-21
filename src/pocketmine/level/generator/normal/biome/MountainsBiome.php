@@ -21,6 +21,10 @@
 
 namespace pocketmine\level\generator\normal\biome;
 
+use pocketmine\block\EmeraldOre;
+use pocketmine\level\generator\normal\populator\Ore;
+use pocketmine\level\generator\normal\populator\OreType;
+use pocketmine\level\generator\populator\Mushroom;
 use pocketmine\level\generator\populator\TallGrass;
 use pocketmine\level\generator\populator\Tree;
 
@@ -30,23 +34,31 @@ class MountainsBiome extends GrassyBiome{
 		parent::__construct();
 
 		$trees = new Tree();
-		$trees->setBaseAmount(1);
+		$trees->setBaseAmount(6);
 		$this->addPopulator($trees);
 
 		$tallGrass = new TallGrass();
 		$tallGrass->setBaseAmount(1);
 
+		$ores = new Ore();
+		$ores->setOreTypes([
+			new OreType(new EmeraldOre(), 11, 1, 0, 32),
+		]);
+
 		$this->addPopulator($tallGrass);
+		$this->addPopulator($ores);
 
-		//TODO: add emerald
+		$mushroom = new Mushroom();
+		$this->addPopulator($mushroom);
 
-		$this->setElevation(63, 130);
+		$this->setElevation(63, 127);
 
 		$this->temperature = 0.4;
 		$this->rainfall = 0.5;
 	}
 
-	public function getName(){
+	public function getName() {
 		return "Mountains";
 	}
+
 }

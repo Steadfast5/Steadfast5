@@ -21,6 +21,8 @@
 
 namespace pocketmine\math;
 
+use pocketmine\utils\Random;
+
 class Vector3{
 
 	const SIDE_DOWN = 0;
@@ -94,8 +96,9 @@ class Vector3{
 	public function add($x, $y = 0, $z = 0){
 		if ($x instanceof Vector3) {
 			return new Vector3($this->x + $x->x, $this->y + $x->y, $this->z + $x->z);
+		} else {
+			return new Vector3($this->x + $x, $this->y + $y, $this->z + $z);
 		}
-		return new Vector3($this->x + $x, $this->y + $y, $this->z + $z);
 	}
 
 	/**
@@ -108,8 +111,9 @@ class Vector3{
 	public function subtract($x = 0, $y = 0, $z = 0){
 		if ($x instanceof Vector3) {
 			return $this->add(-$x->x, -$x->y, -$x->z);
+		} else {
+			return $this->add(-$x, -$y, -$z);
 		}
-		return $this->add(-$x, -$y, -$z);
 	}
 
 	public function multiply($number){
@@ -121,18 +125,15 @@ class Vector3{
 	}
 
 	public function ceil(){
-		return new Vector3((int) ($this->x + 1), (int) ($this->y + 1), (int) ($this->z + 1));
+		return new Vector3((int) ceil($this->x), (int) ceil($this->y), (int) ceil($this->z));
 	}
 
 	public function floor(){
-		$x = (int) $this->x;
-		$y = (int) $this->y;
-		$z = (int) $this->z;
-		return new Vector3($this->x >= $x ? $x : $x - 1, $this->y >= $y ? $y : $y - 1, $this->z >= $z ? $z : $z - 1);
+		return new Vector3((int) floor($this->x), (int) floor($this->y), (int) floor($this->z));
 	}
 
 	public function round(){
-		return new Vector3(round($this->x), round($this->y), round($this->z));
+		return new Vector3((int) round($this->x), (int) round($this->y), (int) round($this->z));
 	}
 
 	public function abs(){
@@ -182,14 +183,14 @@ class Vector3{
 	}
 
 	public function distanceSquared(Vector3 $pos){
-		return ($this->x - $pos->x) ** 2 + ($this->y - $pos->y) ** 2 + ($this->z - $pos->z) ** 2;
+		return pow($this->x - $pos->x, 2) + pow($this->y - $pos->y, 2) + pow($this->z - $pos->z, 2);
 	}
 
 	public function maxPlainDistance($x = 0, $z = 0){
 		if ($x instanceof Vector3) {
-			return max(abs($this->x - $x->x), abs($this->z - $z->z));
-		} else if ($x instanceof Vector2) {
-			return max(abs($this->x - $x->x), abs($this->z - $x->y));
+			return $this->maxPlainDistance($x->x, $x->z);
+		} elseif ($x instanceof Vector2) {
+			return $this->maxPlainDistance($x->x, $x->y);
 		} else {
 			return max(abs($this->x - $x), abs($this->z - $z));
 		}
@@ -200,20 +201,18 @@ class Vector3{
 	}
 
 	public function lengthSquared(){
-		return $this->x ** 2 + $this->y ** 2 + $this->z ** 2;
+		return $this->x * $this->x + $this->y * $this->y + $this->z * $this->z;
 	}
 
 	/**
 	 * @return Vector3
 	 */
 	public function normalize(){
-		$len = $this->x ** 2 + $this->y ** 2 + $this->z ** 2;
-		if ($len == 0) {
-			return new Vector3(0, 0, 0);
-		} else if ($len == 1) {
-			return new Vector3($this->x, $this->y, $this->z);
+		$len = $this->lengthSquared();
+		if ($len > 0) {
+			return $this->divide(sqrt($len));
 		}
-		return $this->divide(sqrt($len));
+		return new Vector3(0, 0, 0);
 	}
 
 	public function dot(Vector3 $v){
@@ -243,13 +242,17 @@ class Vector3{
 	 */
 	public function getIntermediateWithXValue(Vector3 $v, $x){
 		$xDiff = $v->x - $this->x;
-		if (($xDiff < 1 && $xDiff > -1) || $x > $v->x || ($this->x > $x && $xDiff > 0)) {
+		$yDiff = $v->y - $this->y;
+		$zDiff = $v->z - $this->z;
+		if (($xDiff * $xDiff) < 0.0000001) {
 			return null;
 		}
 		$f = ($x - $this->x) / $xDiff;
-		$yDiff = $v->y - $this->y;
-		$zDiff = $v->z - $this->z;
-		return new Vector3($x, $this->y + $yDiff * $f, $this->z + $zDiff * $f);
+		if ($f < 0 || $f > 1) {
+			return null;
+		} else {
+			return new Vector3($this->x + $xDiff * $f, $this->y + $yDiff * $f, $this->z + $zDiff * $f);
+		}
 	}
 
 	/**
@@ -262,14 +265,18 @@ class Vector3{
 	 * @return Vector3
 	 */
 	public function getIntermediateWithYValue(Vector3 $v, $y){
+		$xDiff = $v->x - $this->x;
 		$yDiff = $v->y - $this->y;
-		if (($yDiff < 1 && $yDiff > -1) || $y > $v->y || ($this->y > $y && $yDiff > 0)) {
+		$zDiff = $v->z - $this->z;
+		if (($yDiff * $yDiff) < 0.0000001) {
 			return null;
 		}
 		$f = ($y - $this->y) / $yDiff;
-		$xDiff = $v->x - $this->x;
-		$zDiff = $v->z - $this->z;
-		return new Vector3($this->x + $xDiff * $f, $y, $this->z + $zDiff * $f);
+		if ($f < 0 || $f > 1) {
+			return null;
+		} else {
+			return new Vector3($this->x + $xDiff * $f, $this->y + $yDiff * $f, $this->z + $zDiff * $f);
+		}
 	}
 
 	/**
@@ -282,14 +289,18 @@ class Vector3{
 	 * @return Vector3
 	 */
 	public function getIntermediateWithZValue(Vector3 $v, $z){
+		$xDiff = $v->x - $this->x;
+		$yDiff = $v->y - $this->y;
 		$zDiff = $v->z - $this->z;
-		if (($zDiff < 1 && $zDiff > -1) || $z > $v->z || ($this->z > $z && $zDiff > 0)) {
+		if (($zDiff * $zDiff) < 0.0000001) {
 			return null;
 		}
 		$f = ($z - $this->z) / $zDiff;
-		$xDiff = $v->x - $this->x;
-		$yDiff = $v->y - $this->y;
-		return new Vector3($this->x + $xDiff * $f, $this->y + $yDiff * $f, $z);
+		if ($f < 0 || $f > 1) {
+			return null;
+		} else {
+			return new Vector3($this->x + $xDiff * $f, $this->y + $yDiff * $f, $this->z + $zDiff * $f);
+		}
 	}
 
 	/**
@@ -306,8 +317,19 @@ class Vector3{
 		return $this;
 	}
 
+	public function fromObjectAdd(Vector3 $pos, $x, $y, $z) {
+		$this->x = $pos->x + $x;
+		$this->y = $pos->y + $y;
+		$this->z = $pos->z + $z;
+		return $this;
+	}
+
 	public function __toString(){
 		return "Vector3(x=" . $this->x . ",y=" . $this->y . ",z=" . $this->z . ")";
+	}
+
+	public static function createRandomDirection(Random $random) {
+		return VectorMath::getDirection3D($random->nextFloat() * 2 * pi(), $random->nextFloat() * 2 * pi());
 	}
 
 }

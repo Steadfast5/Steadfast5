@@ -15,5 +15,6 @@ interface CustomUI {
 	 * 
 	 * @var Player $player
 	 */
-	public function close($player);
+	public function close(Player $player);
+
 }

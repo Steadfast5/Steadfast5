@@ -79,7 +79,7 @@ class Cauldron extends Solid {
 		switch ($item->getId()) {
 			case Item::BUCKET:
 				if ($item->getDamage() === 0) {
-					if (!$this->isFull() or $tile->hasCustomColor() or $tile->hasPotion()) {
+					if (!$this->isFull() || $tile->hasCustomColor() || $tile->hasPotion()) {
 						break;
 					}
 					$bucket = clone $item;
@@ -302,4 +302,5 @@ class Cauldron extends Solid {
 			[Item::CAULDRON, 0, 1]
 		];
 	}
+
 }

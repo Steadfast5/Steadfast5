@@ -48,6 +48,44 @@ class BiomeSelector{
 		$this->rainfall = new Simplex($random, 2, 1 / 16, 1 / 512);
 	}
 
+//	public function lookup($temperature, $rainfall) {
+//		if ($rainfall < 0.25) {
+//			if ($temperature < 0.7) {
+//				return Biome::OCEAN;
+//			} elseif ($temperature < 0.85) {
+//				return Biome::RIVER;
+//			} else {
+//				return Biome::SWAMP;
+//			}
+//		} elseif ($rainfall < 0.60) {
+//			if ($temperature < 0.25) {
+//				return Biome::ICE_PLAINS;
+//			} elseif ($temperature < 0.75) {
+//				return Biome::PLAINS;
+//			} else {
+//				return Biome::DESERT;
+//			}
+//		} elseif ($rainfall < 0.80) {
+//			if ($temperature < 0.25) {
+//				return Biome::TAIGA;
+//			} elseif ($temperature < 0.75) {
+//				return Biome::FOREST;
+//			} else {
+//				return Biome::BIRCH_FOREST;
+//			}
+//		} else {
+//			if ($temperature < 0.25) {
+//				return Biome::MOUNTAINS;
+//			} elseif ($temperature < 0.70) {
+//				return Biome::SMALL_MOUNTAINS;
+//			} elseif ($temperature <= 2.0) {
+//				return Biome::MESA;
+//			} else {
+//				return Biome::RIVER;
+//			}
+//		}
+//	}
+
 	public function recalculate(){
 		$this->map = new \SplFixedArray(64 * 64);
 
@@ -66,8 +104,16 @@ class BiomeSelector{
 		return ($this->temperature->noise2D($x, $z, true) + 1) / 2;
 	}
 
+	public function setTemperature($value) {
+		$this->temperature = $value;
+	}
+
 	public function getRainfall($x, $z){
 		return ($this->rainfall->noise2D($x, $z, true) + 1) / 2;
+	}
+
+	public function setRainfall($value) {
+		$this->rainfall = $value;
 	}
 
 	/**
@@ -81,6 +127,7 @@ class BiomeSelector{
 		$rainfall = (int) ($this->getRainfall($x, $z) * 63);
 
 		$biomeId = $this->map[$temperature + ($rainfall << 6)];
-		return isset($this->biomes[$biomeId]) ? $this->biomes[$biomeId] : $this->fallback;
+		return $this->biomes[$biomeId] ?? $this->fallback;
 	}
+
 }

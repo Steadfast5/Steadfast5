@@ -260,7 +260,7 @@ class Binary {
 //					return [];
 //
 //			}
-//			if($types === true){
+//			if ($types === true) {
 //				$m[$bottom] = [$r, $type];
 //			} else {
 //				$m[$bottom] = $r;

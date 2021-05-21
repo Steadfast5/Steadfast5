@@ -95,4 +95,5 @@ class PlayerSkinPacket extends PEPacket {
 			}
 		}
 	}
+
 }

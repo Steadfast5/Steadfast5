@@ -25,11 +25,11 @@ use pocketmine\command\CommandSender;
 use pocketmine\event\TimingsHandler;
 use pocketmine\utils\TextFormat;
 
-class TimingsCommand extends VanillaCommand{
+class TimingsCommand extends VanillaCommand {
 
 	public static $timingStart = 0;
 
-	public function __construct($name){
+	public function __construct($name) {
 		parent::__construct(
 			$name,
 			"Records timings to see performance of the server.",
@@ -43,7 +43,7 @@ class TimingsCommand extends VanillaCommand{
 			return true;
 		}
 
-		if(count($args) !== 1){
+		if (count($args) == 0) {
 			$sender->sendMessage(TextFormat::RED . "Usage: " . $this->usageMessage);
 
 			return true;
@@ -94,39 +94,52 @@ class TimingsCommand extends VanillaCommand{
 
 			fwrite($fileTimings, "Sample time " . round($sampleTime * 1000000000) . " (" . $sampleTime . "s)" . PHP_EOL);
 
-			if($paste){
+			if ($paste) {
+				if ($paste && !isset($args[1])) {
+					$sender->sendMessage(TextFormat::RED . "Usage: /timings paste <apitoken>");
+					$sender->sendMessage(TextFormat::RED . "Please enter your Pastebin API token");
+					return true;
+				}
 				fseek($fileTimings, 0);
-				$data = [
-					"syntax" => "text",
-					"poster" => $sender->getServer()->getName(),
-					"content" => stream_get_contents($fileTimings)
-				];
+				$data = stream_get_contents($fileTimings);
 
-				$ch = curl_init("http://paste.ubuntu.com/");
-				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-				curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
-				curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-				curl_setopt($ch, CURLOPT_AUTOREFERER, false);
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
-				curl_setopt($ch, CURLOPT_HEADER, true);
-				curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent: " . $this->getName() . " " . $sender->getServer()->getPocketMineVersion()]);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				$data = curl_exec($ch);
+				$apiKey = "$args[1]";
+
+				$pasteTitle = "User-Agent: " . $this->getName() . " " . $sender->getServer()->getPocketMineVersion();
+
+				$postData = array(
+					"api_dev_key" => "$apiKey",
+					"api_option" => "paste",
+					"api_paste_name" => $pasteTitle,
+					"api_paste_code" => utf8_decode($data),
+					"api_paste_private" => "1",
+					"api_paste_expire_date" => "1D",
+				);
+
+				$ch = curl_init("http://pastebin.com/api/api_post.php");
+				curl_setopt_array($ch, array(
+					CURLOPT_POST => 1,
+					CURLOPT_POSTFIELDS => http_build_query($postData),
+					CURLOPT_RETURNTRANSFER  => 1,
+				));
+				$re = curl_exec($ch);
 				curl_close($ch);
-				if(preg_match('#^Location: http://paste\\.ubuntu\\.com/([0-9]{1,})/#m', $data, $matches) == 0){
-					$sender->sendMessage("An error happened while pasting the report");
 
+				if ($re == "Bad API request, invalid api_dev_key") {
+					$sender->sendMessage(TextFormat::RED . "Please insert a valid api token");
+					return true;
+				} elseif ($re == "Post limit, maximum pastes per 24h reached") {
+					$sender->sendMessage(TextFormat::RED . "Post limit, maximum pastes per 24h reached");
+					return true;
+				} elseif ($re == null) {
+					$sender->sendMessage(TextFormat::RED . "An error happened while pasting the report");
 					return true;
 				}
 
 
-				$sender->sendMessage("Timings uploaded to http://paste.ubuntu.com/" . $matches[1] . "/");
-				$sender->sendMessage("You can read the results at http://timings.aikar.co/?url=" . $matches[1]);
+				$sender->sendMessage("Timings sccessfully pasted.\r\nLink: {$re}" . "\r\n");
 				fclose($fileTimings);
-			}else{
+			} else {
 				fclose($fileTimings);
 				$sender->sendMessage("Timings written to " . $timings);
 			}
@@ -134,4 +147,5 @@ class TimingsCommand extends VanillaCommand{
 
 		return true;
 	}
+
 }
