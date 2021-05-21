@@ -1093,7 +1093,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->server->broadcastMessage($ev->getJoinMessage());
 		}
 
-		$this->setImmobile(false);
+		// $this->setImmobile(false);
 		$this->noDamageTicks = 60;
 
 		foreach ($this->usedChunks as $index => $c) {
@@ -3758,7 +3758,7 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->dead = true;
 		}
 
-		$this->setImmobile();
+		// $this->setImmobile();
 
 		$this->server->getLogger()->info(TextFormat::AQUA . $this->username . TextFormat::WHITE . "/" . TextFormat::AQUA . $this->ip . " connected");
 
