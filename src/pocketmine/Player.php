@@ -3561,6 +3561,23 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 			$this->directDataPacket(new BiomeDefinitionListPacket());
 		}
 
+		if ($this->getPlayerProtocol() >= Info::PROTOCOL_392) {
+			$pk = new CreativeItemsListPacket();
+			$pk->groups = Item::getCreativeGroups();
+			$pk->items = Item::getCreativeItems();
+			$this->dataPacket($pk);
+			// $this->directDataPacket($pk); ??
+		} else {
+			$slots = [];
+			foreach(Item::getCreativeItems() as $item){
+				$slots[] = clone $item['item'];
+			}
+			$pk = new InventoryContentPacket();
+			$pk->inventoryID = Protocol120::CONTAINER_ID_CREATIVE;
+			$pk->items = $slots;
+			$this->dataPacket($pk);
+		}
+
 		$pk = new SetTimePacket();
 		$pk->time = $this->level->getTime();
 		$pk->started = true;
@@ -3581,23 +3598,6 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		// $this->setImmobile();
 
 		$this->server->getLogger()->info(TextFormat::AQUA . $this->username . TextFormat::WHITE . "/" . TextFormat::AQUA . $this->ip . " connected");
-
-		if ($this->getPlayerProtocol() >= Info::PROTOCOL_392) {
-			$pk = new CreativeItemsListPacket();
-			$pk->groups = Item::getCreativeGroups();
-			$pk->items = Item::getCreativeItems();
-			$this->dataPacket($pk);
-			// $this->directDataPacket($pk); ??
-		} else {
-			$slots = [];
-			foreach(Item::getCreativeItems() as $item){
-				$slots[] = clone $item['item'];
-			}
-			$pk = new InventoryContentPacket();
-			$pk->inventoryID = Protocol120::CONTAINER_ID_CREATIVE;
-			$pk->items = $slots;
-			$this->dataPacket($pk);
-		}
 
 		$this->server->sendRecipeList($this);
 
