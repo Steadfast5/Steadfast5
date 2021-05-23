@@ -266,11 +266,11 @@ class BinaryStream {
 		if ($id == 0) {
 			return Item::get(Item::AIR, 0, 0);
 		}
-		
+
 		$aux = $this->getSignedVarInt();
 		$meta = $aux >> 8;
 		$count = $aux & 0xff;
-		
+
 		$nbtLen = $this->getLShort();		
 		$nbt = "";	
 		if ($nbtLen > 0) {
@@ -456,7 +456,7 @@ class BinaryStream {
 				$this->putLInt($animation['Type']);
 				$this->putLFloat($animation['Frames']);
 				if ($playerProtocol >= Info::PROTOCOL_418) {
-					$this->putLInt($animation['AnimationExpression']);
+					$this->putLInt($animation['AnimationExpression'] ?? 0);
 				}
 			}
 		} else {
