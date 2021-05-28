@@ -26,7 +26,7 @@ Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes t
 
 ## Installation
 
-**The steps below will only work if you have Git installed. If you don't, follow [these](https://github.com/Steadfast5/Steadfast5/wiki/Installing-without-Git#installation) instructions**
+**The steps below will only work if you have **[Git](https://git-scm.com/downloads)** installed. If you don't, follow [these](https://github.com/Steadfast5/Steadfast5/wiki/Installing-without-Git#installation) instructions**
 
 ### Installing on Windows
 
