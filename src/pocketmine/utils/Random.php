@@ -25,15 +25,15 @@ namespace pocketmine\utils;
 /**
  * Unsecure Random Number Noise, used for fast seeded values
  */
-class Random{
+class Random {
 
 	protected $seed;
 
 	/**
 	 * @param int $seed Integer to be used as seed.
 	 */
-	public function __construct($seed = -1){
-		if($seed == -1){
+	public function __construct($seed = -1) {
+		if ($seed == -1) {
 			$seed = time();
 		}
 
@@ -43,7 +43,7 @@ class Random{
 	/**
 	 * @param int $seed Integer to be used as seed.
 	 */
-	public function setSeed($seed){
+	public function setSeed($seed) {
 		$this->seed = crc32(pack("N", $seed));
 	}
 
@@ -52,7 +52,7 @@ class Random{
 	 *
 	 * @return int
 	 */
-	public function nextInt(){
+	public function nextInt() {
 		return $this->nextSignedInt() & 0x7fffffff;
 	}
 
@@ -61,11 +61,11 @@ class Random{
 	 *
 	 * @return int
 	 */
-	public function nextSignedInt(){
+	public function nextSignedInt() {
 		$t = crc32(pack("N", $this->seed));
 		$this->seed ^= $t;
 
-		if(PHP_INT_SIZE === 8){
+		if (PHP_INT_SIZE === 8) {
 			return $t << 32 >> 32;
 		} else {
 			return $t;
@@ -77,7 +77,7 @@ class Random{
 	 *
 	 * @return float
 	 */
-	public function nextFloat(){
+	public function nextFloat() {
 		return $this->nextInt() / 0x7fffffff;
 	}
 
@@ -86,7 +86,7 @@ class Random{
 	 *
 	 * @return float
 	 */
-	public function nextSignedFloat(){
+	public function nextSignedFloat() {
 		return $this->nextSignedInt() / 0x7fffffff;
 	}
 
@@ -95,7 +95,7 @@ class Random{
 	 *
 	 * @return bool
 	 */
-	public function nextBoolean(){
+	public function nextBoolean() {
 		return ($this->nextSignedInt() & 0x01) === 0;
 	}
 
@@ -107,11 +107,11 @@ class Random{
 	 *
 	 * @return int
 	 */
-	public function nextRange($start = 0, $end = 0x7fffffff){
+	public function nextRange($start = 0, $end = 0x7fffffff) {
 		return $start + ($this->nextInt() % ($end + 1 - $start));
 	}
 
-	public function nextBoundedInt($bound){
+	public function nextBoundedInt($bound) {
 		return $this->nextInt() % $bound;
 	}
 
