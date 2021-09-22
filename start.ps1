@@ -6,19 +6,19 @@ param (
 	[string][Parameter(ValueFromRemainingArguments)]$extraPocketMineArgs
 )
 
-if($php -ne ""){
+if ($php -ne "") {
 	$binary = $php
-}elseif(Test-Path "bin\php\php.exe"){
+} elseif (Test-Path "bin\php\php.exe") {
 	$env:PHPRC = ""
 	$binary = "bin\php\php.exe"
-}else{
+} else {
 	$binary = "php"
 }
 
-if($file -eq ""){
-	if(Test-Path "Steadfast5.phar"){
+if ($file -eq "") {
+	if (Test-Path "Steadfast5.phar") {
 	    $file = "Steadfast5.phar"
-	}else{
+	} else {
 	    echo "Steadfast5.phar not found"
 	    echo "Downloads can be found at https://github.com/Steadfast5/Steadfast5/releases"
 	    pause
@@ -26,7 +26,7 @@ if($file -eq ""){
 	}
 }
 
-function StartServer{
+function StartServer {
 	$command = "powershell -NoProfile " + $binary + " " + $file + " " + $extraPocketMineArgs
 	iex $command
 }
@@ -35,8 +35,8 @@ $loops = 0
 
 StartServer
 
-while($Loop){
-	if($loops -ne 0){
+while ($Loop) {
+	if ($loops -ne 0) {
 		echo ("Restarted " + $loops + " times")
 	}
 	$loops++
