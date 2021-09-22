@@ -82,6 +82,8 @@ auto-report:
 
 # Writing server.log is disabled by default to reduce disk I/O
 write-server-log: false
+# Support for 32-bit devices is disabled by default since it is unstable
+allow-32bit: false
 
 aliases:
  #Examples:
