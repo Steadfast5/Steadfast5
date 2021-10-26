@@ -17,12 +17,16 @@ if ($php -ne "") {
 
 if ($file -eq "") {
 	if (Test-Path "Steadfast5.phar") {
-	    $file = "Steadfast5.phar"
+		$file = "Steadfast5.phar"
 	} else {
-	    echo "Steadfast5.phar not found"
-	    echo "Downloads can be found at https://github.com/Steadfast5/Steadfast5/releases"
-	    pause
-	    exit 1
+		if (Test-Path "PocketMine-MP.phar") {
+			$file = "PocketMine-MP.phar"
+		} else {
+			echo "Steadfast5.phar not found"
+			echo "Downloads can be found at https://github.com/Steadfast5/Steadfast5/releases"
+			pause
+			exit 1
+		}
 	}
 }
 
