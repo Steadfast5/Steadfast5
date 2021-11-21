@@ -22,8 +22,8 @@ TITLE Steadfast5 server software for Minecraft: Bedrock Edition
 cd /d %~dp0
 
 if not exist bin\php\php.exe (
-	powershell -command "& { iwr https://jenkins.pmmp.io/job/PHP-7.4-Aggregate/lastSuccessfulBuild/artifact/PHP-7.4-Windows-x64.zip -OutFile PHP-7.4-Windows-x64.zip }"
-	powershell -command "Expand-Archive -Path PHP-7.4-Windows-x64.zip -DestinationPath ."
+	powershell -command "& { iwr https://r.steadfast5.tk/php-download -OutFile (Invoke-WebRequest -UseBasicParsing -Uri "https://r.steadfast5.tk/php-file").Content }"
+	powershell -command "Expand-Archive -Path (Invoke-WebRequest -UseBasicParsing -Uri "https://r.steadfast5.tk/php-file").Content -DestinationPath ."
 )
 
 if exist bin\php\php.exe (
