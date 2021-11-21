@@ -47,7 +47,7 @@ class MainLogger extends \AttachableThreadedLogger{
 		}
 		static::$logger = $this;
 		// quick hack
-		if (file_exists(getcwd() . "/pocketmine.yml") && stristr(str_replace(" ", "", file_get_contents(\pocketmine\PATH . "server.properties")), "write-server-log:true")) {
+		if (file_exists(\pocketmine\PATH . "pocketmine.yml") && stristr(str_replace(" ", "", file_get_contents(\pocketmine\PATH . "pocketmine.yml")), "write-server-log:true")) {
 			touch($logFile);
 			$this->logFile = $logFile;
 			$this->logDebug = (bool) $logDebug;
@@ -217,7 +217,7 @@ class MainLogger extends \AttachableThreadedLogger{
 	public function run(){
 		$this->shutdown = false;
 		// quick hack
-		if (file_exists(getcwd() . "/pocketmine.yml") && stristr(str_replace(" ", "", file_get_contents(\pocketmine\PATH . "server.properties")), "write-server-log:true")) {
+		if (file_exists(\pocketmine\PATH . "pocketmine.yml") && stristr(str_replace(" ", "", file_get_contents(\pocketmine\PATH . "pocketmine.yml")), "write-server-log:true")) {
 			$this->logResource = fopen($this->logFile, "a+b");
 			if (!is_resource($this->logResource)) {
 				throw new \RuntimeException("Couldn't open log file");
