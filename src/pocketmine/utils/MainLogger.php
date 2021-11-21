@@ -215,7 +215,7 @@ class MainLogger extends \AttachableThreadedLogger{
 
 	public function run(){
 		$this->shutdown = false;
-		if (Server::getInstance()->getProperty("write-server-log", true)) {
+		if (file_exists(getcwd() . "/server.properties") && stristr(file_get_contents(getcwd() . "/server.properties"), "write-server-log=true")) { // quick hack
 			$this->logResource = fopen($this->logFile, "a+b");
 			if (!is_resource($this->logResource)) {
 				throw new \RuntimeException("Couldn't open log file");
