@@ -46,7 +46,7 @@ class MainLogger extends \AttachableThreadedLogger{
 			throw new \RuntimeException("MainLogger has been already created");
 		}
 		static::$logger = $this;
-		if (Server::getInstance()->getProperty("write-server-log", true)) {
+		if (stristr(file_get_contents(getcwd() . "/server.properties"), "write-server-log=true")) { // quick hack
 			touch($logFile);
 			$this->logFile = $logFile;
 			$this->logDebug = (bool) $logDebug;
