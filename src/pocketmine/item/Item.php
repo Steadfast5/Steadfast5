@@ -1470,6 +1470,7 @@ class Item {
             self::$list[self::POPPED_CHORUS_FRUIT] = PoppedChorusFruit::class;
             self::$list[self::REDSTONE_DUST] = Redstone::class;
             self::$list[self::TOTEM_OF_UNDYING] = TotemOfUndying::class;
+			// TODO: buckets
         }
 
         self::initCreativeItems();
