@@ -1,6 +1,5 @@
 <?php
 
-
 namespace pocketmine\network\protocol;
 
 class PlaySoundPacket extends PEPacket {

@@ -80,6 +80,9 @@ auto-report:
  send-phpinfo: false
  host: crash.pocketmine.net
 
+# Writing server.log is disabled by default to reduce disk I/O
+write-server-log: false
+
 aliases:
  #Examples:
  #showtheversion: version

@@ -8,7 +8,6 @@
 
 Click [here](https://github.com/IceCruelStuff/Steadfast5) to view other repository.
 
-[![HitCount](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5.svg)](http://hits.dwyl.com/Steadfast5/https://githubcom/Steadfast5/Steadfast5)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Steadfast5/Steadfast5)
 [![GitHub Release](https://img.shields.io/github/release/Steadfast5/Steadfast5.svg)](https://github.com/Steadfast5/Steadfast5/releases/latest)
 
@@ -19,10 +18,6 @@ Most of the code was written by originally written by [MFDGaming](https://github
 ## Introduction
 
 Steadfast5 is a project for backporting new Minecraft: Bedrock Edition changes to older PocketMine-MP versions for better stability and performance, while retaining as many features from the new PocketMine-MP versions as possible.
-
-## Known bugs
-
-- Players don't fall out of the world naturally, you'll want to handle PlayerMoveEvent as needed to kill them.
 
 ## Installation
 
@@ -41,6 +36,9 @@ To install on Windows, please follow these instructions.
 To install on Linux/MacOS, please follow these instructions.
 1) Open command line and type in `git clone https://github.com/Steadfast5/Steadfast5.git`. Then navigate to `Steadfast5` directory using command line.
 2) Run command `./installer.sh`. If successful, this will create a `bin` folder with a special PHP build in it. After, run command `./start.sh` and the server should start up.
+
+## Wiki
+Can't find what your looking for? Try the **[wiki](https://github.com/Steadfast5/Steadfast5/wiki)**!
 
 ### License
 

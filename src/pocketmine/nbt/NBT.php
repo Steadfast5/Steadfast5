@@ -52,7 +52,7 @@ use pocketmine\utils\Binary;
 /**
  * Named Binary Tag encoder/decoder
  */
-class NBT{
+class NBT {
 
 	const LITTLE_ENDIAN = 0;
 	const BIG_ENDIAN = 1;
@@ -80,18 +80,18 @@ class NBT{
 	 * @param int  $slot
 	 * @return Compound
 	 */
-	public static function putItemHelper(Item $item, $slot = null){
+	public static function putItemHelper(Item $item, $slot = null) {
 		$tag = new Compound('Item', [
 			"id" => new ShortTag("id", $item->getId()),
 			"Count" => new ByteTag("Count", $item->getCount()),
 			"Damage" => new ShortTag("Damage", $item->getDamage())
 		]);
 
-		if($slot !== null){
+		if ($slot !== null) {
 			$tag->Slot = new ByteTag("Slot", (int) $slot);
 		}
 
-		if($item->hasCompound()){
+		if ($item->hasCompound()) {
 			$tag->tag = clone $item->getNamedTag();
 			$tag->tag->setName("tag");
 		}
