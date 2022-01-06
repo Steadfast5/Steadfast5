@@ -29,8 +29,8 @@ namespace pocketmine\network\protocol;
 use pocketmine\network\CachedEncapsulatedPacket;
 use pocketmine\utils\BinaryStream;
 use pocketmine\utils\Utils;
-abstract class DataPacket extends BinaryStream
-{
+
+abstract class DataPacket extends BinaryStream {
 
 	const NETWORK_ID = 0;
 	const PACKET_NAME = "";
@@ -43,42 +43,36 @@ abstract class DataPacket extends BinaryStream
 
 	protected static $packetsIds = [];
 
-	public function pid()
-	{
+	public function pid() {
 		return $this::NETWORK_ID;
 	}
 
-	public function pname()
-	{
+	public function pname() {
 		return $this::PACKET_NAME;
 	}
 
 	/**
 	 * @deprecated This adds extra overhead on the network, so its usage is now discouraged. It was a test for the viability of this.
 	 */
-	public function setChannel($channel)
-	{
+	public function setChannel($channel) {
 		$this->channel = (int) $channel;
 		return $this;
 	}
 
-	public function getChannel()
-	{
+	public function getChannel() {
 		return $this->channel;
 	}
 
 	/**
 	 * @return $this
 	 */
-	public function clean()
-	{
+	public function clean() {
 		$this->reset();
 		$this->isEncoded = false;
 		return $this;
 	}
 
-	public function __debugInfo()
-	{
+	public function __debugInfo() {
 		$data = [];
 		foreach ($this as $k => $v) {
 			if ($k === "buffer") {
@@ -93,8 +87,7 @@ abstract class DataPacket extends BinaryStream
 		return $data;
 	}
 
-	public static function initPackets()
-	{
+	public static function initPackets() {
 		$oClass = new \ReflectionClass ('pocketmine\network\protocol\Info120');
 		self::$packetsIds[Info::PROTOCOL_120] = $oClass->getConstants();
 		self::$packetsIds[Info::PROTOCOL_200] = $oClass->getConstants();
@@ -144,6 +137,8 @@ abstract class DataPacket extends BinaryStream
 //		self::$packetsIds[Info::PROTOCOL_417] = $oClass->getConstants();
 		self::$packetsIds[Info::PROTOCOL_418] = $oClass->getConstants();
 		self::$packetsIds[Info::PROTOCOL_419] = $oClass->getConstants();
+		self::$packetsIds[Info::PROTOCOL_422] = $oClass->getConstants();
+		self::$packetsIds[Info::PROTOCOL_428] = $oClass->getConstants();
 	}
 
 }
