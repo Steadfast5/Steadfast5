@@ -63,7 +63,6 @@ use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\inventory\FurnaceRecipe;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
-use pocketmine\item\ItemConverter;
 use pocketmine\level\format\anvil\Anvil;
 use pocketmine\level\format\pmanvil\PMAnvil;
 use pocketmine\level\format\LevelProviderManager;
@@ -1668,14 +1667,13 @@ class Server{
 		InventoryType::init();
 		Block::init();
 		Enchantment::init();
-		Item::init(); // maybe replace with ItemConverter::init();
-		// ItemConverter::init();
+		Item::init();
 		Biome::init();
 		TextWrapper::init();
 		MetadataConvertor::init();
 		$this->craftingManager = new CraftingManager();
 		PEPacket::initPallet();
-		PEPacket::initItemsList();
+		PEPacket::initItemList();
 
 		$this->pluginManager = new PluginManager($this, $this->commandMap);
 		$this->pluginManager->subscribeToPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this->consoleSender);

@@ -2,6 +2,8 @@
 
 namespace pocketmine\item;
 
+use pocketmine\item\Item;
+
 class Item419 {
 
 	const TOTEM_OF_UNDYING = 558;
@@ -475,7 +477,6 @@ class Item419 {
 	const WOOD_SLAB = self::WOODEN_SLABS;
 	const STAINED_CLAY = self::STAINED_HARDENED_CLAY;
 	const LEAVES2 = self::LEAVE2;
-
 	
 	const WOOD2 = self::LOG2;
 	const TRUNK2 = self::LOG2;
@@ -506,6 +507,12 @@ class Item419 {
 	const WOODEN_PLANK = self::WOODEN_PLANKS;
 	const WOOD = self::TRUNK;
 	const WOODEN_STAIRS = self::WOOD_STAIRS;
+
+	const MILK_BUCKET = 361;
+	const WATER_BUCKET = 362;
+	const LAVA_BUCKET = 363;
+	// TODO: all the 419 item ids are incorrect
+	// TODO: find the correct values and update them before commit
 
 	const DYES = [
 		self::INC_SAC,
@@ -938,13 +945,6 @@ class Item419 {
 		259 => "Enchanted Golden Apple",
 	];
 
-	/*public static function getId($id) {
-		if ($id < 256) {
-			return $id;
-		}
-		if 
-	}*/
-
 	public static function getOldByNew($id) {
 		if ($id < 256) {
 			return $id;
@@ -956,8 +956,8 @@ class Item419 {
 		$new = $oClass->getConstants();
 		$oClass = new \ReflectionClass('pocketmine\item\Item');
 		$old = $oClass->getConstants();
-		$key = array_search($id, $new);
-		$key = explode('_', $key)[1];
+		// $key = array_search($id, $new);
+		$key = array_search($id, $old);
 		return $old[$key] ?? $id;
 	}
 
@@ -968,17 +968,16 @@ class Item419 {
 		if ($id == Item::DYE) {
 			return self::DYES[$meta];
 		}
+		if ($id === Item::BUCKET && $meta === 1) {
+			return self::MILK_BUCKET;
+		}
 		$oClass = new \ReflectionClass(__CLASS__);
 		$new = $oClass->getConstants(); // Item419
 		$oClass = new \ReflectionClass('pocketmine\item\Item');
 		$old = $oClass->getConstants(); // Item
-		$key = array_search($id, $old);
-		if ($key) {
-			$key = 'NEW_' . $key; // ??
-			return $new[$key] ?? $id;
-		} else {
-			return $id;
-		}
+		// $key = array_search($id, $old);
+		$key = array_search($id, $new);
+		return $new[$key] ?? $id;
 	}
 
 	public static function getDyeMeta($id) {

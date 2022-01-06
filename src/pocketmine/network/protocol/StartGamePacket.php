@@ -240,7 +240,7 @@ class StartGamePacket extends PEPacket{
 		}
 		if ($playerProtocol >= Info::PROTOCOL_360) {
 			if ($playerProtocol >= Info::PROTOCOL_418) {
-				$itemsData = self::getItemsListData($playerProtocol);
+				$itemsData = self::getItemListData($playerProtocol);
 				$this->putVarInt(count($itemsData));
 				foreach ($itemsData as $name => $id) {
 					$this->putString($name);
@@ -258,17 +258,5 @@ class StartGamePacket extends PEPacket{
 			$this->putByte(0); // Whether the new item stack net manager is enabled for server authoritative inventory
 		}
 	}
-
-	/*protected static function getItemsList() { // TODO: find another place for this in multiversion folder and move Items.json there too
-		if (!empty(self::$itemsList)) {
-			return self::$itemsList;
-		} else {
-			$path = __DIR__ . "/data/Items.json";
-//			$path = __DIR__ . "/data/Items2.json";
-//			$path = __DIR__ . "/data/Items3.json";
-			self::$itemsList = json_decode(file_get_contents($path), true);
-			return self::$itemsList;
-		}
-	}*/
 
 }

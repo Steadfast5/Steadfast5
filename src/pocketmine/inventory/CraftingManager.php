@@ -57,21 +57,6 @@ class CraftingManager{
 	private static $RECIPE_COUNT = 0;
 
 	public function __construct(){
-
-		$this->registerStonecutter();
-		$this->registerFurnace();
-		$this->registerFurnace419();
-
-
-		$this->registerDyes();
-		$this->registerDyes419();
-		$this->registerIngots();
-		$this->registerIngots419();
-		$this->registerTools();
-		$this->registerWeapons();
-		$this->registerArmor();
-		$this->registerFood();
-
 		$this->registerRecipe((new ShapelessRecipe(Item::get(Item::CLAY_BLOCK, 0, 1)))->addIngredient(Item::get(Item::CLAY, 0, 4)));
 
 		$this->registerRecipe((new ShapedRecipe(Item::get(Item::WORKBENCH, 0, 1),
@@ -503,9 +488,20 @@ class CraftingManager{
 			"I I"
 		))->setIngredient("S", Item::get(Item::STICK))->setIngredient("I", Item::get(Item::IRON_INGOT)));
 
-		$this->recipes419 = $this->recipes;
-		// somehow unregister the modified functions
-		// then register 419 recipes
+		$this->registerStonecutter();
+		$this->registerTools();
+		$this->registerWeapons();
+		$this->registerArmor();
+		$this->registerFood();
+
+		$this->recipes419 = clone $this->recipes;
+
+		$this->registerFurnace();
+		$this->registerFurnace419();
+		$this->registerDyes();
+		$this->registerDyes419();
+		$this->registerIngots();
+		$this->registerIngots419();
 	}
 
 	protected function registerFurnace(){
@@ -925,11 +921,11 @@ class CraftingManager{
 			Item419::BLACK_DYE,
 		];
 
-		foreach ($dyes as $k => $dye) {
-			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::WOOL, $k, 1)))->addIngredient(Item::get(Item419::WOOL, 0, 1))->addIngredient(Item::get($dye, 0, 1)));
-			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::STAINED_CLAY, $k, 8)))->addIngredient(Item::get(Item419::HARDENED_CLAY, 0, 4))->addIngredient(Item::get($dye, 0, 1))->addIngredient(Item::get(Item419::HARDENED_CLAY, 0, 4)));
-			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::CARPET, $k, 3)))->addIngredient(Item::get(Item419::WOOL, $k, 2)));
-			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::STAINED_GLASS, $k, 8)))->addIngredient(Item::get(Item419::GLASS, 0, 4))->addIngredient(Item::get($dye, 0, 1))->addIngredient(Item::get(Item419::GLASS, 0, 4)));
+		foreach ($dyes as $i => $dye) {
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::WOOL, $i, 1)))->addIngredient(Item::get(Item419::WOOL, 0, 1))->addIngredient(Item::get($dye, 0, 1)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::STAINED_CLAY, $i, 8)))->addIngredient(Item::get(Item419::HARDENED_CLAY, 0, 4))->addIngredient(Item::get($dye, 0, 1))->addIngredient(Item::get(Item419::HARDENED_CLAY, 0, 4)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::CARPET, $i, 3)))->addIngredient(Item::get(Item419::WOOL, $k, 2)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::STAINED_GLASS, $i, 8)))->addIngredient(Item::get(Item419::GLASS, 0, 4))->addIngredient(Item::get($dye, 0, 1))->addIngredient(Item::get(Item419::GLASS, 0, 4)));
 		}
 
 		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::YELLOW_DYE, 0, 2)))->addIngredient(Item::get(Item419::DANDELION, 0, 1)));
@@ -1278,29 +1274,5 @@ class CraftingManager{
 			$this->registerFurnaceRecipe419($recipe);
 		}
 	}
-
-	public function registerRecipes() {
-		
-	}
-
-	public function registerRecipes419() {
-		
-	}
-
-	/*public function unregisterRecipe($recipe) {
-		unset($this->recipes[$recipe]);
-	}
-
-	public function unregisterRecipe419($recipe) {
-		unset($this->recipes419[$recipe]);
-	}
-
-	public function unregisterFurnaceRecipe($recipe) {
-		unset($this->furnaceRecipes[$recipe]);
-	}
-
-	public function unregisterFurnaceRecipe419($recipe) {
-		unset($this->furnaceRecipes[$recipe]);
-	}*/
 
 }

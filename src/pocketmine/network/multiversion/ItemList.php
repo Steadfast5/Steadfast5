@@ -4,7 +4,7 @@ namespace pocketmine\network\multiversion;
 
 use pocketmine\network\protocol\Info;
 
-class ItemsList {
+class ItemList {
 
 	public static function initAll() {
 		$result = [];
@@ -13,20 +13,11 @@ class ItemsList {
 		foreach ($listFiles as $fileName) {
 			$parts = explode(".", $fileName);
 			$protocolNumber = (int) substr($parts[0], 11);
-			$list = new ItemsList($folderPath . $fileName, $protocolNumber);
+			$list = json_decode(file_get_contents($folderPath . $fileName), true);
 			$result[$protocolNumber] = $list;
 		}
-		krsort($list);
-		return $list;
-	}
-
-	private $list = [];
-
-	public function __construct($path, $protocolNumber) {
-		$itemsData = json_decode(file_get_contents($path), true);
-		if ($protocolNumber >= Info::PROTOCOL_419) {
-			$this->list = $itemsData;
-		}
+		krsort($result);
+		return $result;
 	}
 
 }
