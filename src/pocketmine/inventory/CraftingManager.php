@@ -34,18 +34,25 @@ use pocketmine\block\StoneWall;
 use pocketmine\block\Wood;
 use pocketmine\block\Wood2;
 use pocketmine\item\Item;
+use pocketmine\item\Item419;
 use pocketmine\utils\UUID;
 
 class CraftingManager{
 
 	/** @var Recipe[] */
 	public $recipes = [];
+	/** @var Recipe[] */
+	public $recipes419 = [];
 
 	/** @var Recipe[][] */
 	protected $recipeLookup = [];
+	/** @var Recipe[][] */
+	protected $recipeLookup419 = [];
 
 	/** @var FurnaceRecipe[] */
 	public $furnaceRecipes = [];
+	/** @var FurnaceRecipe[] */
+	public $furnaceRecipes419 = [];
 
 	private static $RECIPE_COUNT = 0;
 
@@ -53,10 +60,13 @@ class CraftingManager{
 
 		$this->registerStonecutter();
 		$this->registerFurnace();
+		$this->registerFurnace419();
 
 
 		$this->registerDyes();
+		$this->registerDyes419();
 		$this->registerIngots();
+		$this->registerIngots419();
 		$this->registerTools();
 		$this->registerWeapons();
 		$this->registerArmor();
@@ -492,6 +502,10 @@ class CraftingManager{
 			"ISI",
 			"I I"
 		))->setIngredient("S", Item::get(Item::STICK))->setIngredient("I", Item::get(Item::IRON_INGOT)));
+
+		$this->recipes419 = $this->recipes;
+		// somehow unregister the modified functions
+		// then register 419 recipes
 	}
 
 	protected function registerFurnace(){
@@ -527,6 +541,41 @@ class CraftingManager{
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::DYE, 2, 1), Item::get(Item::CACTUS, 0, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::SPONGE, 0, 1), Item::get(Item::SPONGE, 1, 1)));
 		$this->registerRecipe(new FurnaceRecipe(Item::get(Item::POPPED_CHORUS_FRUIT, 0, 1), Item::get(Item::CHORUS_FRUIT, 0, 1)));
+	}
+
+	protected function registerFurnace419() {
+		// ore and materials
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::IRON_INGOT, 0, 1), Item::get(Item419::IRON_ORE, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::GOLD_INGOT, 0, 1), Item::get(Item419::GOLD_ORE, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::GLASS, 0, 1), Item::get(Item419::SAND, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::GLASS, 0, 1), Item::get(Item419::SAND, 1, 1))); // red sand
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::STONE, 0, 1), Item::get(Item419::COBBLESTONE, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::BRICK, 0, 1), Item::get(Item419::CLAY, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::NETHER_BRICK, 0, 1), Item::get(Item419::NETHERRACK, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::HARDENED_CLAY, 0, 1), Item::get(Item419::CLAY_BLOCK, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::STONE_BRICK, 2, 1), Item::get(Item419::STONE_BRICK, 0, 1)));
+		// wasting ore
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::DIAMOND, 0, 1), Item::get(Item419::DIAMOND_ORE, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::LAPIS_LAZULI, 0, 1), Item::get(Item419::LAPIS_ORE, 0, 1)));
+		// @todo redstone
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COAL, 1, 1), Item::get(Item419::TRUNK, -1, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::EMERALD, 0, 1), Item::get(Item419::EMERALD_ORE, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::NETHER_QUARTZ, 0, 1), Item::get(Item419::NETHER_QUARTZ_ORE, 0, 1)));
+		
+		// food
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COOKED_FISH, 0, 1), Item::get(Item419::RAW_FISH, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COOKED_FISH, 1, 1), Item::get(Item419::RAW_FISH, 1, 1))); // salmon
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::BAKED_POTATO, 0, 1), Item::get(Item419::POTATO, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COOKED_PORKCHOP, 0, 1), Item::get(Item419::RAW_PORKCHOP, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::STEAK, 0, 1), Item::get(Item419::RAW_BEEF, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COOKED_CHICKEN, 0, 1), Item::get(Item419::RAW_CHICKEN, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COOKED_MUTTON, 0, 1), Item::get(Item419::RAW_MUTTON, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::COOKED_RABBIT, 0, 1), Item::get(Item419::RAW_RABBIT, 0, 1)));
+		
+		// other
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::GREEN_DYE, 0, 1), Item::get(Item419::CACTUS, 0, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::SPONGE, 0, 1), Item::get(Item419::SPONGE, 1, 1)));
+		$this->registerRecipe419(new FurnaceRecipe(Item::get(Item419::POPPED_CHORUS_FRUIT, 0, 1), Item::get(Item419::CHORUS_FRUIT, 0, 1)));
 	}
 
 	protected function registerStonecutter(){	
@@ -856,6 +905,53 @@ class CraftingManager{
 
 	}
 
+	protected function registerDyes419() {
+		$dyes = [
+			Item419::WHITE_DYE,
+			Item419::ORANGE_DYE,
+			Item419::MAGENTA_DYE,
+			Item419::LIGHT_BLUE_DYE,
+			Item419::YELLOW_DYE,
+			Item419::LIME_DYE,
+			Item419::PINK_DYE,
+			Item419::GRAY_DYE,
+			Item419::LIGHT_GRAY_DYE,
+			Item419::CYAN_DYE,
+			Item419::PURPLE_DYE,
+			Item419::BLUE_DYE,
+			Item419::BROWN_DYE,
+			Item419::GREEN_DYE,
+			Item419::RED_DYE,
+			Item419::BLACK_DYE,
+		];
+
+		foreach ($dyes as $k => $dye) {
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::WOOL, $k, 1)))->addIngredient(Item::get(Item419::WOOL, 0, 1))->addIngredient(Item::get($dye, 0, 1)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::STAINED_CLAY, $k, 8)))->addIngredient(Item::get(Item419::HARDENED_CLAY, 0, 4))->addIngredient(Item::get($dye, 0, 1))->addIngredient(Item::get(Item419::HARDENED_CLAY, 0, 4)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::CARPET, $k, 3)))->addIngredient(Item::get(Item419::WOOL, $k, 2)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::STAINED_GLASS, $k, 8)))->addIngredient(Item::get(Item419::GLASS, 0, 4))->addIngredient(Item::get($dye, 0, 1))->addIngredient(Item::get(Item419::GLASS, 0, 4)));
+		}
+
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::YELLOW_DYE, 0, 2)))->addIngredient(Item::get(Item419::DANDELION, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::BONE_MEAL, 0, 3)))->addIngredient(Item::get(Item419::BONE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::COCOA_BEANS, 0, 3)))->addIngredient(Item::get(Item419::ORANGE_DYE, 0, 1))->addIngredient(Item::get(Item419::INC_SAC, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::COCOA_BEANS, 0, 3)))->addIngredient(Item::get(Item419::RED_DYE, 0, 1))->addIngredient(Item::get(Item419::INC_SAC, 0, 1))->addIngredient(Item::get(Item419::YELLOW_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::COCOA_BEANS, 0, 3)))->addIngredient(Item::get(Item419::RED_DYE, 0, 1))->addIngredient(Item::get(Item419::INC_SAC, 0, 1))->addIngredient(Item::get(Item419::YELLOW_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::PINK_DYE, 0, 2)))->addIngredient(Item::get(Item419::BONE_MEAL, 0, 1))->addIngredient(Item::get(Item419::RED_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::ORANGE_DYE, 0, 2)))->addIngredient(Item::get(Item419::YELLOW_DYE, 0, 1))->addIngredient(Item::get(Item419::RED_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::LIME_DYE, 0, 2)))->addIngredient(Item::get(Item419::GREEN_DYE, 0, 1))->addIngredient(Item::get(Item419::BONE_MEAL, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::LIGHT_BLUE_DYE, 0, 2)))->addIngredient(Item::get(Item419::LAPIS_LAZULI, 0, 1))->addIngredient(Item::get(Item419::BONE_MEAL, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::CYAN_DYE, 0, 2)))->addIngredient(Item::get(Item419::LAPIS_LAZULI, 0, 1))->addIngredient(Item::get(Item419::GREEN_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::PURPLE_DYE, 0, 2)))->addIngredient(Item::get(Item419::LAPIS_LAZULI, 0, 1))->addIngredient(Item::get(Item419::RED_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::MAGENTA_DYE, 0, 3)))->addIngredient(Item::get(Item419::LAPIS_LAZULI, 0, 1))->addIngredient(Item::get(Item419::RED_DYE, 0, 1))->addIngredient(Item::get(Item419::BONE_MEAL, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::RED_DYE, 0, 1)))->addIngredient(Item::get(Item419::BEETROOT, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::MAGENTA_DYE, 0, 4)))->addIngredient(Item::get(Item419::BONE_MEAL, 0, 1))->addIngredient(Item::get(Item::RED_DYE, 0, 2))->addIngredient(Item::get(Item419::DYE, 4, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::MAGENTA_DYE, 0, 2)))->addIngredient(Item::get(Item419::PURPLE_DYE, 0, 1))->addIngredient(Item::get(Item::PINK_DYE, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::GRAY_DYE, 0, 2)))->addIngredient(Item::get(Item419::INC_SAC, 0, 1))->addIngredient(Item::get(Item::BONE_MEAL, 0, 1)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::LIGHT_GRAY_DYE, 0, 3)))->addIngredient(Item::get(Item419::INC_SAC, 0, 1))->addIngredient(Item::get(Item::BONE_MEAL, 0, 2)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::LIGHT_GRAY_DYE, 0, 2)))->addIngredient(Item::get(Item419::INC_SAC, 0, 1))->addIngredient(Item::get(Item::GRAY_DYE, 0, 1)));
+	}
+
 	protected function registerIngots(){
 		$ingots = [
 			Item::GOLD_BLOCK => Item::GOLD_INGOT,
@@ -882,6 +978,33 @@ class CraftingManager{
 		$this->registerRecipe((new BigShapelessRecipe(Item::get(Item::GOLD_INGOT, 0, 1)))->addIngredient(Item::get(Item::GOLD_NUGGET, 0, 9)));
 		$this->registerRecipe((new ShapelessRecipe(Item::get(Item::GOLD_NUGGET, 0, 9)))->addIngredient(Item::get(Item::GOLD_INGOT, 0, 1)));
 
+	}
+
+	protected function registerIngots419() {
+		$ingots = [
+			Item419::GOLD_BLOCK => Item419::GOLD_INGOT,
+			Item419::IRON_BLOCK => Item419::IRON_INGOT,
+			Item419::DIAMOND_BLOCK => Item419::DIAMOND,
+			Item419::EMERALD_BLOCK => Item419::EMERALD,
+			Item419::REDSTONE_BLOCK => Item419::REDSTONE_DUST,
+			Item419::COAL_BLOCK => Item419::COAL,
+			Item419::HAY_BALE => Item419::WHEAT,
+			Item419::NETHER_WART_BLOCK_BLOCK => Item419::NETHER_WART,
+		];
+
+		foreach ($ingots as $block => $ingot) {
+			$this->registerRecipe419((new BigShapelessRecipe(Item::get($block, 0, 1)))->addIngredient(Item::get($ingot, 0, 9)));
+			$this->registerRecipe419((new ShapelessRecipe(Item::get($ingot, 0, 9)))->addIngredient(Item::get($block, 0, 1)));
+		}
+
+		$this->registerRecipe419((new BigShapelessRecipe(Item::get(Item419::BONE_BLOCK, 0, 1)))->addIngredient(Item::get(Item419::BONE_MEAL, 0, 9)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::BONE_MEAL, 0, 9)))->addIngredient(Item::get(Item419::BONE_BLOCK, 0, 1)));
+
+		$this->registerRecipe419((new BigShapelessRecipe(Item::get(Item419::LAPIS_BLOCK, 0, 1)))->addIngredient(Item::get(Item419::LAPIS_LAZULI, 0, 9)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::LAPIS_LAZULI, 0, 9)))->addIngredient(Item::get(Item419::LAPIS_BLOCK, 0, 1)));
+
+		$this->registerRecipe419((new BigShapelessRecipe(Item::get(Item419::GOLD_INGOT, 0, 1)))->addIngredient(Item::get(Item419::GOLD_NUGGET, 0, 9)));
+		$this->registerRecipe419((new ShapelessRecipe(Item::get(Item419::GOLD_NUGGET, 0, 9)))->addIngredient(Item::get(Item419::GOLD_INGOT, 0, 1)));
 	}
 
 	public function sort(Item $i1, Item $i2){
@@ -912,6 +1035,15 @@ class CraftingManager{
 	}
 
 	/**
+	 * @param UUID $id
+	 * @return Recipe
+	 */
+	public function getRecipe419(UUID $id) {
+		$index = $id->toBinary();
+		return isset($this->recipes419[$index]) ? $this->recipes419[$index] : null;
+	}
+
+	/**
 	 * @return Recipe[]
 	 */
 	public function getRecipes(){
@@ -919,10 +1051,24 @@ class CraftingManager{
 	}
 
 	/**
+	 * @return Recipe[]
+	 */
+	public function getRecipes419() {
+		return $this->recipes419;
+	}
+
+	/**
 	 * @return FurnaceRecipe[]
 	 */
 	public function getFurnaceRecipes(){
 		return $this->furnaceRecipes;
+	}
+
+	/**
+	 * @return FurnaceRecipe[]
+	 */
+	public function getFurnaceRecipes419() {
+		return $this->furnaceRecipes419;
 	}
 
 	/**
@@ -961,12 +1107,40 @@ class CraftingManager{
 
 		$this->recipeLookup[$result->getId() . ":" . $result->getDamage()][$hash] = $recipe;
 	}
-	
+
+	/**
+	 * @param ShapedRecipe $recipe
+	 */
+	public function registerShapedRecipe419(ShapedRecipe $recipe) {
+		$result = $recipe->getResult();
+		$this->recipes419[$recipe->getId()->toBinary()] = $recipe;
+		$ingredients = $recipe->getIngredientMap();
+		$hash = "";
+		foreach ($ingredients as $v) {
+			foreach ($v as $item) {
+				if ($item !== null) {
+					$hash .= $item->getId() . ":" . ($item->getDamage() === null ? "?" : $item->getDamage()) . "x" . $item->getCount() . ",";
+				}
+			}
+			$hash .= ";";
+		}
+		$this->recipeLookup[$result->getId() . ":" . $result->getDamage()][$hash] = $recipe;
+	}
+
 	public function getRecipeByHash($hash) {
 		if (isset($this->recipeLookup[$hash])) {
 			foreach ($this->recipeLookup[$hash] as $recipe) {
 				return $recipe;
 			}			
+		}
+		return null;
+	}
+
+	public function getRecipeByHash419($hash) {
+		if (!isset($this->recipeLookup419[$hash])) {
+			foreach ($this->recipeLookup419[$hash] as $recipe) {
+				return $recipe;
+			}
 		}
 		return null;
 	}
@@ -987,11 +1161,34 @@ class CraftingManager{
 	}
 
 	/**
+	 * @param ShapelessRecipe $recipe
+	 */
+	public function registerShapelessRecipe419(ShapelessRecipe $recipe) {
+		$result = $recipe->getResult();
+		$this->recipes419[$recipe->getId()->toBinary()] = $recipe;
+		$hash = "";
+		$ingredients = $recipe->getIngredientList();
+		usort($ingredients, [$this, "sort"]);
+		foreach ($ingredients as $item) {
+			$hash .= $item->getId() . ":" . ($item->getDamage() === null ? "?" : $item->getDamage()) . "x" . $item->getCount() . ",";
+		}
+		$this->recipeLookup[$result->getId() . ":" . $result->getDamage()][$hash] = $recipe;
+	}
+
+	/**
 	 * @param FurnaceRecipe $recipe
 	 */
 	public function registerFurnaceRecipe(FurnaceRecipe $recipe){
 		$input = $recipe->getInput();
 		$this->furnaceRecipes[$input->getId() . ":" . ($input->getDamage() === null ? "?" : $input->getDamage())] = $recipe;
+	}
+
+	/**
+	 * @param FurnaceRecipe $recipe
+	 */
+	public function registerFurnaceRecipe419(FurnaceRecipe $recipe) {
+		$input = $recipe->getInput();
+		$this->furnaceRecipes419[$input->getId() . ":" . ($input->getDamage() === null ? "?" : $input->getDamage())] = $recipe;
 	}
 
 	/**
@@ -1066,5 +1263,44 @@ class CraftingManager{
 			$this->registerFurnaceRecipe($recipe);
 		}
 	}
+
+	/**
+	 * @param Recipe $recipe
+	 */
+	public function registerRecipe419(Recipe $recipe) {
+		$recipe->setId(UUID::fromData(++self::$RECIPE_COUNT, $recipe->getResult()->getId(), $recipe->getResult()->getDamage(), $recipe->getResult()->getCount(), $recipe->getResult()->getCompound()));
+
+		if ($recipe instanceof ShapedRecipe) {
+			$this->registerShapedRecipe419($recipe);
+		} elseif ($recipe instanceof ShapelessRecipe) {
+			$this->registerShapelessRecipe419($recipe);
+		} elseif ($recipe instanceof FurnaceRecipe) {
+			$this->registerFurnaceRecipe419($recipe);
+		}
+	}
+
+	public function registerRecipes() {
+		
+	}
+
+	public function registerRecipes419() {
+		
+	}
+
+	/*public function unregisterRecipe($recipe) {
+		unset($this->recipes[$recipe]);
+	}
+
+	public function unregisterRecipe419($recipe) {
+		unset($this->recipes419[$recipe]);
+	}
+
+	public function unregisterFurnaceRecipe($recipe) {
+		unset($this->furnaceRecipes[$recipe]);
+	}
+
+	public function unregisterFurnaceRecipe419($recipe) {
+		unset($this->furnaceRecipes[$recipe]);
+	}*/
 
 }

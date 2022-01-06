@@ -322,6 +322,7 @@ class Network {
 	public static function getChunkPacketProtocol($playerProtocol){
 		switch ($playerProtocol) {
 			case Info::PROTOCOL_419:
+				return Info::PROTOCOL_419;
 			case Info::PROTOCOL_418:
 				return Info::PROTOCOL_418;
 			case Info::PROTOCOL_415:

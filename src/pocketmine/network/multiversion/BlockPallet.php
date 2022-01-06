@@ -29,7 +29,7 @@ class BlockPallet {
 		krsort($result);
 		return $result;
 	}
-	
+
 	private $pallet = [];
 	private $palletReverted = [];
 	private $dataForPackets = "";
@@ -116,23 +116,23 @@ class BlockPallet {
 			$this->dataForPackets = $bs->getBuffer();
 		}
 	}
-	
+
 	public function getBlockDataByRuntimeID($runtimeID) {
 		if (isset($this->palletReverted[$runtimeID])) {
 			return $this->palletReverted[$runtimeID];
 		}
 		return [0, 0, ""];
 	}
-	
+
 	public function getBlockRuntimeIDByData($id, $meta) {
 		if (isset($this->pallet[$id][$meta])) {
 			return $this->pallet[$id][$meta];
 		}
 		return 0;
 	}
-	
+
 	public function getDataForPackets() {
 		return $this->dataForPackets;
 	}
-	
+
 }

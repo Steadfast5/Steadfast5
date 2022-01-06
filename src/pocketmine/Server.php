@@ -63,6 +63,7 @@ use pocketmine\inventory\ShapelessRecipe;
 use pocketmine\inventory\FurnaceRecipe;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
+use pocketmine\item\ItemConverter;
 use pocketmine\level\format\anvil\Anvil;
 use pocketmine\level\format\pmanvil\PMAnvil;
 use pocketmine\level\format\LevelProviderManager;
@@ -1667,12 +1668,14 @@ class Server{
 		InventoryType::init();
 		Block::init();
 		Enchantment::init();
-		Item::init();
+		Item::init(); // maybe replace with ItemConverter::init();
+		// ItemConverter::init();
 		Biome::init();
 		TextWrapper::init();
 		MetadataConvertor::init();
 		$this->craftingManager = new CraftingManager();
 		PEPacket::initPallet();
+		PEPacket::initItemsList();
 
 		$this->pluginManager = new PluginManager($this, $this->commandMap);
 		$this->pluginManager->subscribeToPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this->consoleSender);
@@ -2400,29 +2403,33 @@ class Server{
 	}
 
 	private $craftList = [];
-	
+
 	public function sendRecipeList(Player $p){
 		if(!isset($this->craftList[$p->getPlayerProtocol()])) {
 			$pk = new CraftingDataPacket();
 			$pk->cleanRecipes = true;
-			
+
 			$recipies = [];
-			
-			foreach($this->getCraftingManager()->getRecipes() as $recipe){
-				if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
-					if (!in_array($recipe->getResult()->getId(), [Item::SUGAR, Item::PAPER, Item::MELON_BLOCK])) {
-						continue;
-					}
+
+			if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+				foreach ($this->getCraftingManager()->getRecipes419() as $recipe) {
+					$recipies[] = $recipe;
 				}
-				$recipies[] = $recipe;
-			}
-			// TODO: fix furnace recipes
-			if ($p->getPlayerProtocol() < Info::PROTOCOL_419) {
-				foreach ($this->getCraftingManager()->getFurnaceRecipes() as $recipe) {
+			} else {
+				foreach($this->getCraftingManager()->getRecipes() as $recipe){
 					$recipies[] = $recipe;
 				}
 			}
 
+			if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+				foreach ($this->getCraftingManager()->getFurnaceRecipes419() as $recipe) {
+					$recipies[] = $recipe;
+				}
+			} else {
+				foreach ($this->getCraftingManager()->getFurnaceRecipes() as $recipe) {
+					$recipies[] = $recipe;
+				}
+			}
 			$this->getPluginManager()->callEvent($ev = new SendRecipiesList($recipies));
 			
 			foreach($ev->getRecipies() as $recipe){
