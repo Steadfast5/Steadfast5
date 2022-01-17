@@ -72,13 +72,13 @@ class CraftingDataPacket extends PEPacket{
 		foreach($recipe->getIngredientList() as $item){	
 			if ($playerProtocol >= Info::PROTOCOL_360) {
 				$itemId = $item->getId();
-				if ($playerProtocol >= Info::PROTOCOL_419) {
+				if ($playerProtocol >= Info::PROTOCOL_415) {
 					$itemId = Item419::getNewByOld($item->getId(), $item->getDamage());
 				}
 				$stream->putSignedVarInt($itemId);
 				if ($item->getId() !== 0) {
 					$meta = $item->getDamage();
-					if ($playerProtocol >= Info::PROTOCOL_419 && in_array($itemId, Item419::DYES)) {
+					if ($playerProtocol >= Info::PROTOCOL_415 && in_array($itemId, Item419::DYES)) {
 						$meta = 0;
 					}
 					$stream->putSignedVarInt($meta);
@@ -116,14 +116,14 @@ class CraftingDataPacket extends PEPacket{
 			for($x = 0; $x < $recipe->getHeight(); ++$x){
 				$slot = $recipe->getIngredient($x, $z);
 				$itemId = $slot->getId();
-				if ($playerProtocol >= Info::PROTOCOL_419) {
+				if ($playerProtocol >= Info::PROTOCOL_415) {
 					$itemId = Item419::getNewByOld($slot->getId(), $slot->getDamage());
 				}
 				if ($playerProtocol >= Info::PROTOCOL_360) {
 					$stream->putSignedVarInt($itemId);
 					if ($slot->getId() !== 0) {
 						$meta = $slot->getDamage();
-						if ($playerProtocol >= Info::PROTOCOL_419 && in_array($itemId, Item419::DYES)) {
+						if ($playerProtocol >= Info::PROTOCOL_415 && in_array($itemId, Item419::DYES)) {
 							$meta = 0;
 						}
 						$stream->putSignedVarInt($meta);
@@ -155,11 +155,11 @@ class CraftingDataPacket extends PEPacket{
 	private static function writeFurnaceRecipe(FurnaceRecipe $recipe, BinaryStream $stream, $playerProtocol){
 		$item = $recipe->getInput();
 		$itemId = $item->getId();
-		if ($playerProtocol >= Info::PROTOCOL_419) {
+		if ($playerProtocol >= Info::PROTOCOL_415) {
 			$itemId = Item419::getNewByOld($item->getId(), $item->getDamage());
 		}
 		$meta = $item->getDamage();
-		if ($playerProtocol >= Info::PROTOCOL_419 && in_array($itemId, Item419::DYES)) {
+		if ($playerProtocol >= Info::PROTOCOL_415 && in_array($itemId, Item419::DYES)) {
 			$meta = 0;
 		}
 		if($meta !== 0){ //Data recipe
