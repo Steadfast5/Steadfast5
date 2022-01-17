@@ -2409,7 +2409,7 @@ class Server{
 
 			$recipies = [];
 
-			if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+			if ($p->getPlayerProtocol() >= Info::PROTOCOL_415) {
 				foreach ($this->getCraftingManager()->getRecipes419() as $recipe) {
 					$recipies[] = $recipe;
 				}
@@ -2419,7 +2419,7 @@ class Server{
 				}
 			}
 
-			if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+			if ($p->getPlayerProtocol() >= Info::PROTOCOL_415) {
 				foreach ($this->getCraftingManager()->getFurnaceRecipes419() as $recipe) {
 					$recipies[] = $recipe;
 				}
