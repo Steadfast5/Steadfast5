@@ -96,7 +96,7 @@ class AvailableCommandsPacket extends PEPacket{
 //			Info::PROTOCOL_411 => new BinaryStream(),
 //			Info::PROTOCOL_412 => new BinaryStream(),
 //			Info::PROTOCOL_413 => new BinaryStream(),
-//			Info::PROTOCOL_415 => new BinaryStream(),
+			Info::PROTOCOL_415 => new BinaryStream(),
 			Info::PROTOCOL_418 => new BinaryStream(),
 			Info::PROTOCOL_419 => new BinaryStream(),
 		];
