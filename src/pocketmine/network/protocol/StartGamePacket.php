@@ -109,7 +109,7 @@ class StartGamePacket extends PEPacket{
 		
 		$this->putByte(0); //edu mode
 		
-		if ($playerProtocol < Info::PROTOCOL_418 && $playerProtocol >= Info::PROTOCOL_260 && $this->stringClientVersion != '1.2.20.1') {
+		if ($playerProtocol < Info::PROTOCOL_415 && $playerProtocol >= Info::PROTOCOL_260 && $this->stringClientVersion != '1.2.20.1') {
 			$this->putByte(0); // Are education features enabled?
 		}
 
@@ -129,7 +129,7 @@ class StartGamePacket extends PEPacket{
 		$this->putByte(1); // Broadcast to LAN?
 		if ($playerProtocol >= Info::PROTOCOL_330) {
 			$this->putSignedVarInt(self::BROADCAST_SETTINGS_FRIENDS_OF_FRIENDS); // XBox Live Broadcast setting
-			if ($playerProtocol < Info::PROTOCOL_406 || $playerProtocol >= Info::PROTOCOL_418) {
+			if ($playerProtocol < Info::PROTOCOL_406 || $playerProtocol >= Info::PROTOCOL_415) {
 				$this->putSignedVarInt(self::BROADCAST_SETTINGS_FRIENDS_OF_FRIENDS); // Platform Broadcast setting
 			}
 		} else {
@@ -160,7 +160,10 @@ class StartGamePacket extends PEPacket{
 					break;
 			}	
 		}
-
+		if($playerProtocol >= Info::PROTOCOL_415){
+			$this->putLInt(0); //Experiments
+			$this->putBool(0); //hasPreviouslyUsedExperiments
+		}
 		$this->putByte(0); // is bonus chest enabled
 		$this->putByte(0); // is start with map enabled
 		if ($playerProtocol < Info::PROTOCOL_330) {
@@ -193,11 +196,6 @@ class StartGamePacket extends PEPacket{
 			if ($playerProtocol >= Info::PROTOCOL_370) {
 				$this->putString(''); // Vanila version
 			}
-			if ($playerProtocol >= Info::PROTOCOL_418) { // unknown
-				$this->putLInt(0); // unknown
-				$this->putByte(1); // unknown
-				$this->putByte(42); // unknown
-			}
 			if ($playerProtocol == Info::PROTOCOL_386) {
 				$this->putByte(0); // unknown
 				$this->putByte(1); // unknown
@@ -223,7 +221,7 @@ class StartGamePacket extends PEPacket{
 		$this->putString(''); // template pack id
 		$this->putByte(0); // is trial?
 		if ($playerProtocol >= Info::PROTOCOL_389) {
-			if ($playerProtocol >= Info::PROTOCOL_418) {
+			if ($playerProtocol >= Info::PROTOCOL_415) {
 				$this->putVarInt(0); // player movement type
 				if ($playerProtocol >= Info::PROTOCOL_428) {
 					$this->putSignedVarInt(0); // unknown
@@ -234,22 +232,24 @@ class StartGamePacket extends PEPacket{
 			}
 		}
 		$this->putLong(0); // current level time
-		if ($playerProtocol >= Info::PROTOCOL_418) {
+		if ($playerProtocol >= Info::PROTOCOL_415) {
 			$this->putVarInt(0); // unknown
 		}
 		$this->putSignedVarInt(0); // enchantment seed
 
-		if ($playerProtocol >= Info::PROTOCOL_280 && $playerProtocol < Info::PROTOCOL_418) {
+		if ($playerProtocol >= Info::PROTOCOL_280 && $playerProtocol < Info::PROTOCOL_415) {
 			$this->put(self::getBlockPalletData($playerProtocol));
 		}
 		if ($playerProtocol >= Info::PROTOCOL_360) {
-			if ($playerProtocol >= Info::PROTOCOL_418) {
+			if ($playerProtocol >= Info::PROTOCOL_415) {
 				$itemsData = self::getItemListData($playerProtocol);
 				$this->putVarInt(count($itemsData));
 				foreach ($itemsData as $name => $id) {
 					$this->putString($name);
 					$this->putLShort($id);
-					$this->putByte(0); // unknown
+					if($playerProtocol >= Info::PROTOCOL_418){
+						$this->putByte(0); // componentbased
+					}
 				}
 			} else {
 				$this->putVarInt(0); // item list size
