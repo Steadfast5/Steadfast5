@@ -3557,27 +3557,22 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		$pk->stringClientVersion = $this->clientVersion;
 		$pk->multiplayerCorrelationId = $this->uuid->toString();
 		$this->directDataPacket($pk);	
+		if ($this->protocol >= Info::PROTOCOL_415) {
+			$this->directDataPacket(new ItemComponentPacket());
+		}
 		if ($this->protocol >= ProtocolInfo::PROTOCOL_331) {
-			if ($this->protocol >= Info::PROTOCOL_419) {
-				$this->directDataPacket(new ItemComponentPacket());
-			}
 			$this->directDataPacket(new AvailableEntityIdentifiersPacket());
 			$this->directDataPacket(new BiomeDefinitionListPacket());
 		}
-
 		if ($this->getPlayerProtocol() >= Info::PROTOCOL_392) {
-			if ($this->getPlayerProtocol() >= Info::PROTOCOL_419) {
-				$pk = new CreativeItemsListPacket();
-				$pk->groups = Item::getCreativeGroups();
+			$pk = new CreativeItemsListPacket();
+			$pk->groups = Item::getCreativeGroups();
+			if ($this->getPlayerProtocol() >= Info::PROTOCOL_415) {
 				$pk->items = Item::getCreativeItems419();
-				$this->dataPacket($pk);
 			} else {
-				$pk = new CreativeItemsListPacket();
-				$pk->groups = Item::getCreativeGroups();
 				$pk->items = Item::getCreativeItems();
-				$this->dataPacket($pk);
-				// $this->directDataPacket($pk); // ??
 			}
+			$this->dataPacket($pk);
 		} else {
 			$slots = [];
 			foreach(Item::getCreativeItems() as $item){
