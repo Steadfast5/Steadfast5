@@ -268,18 +268,18 @@ class BinaryStream {
 			return Item::get(Item::AIR, 0, 0);
 		}
 
-		if ($playerProtocol >= Info::PROTOCOL_419) {
+		if ($playerProtocol >= Info::PROTOCOL_415) {
 			$id = Item419::getOldByNew($id);
 		}
 
 		$aux = $this->getSignedVarInt();
 		$meta = $aux >> 8;
 		$count = $aux & 0xff;
-		if ($playerProtocol >= Info::PROTOCOL_419 && in_array($id, Item419::DYES)) {
+		if ($playerProtocol >= Info::PROTOCOL_415 && in_array($id, Item419::DYES)) {
 			$meta = Item419::getDyeMeta($id);
 			$id = Item::DYE;
 		}
-		if ($playerProtocol >= Info::PROTOCOL_419) {
+		if ($playerProtocol >= Info::PROTOCOL_415) {
 			switch ($id) { // TODO: fix 419 item ids
 				case Item419::MILK_BUCKET:
 					$meta = 1;
@@ -333,7 +333,7 @@ class BinaryStream {
 			$this->putSignedVarInt(0);
 			return;
 		}
-		if ($playerProtocol >= Info::PROTOCOL_419) {
+		if ($playerProtocol >= Info::PROTOCOL_415) {
 			$itemId = Item419::getNewByOld($item->getId(), $item->getDamage());
 		} else {
 			$itemId = $item->getId();
@@ -342,12 +342,12 @@ class BinaryStream {
 		if (is_null($item->getDamage())) {
 			$item->setDamage(0);
 		}
-		if ($playerProtocol >= Info::PROTOCOL_419 && in_array($itemId, Item419::DYES)) {
+		if ($playerProtocol >= Info::PROTOCOL_415 && in_array($itemId, Item419::DYES)) {
 			$meta = 0;
 		} else {
 			$meta = $item->getDamage();
 		}
-		if ($playerProtocol >= Info::PROTOCOL_419 && $item->getId() === Item::BUCKET && $item->getDamage === 1) {
+		if ($playerProtocol >= Info::PROTOCOL_415 && $item->getId() === Item::BUCKET && $item->getDamage === 1) {
 			$meta = 0;
 		}
 		$auxValue = (($meta << 8 & 0x7fff) | $item->getCount() & 0xff);
@@ -496,7 +496,7 @@ class BinaryStream {
 				$this->putString($animation['Image']);
 				$this->putLInt($animation['Type']);
 				$this->putLFloat($animation['Frames']);
-				if ($playerProtocol >= Info::PROTOCOL_418) {
+				if ($playerProtocol >= Info::PROTOCOL_415) {
 					$this->putLInt($animation['AnimationExpression'] ?? 0);
 				}
 			}
@@ -583,7 +583,7 @@ class BinaryStream {
 				'Image' => $this->getString(),
 				'Type' => $this->getLInt(),
 				'Frames' => $this->getLFloat(),
-				'AnimationExpression' => ($playerProtocol >= Info::PROTOCOL_418) ? $this->getLInt() : 0,
+				'AnimationExpression' => ($playerProtocol >= Info::PROTOCOL_415) ? $this->getLInt() : 0,
 			];
 		}
 
