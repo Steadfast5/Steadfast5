@@ -204,9 +204,14 @@ class StartGamePacket extends PEPacket{
 				$this->putLFloat(0); // unknown
 			}
 		}
+		if ($playerProtocol >= Info::PROTOCOL_415) {
+			$this->putLInt(0); // ??
+			$this->putByte(0); // ??
+			$this->putByte(0); // ??
+		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putLInt(16); // limited word width
-			$this->putLInt(16); // limited word width
+			$this->putLInt(16); // limited word depth
 		}
 
 		if ($playerProtocol >= Info::PROTOCOL_400) {
