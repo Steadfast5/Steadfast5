@@ -230,6 +230,10 @@ class StartGamePacket extends PEPacket{
 		if ($playerProtocol >= Info::PROTOCOL_389) {
 			if ($playerProtocol >= Info::PROTOCOL_418) {
 				$this->putVarInt(0); // player movement type
+				if ($playerProtocol >= Info::PROTOCOL_428) {
+					$this->putSignedVarInt(0); // unknown
+					$this->putByte(0); // unknown
+				}
 			} else {
 				$this->putByte(0); // is server authoritative over movement
 			}
@@ -245,7 +249,7 @@ class StartGamePacket extends PEPacket{
 		}
 		if ($playerProtocol >= Info::PROTOCOL_360) {
 			if ($playerProtocol >= Info::PROTOCOL_418) {
-				$itemsData = self::getItemsList();
+				$itemsData = self::getItemListData($playerProtocol);
 				$this->putVarInt(count($itemsData));
 				foreach ($itemsData as $name => $id) {
 					$this->putString($name);
@@ -261,18 +265,6 @@ class StartGamePacket extends PEPacket{
 		}
 		if ($playerProtocol >= Info::PROTOCOL_392) {
 			$this->putByte(0); // Whether the new item stack net manager is enabled for server authoritative inventory
-		}
-	}
-
-	protected static function getItemsList() { // TODO: find another place for this in multiversion folder and move Items.json there too
-		if (!empty(self::$itemsList)) {
-			return self::$itemsList;
-		} else {
-			$path = __DIR__ . "/data/Items.json";
-//			$path = __DIR__ . "/data/Items2.json";
-//			$path = __DIR__ . "/data/Items3.json";
-			self::$itemsList = json_decode(file_get_contents($path), true);
-			return self::$itemsList;
 		}
 	}
 

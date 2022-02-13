@@ -29,7 +29,7 @@ class BlockPallet {
 		krsort($result);
 		return $result;
 	}
-	
+
 	private $pallet = [];
 	private $palletReverted = [];
 	private $dataForPackets = "";
@@ -42,7 +42,7 @@ class BlockPallet {
 				self::$blockNamesIds[$blockInfo['name']] = $blockInfo['id'];
 			}
 		}
-		if ($protocolNumber == Info::PROTOCOL_419) {
+		if ($protocolNumber >= Info::PROTOCOL_419) {
 			$palletData = $palletData['blocks'];
 		}
 		if ($protocolNumber >= Info::PROTOCOL_370) {
@@ -50,7 +50,7 @@ class BlockPallet {
 			$lastData = null;
 			$currentId = null;
 			foreach ($palletData as $runtimeID => $blockInfo) {
-				if ($protocolNumber == Info::PROTOCOL_419) {
+				if ($protocolNumber >= Info::PROTOCOL_419) {
 					$blockInfo['id'] = self::$blockNamesIds[$blockInfo['name']] ?? -1;
 					if ($blockInfo['id'] !== $currentId) {
 						$currentId = $blockInfo['id'];
@@ -116,23 +116,23 @@ class BlockPallet {
 			$this->dataForPackets = $bs->getBuffer();
 		}
 	}
-	
+
 	public function getBlockDataByRuntimeID($runtimeID) {
 		if (isset($this->palletReverted[$runtimeID])) {
 			return $this->palletReverted[$runtimeID];
 		}
 		return [0, 0, ""];
 	}
-	
+
 	public function getBlockRuntimeIDByData($id, $meta) {
 		if (isset($this->pallet[$id][$meta])) {
 			return $this->pallet[$id][$meta];
 		}
 		return 0;
 	}
-	
+
 	public function getDataForPackets() {
 		return $this->dataForPackets;
 	}
-	
+
 }

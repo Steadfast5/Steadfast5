@@ -6,6 +6,7 @@ use pocketmine\item\Item;
 use pocketmine\network\protocol\DataPacket;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\multiversion\BlockPallet;
+use pocketmine\network\multiversion\ItemList;
 
 abstract class PEPacket extends DataPacket {
 	
@@ -60,6 +61,11 @@ abstract class PEPacket extends DataPacket {
 	
 	public final static function convertProtocol($protocol) {
 		switch ($protocol) {
+			case Info::PROTOCOL_428:
+				return Info::PROTOCOL_428;
+			case Info::PROTOCOL_423:
+			case Info::PROTOCOL_422:
+				return Info::PROTOCOL_422;
 			case Info::PROTOCOL_419:
 				return Info::PROTOCOL_419;
 			case Info::PROTOCOL_418:
@@ -167,22 +173,28 @@ abstract class PEPacket extends DataPacket {
 				return Info::PROTOCOL_120;
 		}
 	}
-	
+
 	/** @var BlockPallet[] */
 	private static $blockPalletes = [];
-	
+	/** @var ItemList[] */
+	private static $itemLists = [];
+
 	public static function initPallet() {
 		self::$blockPalletes = BlockPallet::initAll();
 	}
-	
+
+	public static function initItemList() {
+		self::$itemLists = ItemList::initAll();
+	}
+
 	public static function getBlockIDByRuntime($runtimeId, $playerProtocol) {
 		$pallet = self::getPallet($playerProtocol);
 		return is_null($pallet) ? [ 0, 0, "" ] : $pallet->getBlockDataByRuntimeID($runtimeId);
 	}
-	
+
 	public static function getBlockRuntimeID($id, $meta, $playerProtocol) {
 		$pallet = self::getPallet($playerProtocol);
-		if ($playerProtocol == Info::PROTOCOL_419) {
+		if ($playerProtocol >= Info::PROTOCOL_419) {
 			$meta = self::getActualMeta($id, $meta);
 		}
 		return is_null($pallet) ? 0 : $pallet->getBlockRuntimeIDByData($id, $meta);
@@ -204,13 +216,9 @@ abstract class PEPacket extends DataPacket {
 		return is_null($pallet) ? "" : $pallet->getDataForPackets();
 	}
 
-	/*public static function getItemsList() {
-		if (!empty(self::$itemsList)) {
-			return self::$itemsList;
-		} else {
-			
-		}
-	}*/
+	public static function getItemListData($playerProtocol) {
+		return self::getItemList($playerProtocol);
+	}
 
 	/**
 	 * 
@@ -224,6 +232,19 @@ abstract class PEPacket extends DataPacket {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param type $playerProtocol
+	 */
+	public static function getItemList($playerProtocol) {
+		foreach (self::$itemLists as $protocol => $list) {
+			if ($playerProtocol >= $protocol) {
+				return $list;
+			}
+		}
+		// return null;
+		return [];
 	}
 
 }

@@ -2396,7 +2396,11 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 				}
 
 				if (is_null($recipe) || !$result->deepEquals($recipe->getResult(), true, false) ) { //hack for win10
-					$newRecipe = $this->server->getCraftingManager()->getRecipeByHash($result->getId() . ":" . $result->getDamage());
+					if ($this->getPlayerProtocol() >= Info::PROTOCOL_419) {
+						$newRecipe = $this->server->getCraftingManager()->getRecipeByHash419($result->getId() . ":" . $result->getDamage());
+					} else {
+						$newRecipe = $this->server->getCraftingManager()->getRecipeByHash($result->getId() . ":" . $result->getDamage());
+					}
 					if (!is_null($newRecipe)) {
 						$recipe = $newRecipe;
 					}
@@ -3562,11 +3566,18 @@ class Player extends Human implements CommandSender, InventoryHolder, IPlayer {
 		}
 
 		if ($this->getPlayerProtocol() >= Info::PROTOCOL_392) {
-			$pk = new CreativeItemsListPacket();
-			$pk->groups = Item::getCreativeGroups();
-			$pk->items = Item::getCreativeItems();
-			$this->dataPacket($pk);
-			// $this->directDataPacket($pk); ??
+			if ($this->getPlayerProtocol() >= Info::PROTOCOL_419) {
+				$pk = new CreativeItemsListPacket();
+				$pk->groups = Item::getCreativeGroups();
+				$pk->items = Item::getCreativeItems419();
+				$this->dataPacket($pk);
+			} else {
+				$pk = new CreativeItemsListPacket();
+				$pk->groups = Item::getCreativeGroups();
+				$pk->items = Item::getCreativeItems();
+				$this->dataPacket($pk);
+				// $this->directDataPacket($pk); // ??
+			}
 		} else {
 			$slots = [];
 			foreach(Item::getCreativeItems() as $item){

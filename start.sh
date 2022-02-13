@@ -36,7 +36,7 @@ if [ "$POCKETMINE_FILE" == "" ]; then
 		POCKETMINE_FILE="./Steadfast5.phar"
 	else
 		echo "Steadfast5.phar not found"
-		echo "Downloads can be found at https://github.com/IceCruelStuff/Steadfast5/releases"
+		echo "Downloads can be found at https://github.com/Steadfast5/Steadfast5/releases"
 		exit 1
 	fi
 fi

@@ -1673,6 +1673,7 @@ class Server{
 		MetadataConvertor::init();
 		$this->craftingManager = new CraftingManager();
 		PEPacket::initPallet();
+		PEPacket::initItemList();
 
 		$this->pluginManager = new PluginManager($this, $this->commandMap);
 		$this->pluginManager->subscribeToPermission(Server::BROADCAST_CHANNEL_ADMINISTRATIVE, $this->consoleSender);
@@ -2400,29 +2401,33 @@ class Server{
 	}
 
 	private $craftList = [];
-	
+
 	public function sendRecipeList(Player $p){
 		if(!isset($this->craftList[$p->getPlayerProtocol()])) {
 			$pk = new CraftingDataPacket();
 			$pk->cleanRecipes = true;
-			
+
 			$recipies = [];
-			
-			foreach($this->getCraftingManager()->getRecipes() as $recipe){
-				if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
-					if (!in_array($recipe->getResult()->getId(), [Item::SUGAR, Item::PAPER, Item::MELON_BLOCK])) {
-						continue;
-					}
+
+			if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+				foreach ($this->getCraftingManager()->getRecipes419() as $recipe) {
+					$recipies[] = $recipe;
 				}
-				$recipies[] = $recipe;
-			}
-			// TODO: fix furnace recipes
-			if ($p->getPlayerProtocol() < Info::PROTOCOL_419) {
-				foreach ($this->getCraftingManager()->getFurnaceRecipes() as $recipe) {
+			} else {
+				foreach($this->getCraftingManager()->getRecipes() as $recipe){
 					$recipies[] = $recipe;
 				}
 			}
 
+			if ($p->getPlayerProtocol() >= Info::PROTOCOL_419) {
+				foreach ($this->getCraftingManager()->getFurnaceRecipes419() as $recipe) {
+					$recipies[] = $recipe;
+				}
+			} else {
+				foreach ($this->getCraftingManager()->getFurnaceRecipes() as $recipe) {
+					$recipies[] = $recipe;
+				}
+			}
 			$this->getPluginManager()->callEvent($ev = new SendRecipiesList($recipies));
 			
 			foreach($ev->getRecipies() as $recipe){
