@@ -42,9 +42,7 @@ if exist Steadfast5.phar (
 		if exist src\pocketmine\PocketMine.php (
 			set POCKETMINE_FILE=src\pocketmine\PocketMine.php
 		) else (
-			echo "Couldn't find a valid Steadfast5 installation"
-			pause
-			exit 1
+			powershell -command "& { iwr https://github.com/Steadfast5/Steadfast5/releases/latest/download/Steadfast5.phar -OutFile (Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/Steadfast5/Steadfast5/releases/latest/download/Steadfast5.phar").Content }"
 		)
 	)
 )
